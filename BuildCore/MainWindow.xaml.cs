@@ -2493,315 +2493,271 @@ namespace BuildCore
                     Spacing = 10
                 };
 
-            root.Children.Add(
-                new TextBlock
+            OptimizationTestAnalysis? analysis = test.Analysis;
+            ReliableBenchmarkResult? baseline = test.BaselineReliable;
+            ReliableBenchmarkResult? after = test.AfterReliable;
+
+            root.Children.Add(new TextBlock
+            {
+                Text = string.IsNullOrWhiteSpace(test.OptimizationTitle)
+                    ? "Optimization Test"
+                    : test.OptimizationTitle,
+                FontSize = 20,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White)
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text = OptimizationResultsFormatter.BuildStatus(test),
+                FontSize = 12,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    analysis?.Outcome == OptimizationTestOutcome.ImprovementDetected
+                        ? Microsoft.UI.Colors.LightGreen
+                        : analysis?.Outcome == OptimizationTestOutcome.RegressionDetected
+                            ? Microsoft.UI.Colors.OrangeRed
+                            : Microsoft.UI.Colors.Gold)
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text = OptimizationResultsFormatter.BuildSummary(test),
+                FontSize = 10,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text = $"Confidence: {analysis?.ConfidenceScore ?? 0:F0}%",
+                FontSize = 11,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White)
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text =
+                    $"Baseline: {OptimizationResultsFormatter.FormatReliability(baseline)} • " +
+                    $"{OptimizationResultsFormatter.FormatRunCount(baseline)}",
+                FontSize = 10,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray)
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text =
+                    $"After: {OptimizationResultsFormatter.FormatReliability(after)} • " +
+                    $"{OptimizationResultsFormatter.FormatRunCount(after)}",
+                FontSize = 10,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray)
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text = $"Snapshot: {test.SnapshotId}",
+                FontSize = 9,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text = $"Test ID: {test.TestId}",
+                FontSize = 8,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            if (analysis != null)
+            {
+                root.Children.Add(new TextBlock
                 {
-                    Text =
-                        string.IsNullOrWhiteSpace(
-                            test.OptimizationTitle)
-                            ? "Optimization Test"
-                            : test.OptimizationTitle,
-
-                    FontSize = 18,
-
-                    FontWeight =
-                        Microsoft.UI.Text.FontWeights.SemiBold,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.White)
+                    Text = "RELIABLE TELEMETRY ANALYSIS",
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold),
+                    Margin = new Thickness(0, 10, 0, 0)
                 });
 
-            root.Children.Add(
-                new TextBlock
+                root.Children.Add(CreateTestMetricRow(
+                    "CPU average",
+                    OptimizationResultsFormatter.FormatPercentage(analysis.CpuBefore),
+                    OptimizationResultsFormatter.FormatPercentage(analysis.CpuAfter),
+                    OptimizationResultsFormatter.FormatPercentageDelta(analysis.CpuDelta)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "GPU average",
+                    OptimizationResultsFormatter.FormatPercentage(analysis.GpuBefore),
+                    OptimizationResultsFormatter.FormatPercentage(analysis.GpuAfter),
+                    OptimizationResultsFormatter.FormatPercentageDelta(analysis.GpuDelta)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "GPU clock",
+                    OptimizationResultsFormatter.FormatMegahertz(analysis.GpuClockBeforeMHz),
+                    OptimizationResultsFormatter.FormatMegahertz(analysis.GpuClockAfterMHz),
+                    OptimizationResultsFormatter.FormatMegahertzDelta(analysis.GpuClockDeltaMHz)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "GPU temperature",
+                    OptimizationResultsFormatter.FormatTemperature(analysis.GpuTemperatureBeforeC),
+                    OptimizationResultsFormatter.FormatTemperature(analysis.GpuTemperatureAfterC),
+                    OptimizationResultsFormatter.FormatTemperatureDelta(analysis.GpuTemperatureDeltaC)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "VRAM average",
+                    OptimizationResultsFormatter.FormatGigabytes(analysis.VramBeforeGB),
+                    OptimizationResultsFormatter.FormatGigabytes(analysis.VramAfterGB),
+                    OptimizationResultsFormatter.FormatGigabyteDelta(analysis.VramDeltaGB)));
+
+                root.Children.Add(new TextBlock
                 {
                     Text =
-                        $"Test ID: {test.TestId}",
-
-                    FontSize = 8,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray),
-
-                    TextWrapping =
-                        TextWrapping.Wrap
-                });
-
-            root.Children.Add(
-                new TextBlock
-                {
-                    Text =
-                        $"Started: {test.StartedAt:yyyy-MM-dd HH:mm:ss}",
-
+                        $"CPU consistency: before " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.CpuStandardDeviationBefore, "%")}  " +
+                        $"after " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.CpuStandardDeviationAfter, "%")}",
                     FontSize = 9,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray)
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
                 });
 
-            root.Children.Add(
-                new TextBlock
+                root.Children.Add(new TextBlock
                 {
                     Text =
-                        $"Completed: {test.CompletedAt:yyyy-MM-dd HH:mm:ss}",
-
+                        $"GPU consistency: before " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.GpuStandardDeviationBefore, "%")}  " +
+                        $"after " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.GpuStandardDeviationAfter, "%")}",
                     FontSize = 9,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray)
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
                 });
 
-            bool successful =
-                test.IsSuccessful &&
-                test.Comparison != null;
-
-            root.Children.Add(
-                new TextBlock
+                root.Children.Add(new TextBlock
                 {
                     Text =
-                        successful
-                            ? "✓ CONTROLLED TEST COMPLETE"
-                            : $"✕ {test.Status.ToUpperInvariant()}",
-
-                    FontSize = 10,
-
-                    FontWeight =
-                        Microsoft.UI.Text.FontWeights.SemiBold,
-
-                    Foreground =
-                        successful
-                            ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.LightGreen)
-                            : new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.OrangeRed)
-                });
-
-            root.Children.Add(
-                new TextBlock
-                {
-                    Text =
-                        $"Snapshot: {test.SnapshotId}",
-
+                        $"GPU temperature consistency: before " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.GpuTemperatureStandardDeviationBefore, " °C")}  " +
+                        $"after " +
+                        $"{OptimizationResultsFormatter.FormatStandardDeviation(analysis.GpuTemperatureStandardDeviationAfter, " °C")}",
                     FontSize = 9,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray),
-
-                    TextWrapping =
-                        TextWrapping.Wrap
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
                 });
+            }
+
+            if (baseline != null || after != null)
+            {
+                root.Children.Add(new TextBlock
+                {
+                    Text = "RELIABLE RUN SUMMARY",
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold),
+                    Margin = new Thickness(0, 10, 0, 0)
+                });
+
+                if (baseline != null)
+                {
+                    root.Children.Add(new TextBlock
+                    {
+                        Text =
+                            $"BASELINE: {baseline.CompletedRuns}/{baseline.RequestedRuns} runs • " +
+                            $"CPU SD {baseline.CpuStandardDeviation:F2}% • " +
+                            $"GPU SD {baseline.GpuStandardDeviation:F2}% • " +
+                            $"Temp SD {baseline.GpuTemperatureStandardDeviation:F2} °C",
+                        FontSize = 9,
+                        Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGray),
+                        TextWrapping = TextWrapping.Wrap
+                    });
+                }
+
+                if (after != null)
+                {
+                    root.Children.Add(new TextBlock
+                    {
+                        Text =
+                            $"AFTER: {after.CompletedRuns}/{after.RequestedRuns} runs • " +
+                            $"CPU SD {after.CpuStandardDeviation:F2}% • " +
+                            $"GPU SD {after.GpuStandardDeviation:F2}% • " +
+                            $"Temp SD {after.GpuTemperatureStandardDeviation:F2} °C",
+                        FontSize = 9,
+                        Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGray),
+                        TextWrapping = TextWrapping.Wrap
+                    });
+                }
+            }
 
             if (test.Comparison != null)
             {
-                BenchmarkComparison comparison =
-                    test.Comparison;
-
-                root.Children.Add(
-                    new TextBlock
-                    {
-                        Text =
-                            "TELEMETRY COMPARISON",
-
-                        FontSize = 10,
-
-                        FontWeight =
-                            Microsoft.UI.Text.FontWeights.SemiBold,
-
-                        Foreground =
-                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.Gold),
-
-                        Margin =
-                            new Thickness(0, 10, 0, 0)
-                    });
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "CPU average",
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.CpuAverageBefore),
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.CpuAverageAfter),
-                        OptimizationResultsFormatter
-                            .FormatPercentageDelta(
-                                comparison.CpuAverageDelta)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "CPU peak",
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.CpuPeakBefore),
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.CpuPeakAfter),
-                        OptimizationResultsFormatter
-                            .FormatPercentageDelta(
-                                comparison.CpuPeakDelta)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "RAM average",
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.RamAverageBefore),
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.RamAverageAfter),
-                        OptimizationResultsFormatter
-                            .FormatPercentageDelta(
-                                comparison.RamAverageDelta)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "GPU average",
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.GpuAverageBefore),
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.GpuAverageAfter),
-                        OptimizationResultsFormatter
-                            .FormatPercentageDelta(
-                                comparison.GpuAverageDelta)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "GPU peak",
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.GpuPeakBefore),
-                        OptimizationResultsFormatter
-                            .FormatPercentage(
-                                comparison.GpuPeakAfter),
-                        OptimizationResultsFormatter
-                            .FormatPercentageDelta(
-                                comparison.GpuPeakDelta)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "GPU clock",
-                        OptimizationResultsFormatter
-                            .FormatMegahertz(
-                                comparison.GpuClockBeforeMHz),
-                        OptimizationResultsFormatter
-                            .FormatMegahertz(
-                                comparison.GpuClockAfterMHz),
-                        OptimizationResultsFormatter
-                            .FormatMegahertzDelta(
-                                comparison.GpuClockDeltaMHz)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "GPU temperature",
-                        OptimizationResultsFormatter
-                            .FormatTemperature(
-                                comparison.GpuTemperatureBeforeC),
-                        OptimizationResultsFormatter
-                            .FormatTemperature(
-                                comparison.GpuTemperatureAfterC),
-                        OptimizationResultsFormatter
-                            .FormatTemperatureDelta(
-                                comparison.GpuTemperatureDeltaC)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "VRAM average",
-                        OptimizationResultsFormatter
-                            .FormatGigabytes(
-                                comparison.VramAverageBeforeGB),
-                        OptimizationResultsFormatter
-                            .FormatGigabytes(
-                                comparison.VramAverageAfterGB),
-                        OptimizationResultsFormatter
-                            .FormatGigabyteDelta(
-                                comparison.VramAverageDeltaGB)));
-
-                root.Children.Add(
-                    CreateTestMetricRow(
-                        "VRAM peak",
-                        OptimizationResultsFormatter
-                            .FormatGigabytes(
-                                comparison.VramPeakBeforeGB),
-                        OptimizationResultsFormatter
-                            .FormatGigabytes(
-                                comparison.VramPeakAfterGB),
-                        OptimizationResultsFormatter
-                            .FormatGigabyteDelta(
-                                comparison.VramPeakDeltaGB)));
-
-                root.Children.Add(
-                    new TextBlock
-                    {
-                        Text =
-                            "These measurements compare system telemetry before and after the tested change. They do not by themselves prove an FPS, frame-time, or input-latency improvement.",
-
-                        FontSize = 9,
-
-                        Foreground =
-                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.Gray),
-
-                        TextWrapping =
-                            TextWrapping.Wrap,
-
-                        Margin =
-                            new Thickness(0, 12, 0, 0)
-                    });
-            }
-            else
-            {
-                root.Children.Add(
-                    new TextBlock
-                    {
-                        Text =
-                            OptimizationResultsFormatter
-                                .BuildStatus(test),
-
-                        FontSize = 11,
-
-                        Foreground =
-                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.LightGray),
-
-                        TextWrapping =
-                            TextWrapping.Wrap,
-
-                        Margin =
-                            new Thickness(0, 12, 0, 0)
-                    });
-            }
-
-            var dialog =
-                new ContentDialog
+                root.Children.Add(new TextBlock
                 {
-                    Title =
-                        "Optimization Test Details",
+                    Text = "LEGACY TELEMETRY COMPARISON",
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold),
+                    Margin = new Thickness(0, 10, 0, 0)
+                });
 
-                    Content =
-                        new ScrollViewer
-                        {
-                            Content = root,
+                root.Children.Add(CreateTestMetricRow(
+                    "RAM average",
+                    OptimizationResultsFormatter.FormatPercentage(
+                        test.Comparison.RamAverageBefore),
+                    OptimizationResultsFormatter.FormatPercentage(
+                        test.Comparison.RamAverageAfter),
+                    OptimizationResultsFormatter.FormatPercentageDelta(
+                        test.Comparison.RamAverageDelta)));
 
-                            MaxHeight = 650,
+                root.Children.Add(CreateTestMetricRow(
+                    "Disk average",
+                    OptimizationResultsFormatter.FormatPercentage(
+                        test.Comparison.DiskAverageBefore),
+                    OptimizationResultsFormatter.FormatPercentage(
+                        test.Comparison.DiskAverageAfter),
+                    OptimizationResultsFormatter.FormatPercentageDelta(
+                        test.Comparison.DiskAverageDelta)));
+            }
 
-                            VerticalScrollBarVisibility =
-                                ScrollBarVisibility.Auto
-                        },
+            root.Children.Add(new TextBlock
+            {
+                Text =
+                    "These measurements describe system telemetry consistency and change. " +
+                    "They do not by themselves prove an FPS, frame-time, or input-latency improvement.",
+                FontSize = 9,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 12, 0, 0)
+            });
 
-                    CloseButtonText =
-                        "CLOSE",
-
-                    XamlRoot =
-                        ((FrameworkElement)
-                            this.Content).XamlRoot
-                };
+            var dialog = new ContentDialog
+            {
+                Title = "Optimization Test Details",
+                Content = new ScrollViewer
+                {
+                    Content = root,
+                    MaxHeight = 650,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                },
+                CloseButtonText = "CLOSE",
+                XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+            };
 
             await dialog.ShowAsync();
         }
