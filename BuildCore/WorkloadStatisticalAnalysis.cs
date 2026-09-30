@@ -47,6 +47,8 @@ namespace BuildCore
         public bool BaselineReliable { get; set; }
         public bool AfterReliable { get; set; }
         public bool IsComparable { get; set; }
+        public WorkloadRunConsistency? BaselineConsistency { get; set; }
+        public WorkloadRunConsistency? AfterConsistency { get; set; }
 
         public WorkloadMetricAnalysis? Cpu { get; set; }
         public WorkloadMetricAnalysis? Gpu { get; set; }
@@ -87,6 +89,9 @@ namespace BuildCore
                     "or do not represent the same workload.";
                 return analysis;
             }
+
+            analysis.BaselineConsistency = WorkloadRunConsistency.Calculate(baseline.Runs);
+            analysis.AfterConsistency = WorkloadRunConsistency.Calculate(after.Runs);
 
             analysis.Cpu = CreateMetric(
                 "CPU utilization",
