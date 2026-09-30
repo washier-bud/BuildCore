@@ -42,6 +42,10 @@ namespace BuildCore
 
         public double GpuPeakMemoryUsedGB { get; set; }
 
+        // Real frame-time measurements are populated only when
+        // the workload provides an actual frame-time data source.
+        public FrameTimeStatistics? FrameTime { get; set; }
+
         public double DurationSeconds { get; set; }
 
         public int SampleCount { get; set; }
