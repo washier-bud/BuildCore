@@ -2533,194 +2533,175 @@ namespace BuildCore
         private Border CreateOptimizationTestHistoryCard(
             OptimizationBenchmarkResult test)
         {
+            bool workloadTest =
+                test.WorkloadAnalysis != null;
+
             bool successful =
-                test.IsSuccessful &&
-                test.Comparison != null;
+                workloadTest
+                    ? test.IsSuccessful
+                    : test.IsSuccessful && test.Comparison != null;
 
-            var panel =
-                new StackPanel
-                {
-                    Spacing = 7
-                };
+            var panel = new StackPanel { Spacing = 7 };
 
-            panel.Children.Add(
-                new TextBlock
-                {
-                    Text =
-                        "◈  " +
-                        (string.IsNullOrWhiteSpace(
-                            test.OptimizationTitle)
-                            ? "Optimization Test"
-                            : test.OptimizationTitle),
-
-                    FontSize = 14,
-
-                    FontWeight =
-                        Microsoft.UI.Text.FontWeights.SemiBold,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.White)
-                });
-
-            panel.Children.Add(
-                new TextBlock
-                {
-                    Text =
-                        test.StartedAt.ToString(
-                            "yyyy-MM-dd HH:mm:ss"),
-
-                    FontSize = 9,
-
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray)
-                });
-
-            panel.Children.Add(
-                new TextBlock
-                {
-                    Text =
-                        successful
-                            ? "✓ CONTROLLED TEST COMPLETE"
-                            : $"✕ {test.Status.ToUpperInvariant()}",
-
-                    FontSize = 9,
-
-                    FontWeight =
-                        Microsoft.UI.Text.FontWeights.SemiBold,
-
-                    Foreground =
-                        successful
-                            ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.LightGreen)
-                            : new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.OrangeRed)
-                });
-
-            if (successful &&
-                test.Comparison != null)
+            panel.Children.Add(new TextBlock
             {
-                BenchmarkComparison comparison =
-                    test.Comparison;
+                Text = "◈  " +
+                    (string.IsNullOrWhiteSpace(test.OptimizationTitle)
+                        ? "Optimization Test"
+                        : test.OptimizationTitle),
+                FontSize = 14,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White)
+            });
 
-                panel.Children.Add(
-                    new TextBlock
-                    {
-                        Text =
-                            $"CPU {OptimizationResultsFormatter.FormatPercentageDelta(comparison.CpuAverageDelta)}   •   " +
-                            $"GPU {OptimizationResultsFormatter.FormatPercentageDelta(comparison.GpuAverageDelta)}   •   " +
-                            $"GPU Temp {OptimizationResultsFormatter.FormatTemperatureDelta(comparison.GpuTemperatureDeltaC)}",
+            panel.Children.Add(new TextBlock
+            {
+                Text = test.StartedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                FontSize = 9,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray)
+            });
 
-                        FontSize = 10,
+            string status =
+                workloadTest
+                    ? (successful
+                        ? "✓ CONTROLLED WORKLOAD TEST COMPLETE"
+                        : $"✕ {test.Status.ToUpperInvariant()}")
+                    : (successful
+                        ? "✓ CONTROLLED TEST COMPLETE"
+                        : $"✕ {test.Status.ToUpperInvariant()}");
 
-                        Foreground =
-                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.LightGray),
+            panel.Children.Add(new TextBlock
+            {
+                Text = status,
+                FontSize = 9,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = successful
+                    ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGreen)
+                    : new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.OrangeRed)
+            });
 
-                        TextWrapping =
-                            TextWrapping.Wrap
-                    });
+            if (workloadTest &&
+                test.WorkloadBaseline != null &&
+                test.WorkloadAfter != null &&
+                test.WorkloadAnalysis != null)
+            {
+                WorkloadStatisticalAnalysis analysis =
+                    test.WorkloadAnalysis;
+
+                panel.Children.Add(new TextBlock
+                {
+                    Text =
+                        $"{analysis.Outcome}  •  " +
+                        $"Confidence {analysis.ConfidenceScore:F0}/100  •  " +
+                        $"Baseline {test.WorkloadBaseline.CompletedRuns} runs  •  " +
+                        $"After {test.WorkloadAfter.CompletedRuns} runs",
+                    FontSize = 10,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                AddWorkloadHistoryMetric(
+                    panel, "Average FPS", analysis.AverageFps);
+                AddWorkloadHistoryMetric(
+                    panel, "1% Low FPS", analysis.OnePercentLowFps);
+                AddWorkloadHistoryMetric(
+                    panel, "Average Frame Time", analysis.AverageFrameTime);
+            }
+            else if (successful &&
+                     test.Comparison != null)
+            {
+                BenchmarkComparison comparison = test.Comparison;
+
+                panel.Children.Add(new TextBlock
+                {
+                    Text =
+                        $"CPU {OptimizationResultsFormatter.FormatPercentageDelta(comparison.CpuAverageDelta)}   •   " +
+                        $"GPU {OptimizationResultsFormatter.FormatPercentageDelta(comparison.GpuAverageDelta)}   •   " +
+                        $"GPU Temp {OptimizationResultsFormatter.FormatTemperatureDelta(comparison.GpuTemperatureDeltaC)}",
+                    FontSize = 10,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGray),
+                    TextWrapping = TextWrapping.Wrap
+                });
             }
 
-            panel.Children.Add(
-                new TextBlock
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"Snapshot: {test.SnapshotId}",
+                FontSize = 8,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var buttonRow = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 8,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+
+            var viewButton = new Button
+            {
+                Content = "VIEW TEST",
+                Padding = new Thickness(12, 7, 12, 7),
+                Tag = new OptimizationTestButtonContext
                 {
-                    Text =
-                        $"Snapshot: {test.SnapshotId}",
+                    Test = test
+                }
+            };
 
-                    FontSize = 8,
+            viewButton.Click += ViewOptimizationTestButton_Click;
 
-                    Foreground =
-                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.Gray),
+            var deleteButton = new Button
+            {
+                Content = "DELETE",
+                Padding = new Thickness(12, 7, 12, 7),
+                Tag = test
+            };
 
-                    TextWrapping =
-                        TextWrapping.Wrap
-                });
+            deleteButton.Click += DeleteOptimizationTestButton_Click;
 
-            var buttonRow =
-                new StackPanel
-                {
-                    Orientation =
-                        Orientation.Horizontal,
-
-                    Spacing = 8,
-
-                    Margin =
-                        new Thickness(0, 5, 0, 0)
-                };
-
-            var viewButton =
-                new Button
-                {
-                    Content =
-                        "VIEW TEST",
-
-                    Padding =
-                        new Thickness(12, 7, 12, 7),
-
-                    Tag =
-                        new OptimizationTestButtonContext
-                        {
-                            Test =
-                                test
-                        }
-                };
-
-            viewButton.Click +=
-                ViewOptimizationTestButton_Click;
-
-            buttonRow.Children.Add(
-                viewButton);
-
-            var deleteButton =
-                new Button
-                {
-                    Content =
-                        "DELETE",
-
-                    Padding =
-                        new Thickness(12, 7, 12, 7),
-
-                    Tag =
-                        test
-                };
-
-            deleteButton.Click +=
-                DeleteOptimizationTestButton_Click;
-
-            buttonRow.Children.Add(
-                deleteButton);
-
-            panel.Children.Add(
-                buttonRow);
+            buttonRow.Children.Add(viewButton);
+            buttonRow.Children.Add(deleteButton);
+            panel.Children.Add(buttonRow);
 
             return new Border
             {
-                Padding =
-                    new Thickness(14),
-
-                Margin =
-                    new Thickness(0, 0, 0, 10),
-
-                CornerRadius =
-                    new CornerRadius(10),
-
-                Background =
-                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                        Microsoft.UI.Colors.Transparent),
-
-                BorderBrush =
-                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                        Microsoft.UI.Colors.DimGray),
-
-                BorderThickness =
-                    new Thickness(1),
-
-                Child =
-                    panel
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 10),
+                CornerRadius = new CornerRadius(10),
+                Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Transparent),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1),
+                Child = panel
             };
+        }
+
+        private void AddWorkloadHistoryMetric(
+            StackPanel panel,
+            string name,
+            WorkloadMetricAnalysis? metric)
+        {
+            if (metric == null)
+                return;
+
+            panel.Children.Add(new TextBlock
+            {
+                Text =
+                    $"{name}: {metric.Before:F2} → {metric.After:F2} " +
+                    $"({metric.RelativeChangePercent:+0.00;-0.00;0.00}%)",
+                FontSize = 9,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray)
+            });
         }
 
         // ============================================================
