@@ -220,7 +220,7 @@ namespace BuildCore
             }
         }
 
-        private static IBenchmarkWorkload CreateWorkload(
+        private IBenchmarkWorkload CreateWorkload(
             BenchmarkWorkload definition)
         {
             if (definition.RequiresInteractiveWorkload)
@@ -235,7 +235,7 @@ namespace BuildCore
                 }
 
                 return new PresentMonWorkload(
-                    new BenchmarkService(),
+                    _benchmarkService,
                     frameTimeSource,
                     definition);
             }
