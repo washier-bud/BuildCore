@@ -90,6 +90,7 @@ namespace BuildCore
                     await baselineService.RunAsync(cancellationToken);
 
                 result.WorkloadBaseline = baseline;
+                result.WorkloadBaselineEnvironment = baseline.Environment;
 
                 if (!ValidateWorkloadResult(
                         baseline,
@@ -209,6 +210,7 @@ namespace BuildCore
                     await afterService.RunAsync(cancellationToken);
 
                 result.WorkloadAfter = after;
+                result.WorkloadAfterEnvironment = after.Environment;
 
                 if (!ValidateWorkloadResult(
                         after,
