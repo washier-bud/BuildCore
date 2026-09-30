@@ -1183,6 +1183,36 @@
                                     Click="RunWorkloadBenchmarkButton_Click"/>
                             </Grid>
 
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox
+                                    x:Name="WorkloadProcessComboBox"
+                                    Grid.Column="0"
+                                    PlaceholderText="Select running application"
+                                    HorizontalAlignment="Stretch"/>
+
+                                <Button
+                                    x:Name="RefreshWorkloadProcessesButton"
+                                    Grid.Column="1"
+                                    Content="REFRESH"
+                                    Padding="14,9"
+                                    Margin="12,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Click="RefreshWorkloadProcessesButton_Click"/>
+                            </Grid>
+
+                            <TextBlock
+                                x:Name="WorkloadProcessStatusText"
+                                Text="Process selection is used by real frame-time workloads."
+                                Foreground="#66666D"
+                                FontSize="9"
+                                TextWrapping="Wrap"
+                                Margin="0,8,0,0"/>
+
                             <TextBlock
                                 x:Name="WorkloadProfileDescriptionText"
                                 Text="Select a profile to view its description."
