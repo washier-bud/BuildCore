@@ -3672,6 +3672,11 @@ namespace BuildCore
             WorkloadProfileComboBox.SelectionChanged +=
                 WorkloadProfileComboBox_SelectionChanged;
 
+            WorkloadProcessComboBox.DisplayMemberPath =
+                "DisplayName";
+
+            RefreshWorkloadProcesses();
+
             UpdateSelectedWorkloadProfile();
         }
 
@@ -3699,6 +3704,52 @@ namespace BuildCore
                 profile.RecommendedUse;
         }
 
+        private void RefreshWorkloadProcessesButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            RefreshWorkloadProcesses();
+        }
+
+        private void RefreshWorkloadProcesses()
+        {
+            try
+            {
+                int previousPid =
+                    WorkloadProcessComboBox.SelectedItem
+                        is RunningProcessInfo previous
+                        ? previous.ProcessId
+                        : 0;
+
+                WorkloadProcessComboBox.Items.Clear();
+
+                IReadOnlyList<RunningProcessInfo> processes =
+                    RunningProcessService.GetRunningProcesses();
+
+                foreach (RunningProcessInfo process in processes)
+                    WorkloadProcessComboBox.Items.Add(process);
+
+                RunningProcessInfo? previousProcess =
+                    processes.FirstOrDefault(
+                        p => p.ProcessId == previousPid);
+
+                if (previousProcess != null)
+                    WorkloadProcessComboBox.SelectedItem = previousProcess;
+
+                WorkloadProcessStatusText.Text =
+                    $"{processes.Count} running processes detected. " +
+                    "Select the application whose rendered frames should be measured.";
+            }
+            catch (Exception ex)
+            {
+                WorkloadProcessStatusText.Text =
+                    "PROCESS SCAN FAILED";
+
+                Debug.WriteLine(
+                    $"BUILDCORE PROCESS SCAN ERROR: {ex}");
+            }
+        }
+
         private async void RunWorkloadBenchmarkButton_Click(
             object sender,
             RoutedEventArgs e)
@@ -3711,18 +3762,61 @@ namespace BuildCore
                 return;
             }
 
+            BenchmarkWorkload definition = profile.Definition;
+
+            if (profile.UsesRealFrameTimeSource)
+            {
+                if (WorkloadProcessComboBox.SelectedItem
+                    is not RunningProcessInfo process)
+                {
+                    WorkloadBenchmarkStatusText.Text =
+                        "SELECT A TARGET PROCESS";
+                    return;
+                }
+
+                definition.TargetProcessId =
+                    process.ProcessId;
+            }
+
             RunWorkloadBenchmarkButton.IsEnabled = false;
             WorkloadProfileComboBox.IsEnabled = false;
-            WorkloadBenchmarkStatusText.Text = "RUNNING...";
+            WorkloadProcessComboBox.IsEnabled = false;
+            RefreshWorkloadProcessesButton.IsEnabled = false;
+            WorkloadBenchmarkStatusText.Text =
+                profile.UsesRealFrameTimeSource
+                    ? "RUNNING REAL FRAME-TIME CAPTURE..."
+                    : "RUNNING TELEMETRY...";
 
             try
             {
-                BenchmarkWorkload definition = profile.Definition;
+                IBenchmarkWorkload workload;
 
-                var workload =
-                    new TelemetryWorkload(
-                        _benchmarkService,
-                        definition);
+                if (profile.UsesRealFrameTimeSource)
+                {
+                    var frameTimeSource =
+                        new PresentMonFrameTimeSource();
+
+                    if (!frameTimeSource.IsAvailable)
+                    {
+                        WorkloadBenchmarkStatusText.Text =
+                            frameTimeSource.Description;
+
+                        return;
+                    }
+
+                    workload =
+                        new PresentMonWorkload(
+                            _benchmarkService,
+                            frameTimeSource,
+                            definition);
+                }
+                else
+                {
+                    workload =
+                        new TelemetryWorkload(
+                            _benchmarkService,
+                            definition);
+                }
 
                 var service =
                     new WorkloadBenchmarkService(
@@ -3761,6 +3855,8 @@ namespace BuildCore
             {
                 RunWorkloadBenchmarkButton.IsEnabled = true;
                 WorkloadProfileComboBox.IsEnabled = true;
+                WorkloadProcessComboBox.IsEnabled = true;
+                RefreshWorkloadProcessesButton.IsEnabled = true;
             }
         }
 
