@@ -29,7 +29,12 @@ namespace BuildCore
             FingerprintsMatch &&
             BaselineRunCount >= 3 &&
             AfterRunCount >= 3 &&
-            PairedRunCount >= 3;
+            PairedRunCount >= 3 &&
+            HasRequiredPerformanceEvidence &&
+            ProcessIdentityVerified;
+
+        public bool HasRequiredPerformanceEvidence =>
+            HasRealFrameTimeData;
 
         public static WorkloadEvidenceQuality Evaluate(
             OptimizationBenchmarkResult result)
@@ -148,6 +153,13 @@ namespace BuildCore
             {
                 quality.Warnings.Add(
                     "Paired-run performance changes show substantial variation.");
+            }
+
+            if (definition?.RequiresInteractiveWorkload == true &&
+                !quality.HasRealFrameTimeData)
+            {
+                quality.Warnings.Add(
+                    "Interactive workload evidence requires real frame-time data.");
             }
 
             quality.ReliabilityStatus = quality.IsSufficient
