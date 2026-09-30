@@ -124,7 +124,7 @@ namespace BuildCore
                         continue;
                     }
 
-                    tests.Add(test);
+                    test = NormalizeLoadedTest(test);\n\n                    if (test == null)\n                        continue;\n\n                    tests.Add(test);
                 }
                 catch
                 {
