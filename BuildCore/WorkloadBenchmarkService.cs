@@ -8,6 +8,7 @@ namespace BuildCore
     public class WorkloadBenchmarkService
     {
         private readonly IBenchmarkWorkload _workload;
+        private readonly string _lockedFingerprint;
 
         public WorkloadBenchmarkService(IBenchmarkWorkload workload)
         {
@@ -31,6 +32,7 @@ namespace BuildCore
                 WorkloadId = definition.WorkloadId,
                 WorkloadName = definition.Name,
                 WorkloadType = definition.Type,
+                WorkloadFingerprint = _lockedFingerprint,
                 StartedAt = DateTime.Now,
                 Status = "Running",
                 RequestedRuns = definition.RunCount
