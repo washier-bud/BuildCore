@@ -7,7 +7,7 @@ namespace BuildCore
     {
         BenchmarkWorkload Definition { get; }
 
-        Task<WorkloadBenchmarkResult> RunAsync(
+        Task<WorkloadRunResult> RunAsync(
             CancellationToken cancellationToken = default);
     }
 }
