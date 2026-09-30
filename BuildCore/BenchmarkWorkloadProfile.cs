@@ -29,7 +29,8 @@ namespace BuildCore
                     DelayBetweenRunsMilliseconds =
                         Definition.DelayBetweenRunsMilliseconds,
                     RequiresInteractiveWorkload =
-                        Definition.RequiresInteractiveWorkload
+                        Definition.RequiresInteractiveWorkload,
+                    TargetProcessId = Definition.TargetProcessId
                 },
                 RecommendedUse = RecommendedUse,
                 UsesRealFrameTimeSource = UsesRealFrameTimeSource,
