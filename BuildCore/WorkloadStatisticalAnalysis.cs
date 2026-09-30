@@ -179,7 +179,7 @@ namespace BuildCore
 
             double signal = Math.Abs(afterAverage - beforeAverage);
             double signalToNoise =
-                pooledSd > 0 ? signal / pooledSd : (signal > 0 ? double.PositiveInfinity : 0);
+                pooledSd > 0 ? signal / pooledSd : (signal > 0 ? 1_000_000 : 0);
 
             return new WorkloadMetricAnalysis
             {
@@ -264,6 +264,19 @@ namespace BuildCore
             WorkloadStatisticalAnalysis analysis)
         {
             if (analysis.ConfidenceScore < 50)
+                return WorkloadAnalysisOutcome.Inconclusive;
+
+            // Without a real workload performance metric such as FPS or
+            // frame time, telemetry alone cannot establish an improvement
+            // or regression in workload performance.
+            bool hasPerformanceMetric =
+                analysis.AverageFps != null ||
+                analysis.OnePercentLowFps != null ||
+                analysis.ZeroPointOnePercentLowFps != null ||
+                analysis.AverageFrameTime != null ||
+                analysis.FrameTimeStandardDeviation != null;
+
+            if (!hasPerformanceMetric)
                 return WorkloadAnalysisOutcome.Inconclusive;
 
             // For performance metrics, higher is generally better.
