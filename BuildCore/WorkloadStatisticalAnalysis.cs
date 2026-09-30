@@ -28,6 +28,11 @@ namespace BuildCore
         public double PooledStandardDeviation { get; set; }
         public double SignalToNoiseRatio { get; set; }
 
+                public bool PairedRunAnalysisUsed { get; set; }
+        public int PairedRunCount { get; set; }
+        public double PairedDifferenceStandardDeviation { get; set; }
+        public double PairedSignalToNoiseRatio { get; set; }
+
         public bool ChangeExceedsNoise =>
             Math.Abs(RelativeChangePercent) >= NoiseThresholdPercent;
     }
@@ -47,6 +52,10 @@ namespace BuildCore
         public bool BaselineReliable { get; set; }
         public bool AfterReliable { get; set; }
         public bool IsComparable { get; set; }
+        public bool PairedRunAnalysisUsed { get; set; }
+        public int PairedRunCount { get; set; }
+        public double AveragePairedDifferencePercent { get; set; }
+        public double PairedDifferenceStandardDeviationPercent { get; set; }
         public WorkloadRunConsistency? BaselineConsistency { get; set; }
         public WorkloadRunConsistency? AfterConsistency { get; set; }
 
@@ -91,6 +100,26 @@ namespace BuildCore
             }
 
             analysis.BaselineConsistency = WorkloadRunConsistency.Calculate(baseline.Runs);
+            analysis.AfterConsistency = WorkloadRunConsistency.Calculate(after.Runs);
+            analysis.PairedRunCount = Math.Min(baseline.Runs.Count, after.Runs.Count);
+            analysis.PairedRunAnalysisUsed = analysis.PairedRunCount >= 3;
+            if (analysis.PairedRunAnalysisUsed)
+            {
+                double[] pairedPercentChanges = Enumerable.Range(0, analysis.PairedRunCount)
+                    .Select(i => GetPairedPercentChange(
+                        baseline.Runs[i].FrameTime?.AverageFps,
+                        after.Runs[i].FrameTime?.AverageFps))
+                    .Where(v => v.HasValue && IsFinite(v.Value))
+                    .Select(v => v!.Value)
+                    .ToArray();
+
+                if (pairedPercentChanges.Length >= 3)
+                {
+                    analysis.AveragePairedDifferencePercent = pairedPercentChanges.Average();
+                    analysis.PairedDifferenceStandardDeviationPercent =
+                        StandardDeviation(pairedPercentChanges);
+                }
+            }
             analysis.AfterConsistency = WorkloadRunConsistency.Calculate(after.Runs);
 
             analysis.Cpu = CreateMetric(
@@ -235,6 +264,10 @@ namespace BuildCore
             double score = 100;
 
             if (!analysis.BaselineReliable) score -= 25;
+            if (!analysis.PairedRunAnalysisUsed) score -= 10;
+            if (analysis.PairedRunAnalysisUsed &&
+                analysis.PairedDifferenceStandardDeviationPercent > 5)
+                score -= 10;
             if (!analysis.AfterReliable) score -= 25;
 
             foreach (var metric in new[]
@@ -337,6 +370,16 @@ namespace BuildCore
                 _ =>
                     "The workload data is too inconsistent, incomplete, or conflicting to make a reliable determination."
             };
+        }
+
+        private static double? GetPairedPercentChange(double? before, double? after)
+        {
+            if (!before.HasValue || !after.HasValue ||
+                !IsFinite(before.Value) || !IsFinite(after.Value) ||
+                Math.Abs(before.Value) < 0.000001)
+                return null;
+
+            return (after.Value - before.Value) / Math.Abs(before.Value) * 100.0;
         }
 
         private static double CalculateRelativeChange(double before, double after)
