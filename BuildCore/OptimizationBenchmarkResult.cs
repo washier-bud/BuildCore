@@ -37,6 +37,29 @@ namespace BuildCore
 
         public OptimizationApplyResult? ApplyResult { get; set; }
 
+        // Phase 1.12I workload evidence. These fields preserve the exact
+        // workload used before and after the optimization so the result can
+        // be reviewed after the application is restarted.
+        public BenchmarkWorkload? WorkloadDefinition { get; set; }
+
+        public WorkloadBenchmarkResult? WorkloadBaseline { get; set; }
+
+        public WorkloadBenchmarkResult? WorkloadAfter { get; set; }
+
+        public WorkloadStatisticalAnalysis? WorkloadAnalysis { get; set; }
+
+        public bool WorkloadBaselineCompleted { get; set; }
+
+        public bool WorkloadSnapshotCreated { get; set; }
+
+        public bool WorkloadOptimizationApplied { get; set; }
+
+        public bool WorkloadOptimizationVerified { get; set; }
+
+        public bool WorkloadAfterCompleted { get; set; }
+
+        public bool WorkloadAnalysisCompleted { get; set; }
+
         public bool BaselineCompleted { get; set; }
 
         public bool SnapshotCreated { get; set; }
