@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BuildCore
 {
@@ -52,6 +53,7 @@ namespace BuildCore
                 OptimizationTitle = recommendation.Title,
                 SnapshotId = "",
                 WorkloadDefinition = workload,
+                WorkloadFingerprint = WorkloadFingerprintService.Calculate(workload),
                 WorkloadBaselineCompleted = false,
                 WorkloadSnapshotCreated = false,
                 WorkloadOptimizationApplied = false,
