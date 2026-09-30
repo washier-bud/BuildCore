@@ -7,6 +7,14 @@ namespace BuildCore
 {
     public class ControlledWorkloadTestService
     {
+        private readonly BenchmarkService _benchmarkService;
+
+        public ControlledWorkloadTestService(BenchmarkService benchmarkService)
+        {
+            _benchmarkService = benchmarkService
+                ?? throw new ArgumentNullException(nameof(benchmarkService));
+        }
+
         public async Task<OptimizationBenchmarkResult> RunAsync(
             OptimizationRecommendation recommendation,
             BenchmarkWorkload workload,
@@ -233,7 +241,7 @@ namespace BuildCore
             }
 
             return new TelemetryWorkload(
-                new BenchmarkService(),
+                _benchmarkService,
                 definition);
         }
 
