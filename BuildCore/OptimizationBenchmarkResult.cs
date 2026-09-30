@@ -78,7 +78,7 @@ namespace BuildCore
         {
             get
             {
-                return
+                bool legacySuccessful =
                     BaselineCompleted &&
                     SnapshotCreated &&
                     OptimizationApplied &&
@@ -88,6 +88,20 @@ namespace BuildCore
                     AnalysisCompleted &&
                     Comparison != null &&
                     Analysis != null;
+
+                bool workloadSuccessful =
+                    WorkloadBaselineCompleted &&
+                    WorkloadSnapshotCreated &&
+                    WorkloadOptimizationApplied &&
+                    WorkloadOptimizationVerified &&
+                    WorkloadAfterCompleted &&
+                    WorkloadAnalysisCompleted &&
+                    WorkloadBaseline != null &&
+                    WorkloadAfter != null &&
+                    WorkloadAnalysis != null &&
+                    WorkloadAnalysis.IsComparable;
+
+                return legacySuccessful || workloadSuccessful;
             }
         }
 
