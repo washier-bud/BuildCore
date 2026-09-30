@@ -23,15 +23,35 @@ namespace BuildCore
                     if (string.IsNullOrWhiteSpace(name))
                         continue;
 
+                    DateTime? startTimeUtc = null;
+                    string executablePath = "";
+
+                    try
+                    {
+                        startTimeUtc = process.StartTime.ToUniversalTime();
+                    }
+                    catch
+                    {
+                    }
+
+                    try
+                    {
+                        executablePath = process.MainModule?.FileName ?? "";
+                    }
+                    catch
+                    {
+                    }
+
                     processes.Add(new RunningProcessInfo
                     {
                         ProcessId = process.Id,
-                        ProcessName = name
+                        ProcessName = name,
+                        StartTimeUtc = startTimeUtc,
+                        ExecutablePath = executablePath
                     });
                 }
                 catch
                 {
-                    // Some protected/system processes cannot be queried.
                 }
                 finally
                 {
