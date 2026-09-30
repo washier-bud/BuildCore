@@ -874,6 +874,12 @@ namespace BuildCore
 
                 workloadDefinition.TargetProcessId =
                     workloadProcess.ProcessId;
+
+                workloadDefinition.TargetProcessStartTimeUtc =
+                    workloadProcess.StartTimeUtc;
+
+                workloadDefinition.TargetProcessPath =
+                    workloadProcess.ExecutablePath;
             }
 
             // ========================================================
