@@ -14,6 +14,9 @@ namespace BuildCore
         public string Status { get; set; } =
             "Not Started";
 
+        public ControlledWorkloadTestState TestState { get; set; } =
+            ControlledWorkloadTestState.NotStarted;
+
         public string OptimizationTitle { get; set; } =
             "";
 
