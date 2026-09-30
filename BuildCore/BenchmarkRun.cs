@@ -46,6 +46,12 @@ namespace BuildCore
         // the workload provides an actual frame-time data source.
         public FrameTimeStatistics? FrameTime { get; set; }
 
+        // Environment captured for this individual run.
+        public WorkloadEnvironmentSnapshot? Environment { get; set; }
+
+        // Process identity captured for interactive workloads.
+        public RunningProcessInfo? TargetProcessIdentity { get; set; }
+
         public double DurationSeconds { get; set; }
 
         public int SampleCount { get; set; }
