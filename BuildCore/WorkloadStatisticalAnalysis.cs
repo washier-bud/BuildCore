@@ -28,12 +28,7 @@ namespace BuildCore
         public double PooledStandardDeviation { get; set; }
         public double SignalToNoiseRatio { get; set; }
 
-                public bool PairedRunAnalysisUsed { get; set; }
-        public int PairedRunCount { get; set; }
-        public double PairedDifferenceStandardDeviation { get; set; }
-        public double PairedSignalToNoiseRatio { get; set; }
-
-        public bool ChangeExceedsNoise =>
+                public bool ChangeExceedsNoise =>
             Math.Abs(RelativeChangePercent) >= NoiseThresholdPercent;
     }
 
@@ -56,6 +51,14 @@ namespace BuildCore
         public int PairedRunCount { get; set; }
         public double AveragePairedDifferencePercent { get; set; }
         public double PairedDifferenceStandardDeviationPercent { get; set; }
+
+        // Phase 1.12V: paired analysis for each workload-performance metric.
+        public WorkloadMetricAnalysis? PairedAverageFps { get; set; }
+        public WorkloadMetricAnalysis? PairedOnePercentLowFps { get; set; }
+        public WorkloadMetricAnalysis? PairedZeroPointOnePercentLowFps { get; set; }
+        public WorkloadMetricAnalysis? PairedAverageFrameTime { get; set; }
+        public WorkloadMetricAnalysis? PairedFrameTimeStandardDeviation { get; set; }
+
         public WorkloadRunConsistency? BaselineConsistency { get; set; }
         public WorkloadRunConsistency? AfterConsistency { get; set; }
 
@@ -121,6 +124,24 @@ namespace BuildCore
                 }
             }
             analysis.AfterConsistency = WorkloadRunConsistency.Calculate(after.Runs);
+
+            // Phase 1.12V: compare corresponding runs for every available
+            // workload-performance metric, not only average FPS.
+            analysis.PairedAverageFps = CreatePairedMetric(
+                "Paired Average FPS", baseline.Runs, after.Runs,
+                r => r.FrameTime?.AverageFps, analysis.NoiseThresholdPercent);
+            analysis.PairedOnePercentLowFps = CreatePairedMetric(
+                "Paired 1% low FPS", baseline.Runs, after.Runs,
+                r => r.FrameTime?.OnePercentLowFps, analysis.NoiseThresholdPercent);
+            analysis.PairedZeroPointOnePercentLowFps = CreatePairedMetric(
+                "Paired 0.1% low FPS", baseline.Runs, after.Runs,
+                r => r.FrameTime?.ZeroPointOnePercentLowFps, analysis.NoiseThresholdPercent);
+            analysis.PairedAverageFrameTime = CreatePairedMetric(
+                "Paired average frame time", baseline.Runs, after.Runs,
+                r => r.FrameTime?.AverageFrameTimeMilliseconds, analysis.NoiseThresholdPercent);
+            analysis.PairedFrameTimeStandardDeviation = CreatePairedMetric(
+                "Paired frame-time standard deviation", baseline.Runs, after.Runs,
+                r => r.FrameTime?.FrameTimeStandardDeviationMilliseconds, analysis.NoiseThresholdPercent);
 
             analysis.Cpu = CreateMetric(
                 "CPU utilization",
@@ -227,6 +248,69 @@ namespace BuildCore
                 SignalToNoiseRatio = signalToNoise,
                 BeforeSampleCount = before.Length,
                 AfterSampleCount = after.Length,
+                NoiseThresholdPercent = threshold
+            };
+        }
+
+        private static WorkloadMetricAnalysis? CreatePairedMetric(
+            string name,
+            IReadOnlyList<BenchmarkRun> baselineRuns,
+            IReadOnlyList<BenchmarkRun> afterRuns,
+            Func<BenchmarkRun, double?> selector,
+            double threshold)
+        {
+            int pairCount = Math.Min(baselineRuns.Count, afterRuns.Count);
+            if (pairCount == 0)
+                return null;
+
+            var before = new List<double>();
+            var after = new List<double>();
+            var changes = new List<double>();
+
+            for (int i = 0; i < pairCount; i++)
+            {
+                double? beforeValue = selector(baselineRuns[i]);
+                double? afterValue = selector(afterRuns[i]);
+
+                if (!beforeValue.HasValue || !afterValue.HasValue ||
+                    !IsFinite(beforeValue.Value) || !IsFinite(afterValue.Value))
+                    continue;
+
+                before.Add(beforeValue.Value);
+                after.Add(afterValue.Value);
+
+                if (Math.Abs(beforeValue.Value) >= 0.000001)
+                {
+                    changes.Add((afterValue.Value - beforeValue.Value) /
+                        Math.Abs(beforeValue.Value) * 100.0);
+                }
+            }
+
+            if (before.Count == 0 || after.Count == 0)
+                return null;
+
+            double beforeAverage = before.Average();
+            double afterAverage = after.Average();
+            double changeSd = StandardDeviation(changes.ToArray());
+            double signalToNoise =
+                changeSd > 0
+                    ? Math.Abs(changes.Count == 0 ? 0 : changes.Average()) / changeSd
+                    : (changes.Count > 0 && Math.Abs(changes.Average()) > 0 ? 1_000_000 : 0);
+
+            return new WorkloadMetricAnalysis
+            {
+                Name = name,
+                Before = beforeAverage,
+                After = afterAverage,
+                RelativeChangePercent = CalculateRelativeChange(beforeAverage, afterAverage),
+                BeforeStandardDeviation = StandardDeviation(before.ToArray()),
+                AfterStandardDeviation = StandardDeviation(after.ToArray()),
+                BeforeSampleCount = before.Count,
+                AfterSampleCount = after.Count,
+                PooledStandardDeviation = CalculatePooledStandardDeviation(
+                    before.ToArray(), after.ToArray(),
+                    StandardDeviation(before.ToArray()), StandardDeviation(after.ToArray())),
+                SignalToNoiseRatio = signalToNoise,
                 NoiseThresholdPercent = threshold
             };
         }
