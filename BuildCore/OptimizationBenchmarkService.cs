@@ -107,6 +107,8 @@ namespace BuildCore
                     return CompleteAndSave(result);
                 }
 
+                result.BaselineReliable = baseline;
+
                 result.Baseline =
                     ConvertReliableResultToBenchmarkResult(
                         baseline);
@@ -214,6 +216,8 @@ namespace BuildCore
 
                     return CompleteAndSave(result);
                 }
+
+                result.AfterReliable = after;
 
                 result.After =
                     ConvertReliableResultToBenchmarkResult(
