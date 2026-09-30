@@ -61,6 +61,9 @@ namespace BuildCore
                     WorkloadAfterCompleted && WorkloadAnalysisCompleted &&
                     WorkloadBaseline != null && WorkloadAfter != null &&
                     WorkloadAnalysis != null && WorkloadAnalysis.IsComparable &&
+                    WorkloadEvidenceQuality != null &&
+                    WorkloadEvidenceGatePassed &&
+                    WorkloadEvidenceQuality.IsSufficient &&
                     !string.IsNullOrWhiteSpace(WorkloadFingerprint) &&
                     string.Equals(WorkloadFingerprint, WorkloadBaseline.WorkloadFingerprint, StringComparison.Ordinal) &&
                     string.Equals(WorkloadFingerprint, WorkloadAfter.WorkloadFingerprint, StringComparison.Ordinal);
