@@ -72,6 +72,8 @@ namespace BuildCore
     new OptimizationBenchmarkService(
         new ReliableBenchmarkService(_benchmarkService));
 
+            InitializeWorkloadProfiles();
+
             LoadSystemInformation();
 
             LoadWindowsSystemInformation();
@@ -3646,6 +3648,119 @@ namespace BuildCore
             {
                 GpuMemoryLarge.Text =
                     "-- GB";
+            }
+        }
+
+        // ============================================================
+        // WORKLOAD BENCHMARK
+        // ============================================================
+
+        private void InitializeWorkloadProfiles()
+        {
+            WorkloadProfileComboBox.Items.Clear();
+
+            foreach (BenchmarkWorkloadProfile profile
+                in BenchmarkWorkloadProfiles.GetAll())
+            {
+                WorkloadProfileComboBox.Items.Add(profile);
+            }
+
+            WorkloadProfileComboBox.DisplayMemberPath =
+                "Definition.Name";
+
+            WorkloadProfileComboBox.SelectedIndex = 0;
+            WorkloadProfileComboBox.SelectionChanged +=
+                WorkloadProfileComboBox_SelectionChanged;
+
+            UpdateSelectedWorkloadProfile();
+        }
+
+        private void WorkloadProfileComboBox_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            UpdateSelectedWorkloadProfile();
+        }
+
+        private void UpdateSelectedWorkloadProfile()
+        {
+            if (WorkloadProfileComboBox.SelectedItem
+                is not BenchmarkWorkloadProfile profile)
+            {
+                WorkloadProfileDescriptionText.Text =
+                    "Select a profile to view its description.";
+                return;
+            }
+
+            WorkloadProfileDescriptionText.Text =
+                $"{profile.Definition.Description} " +
+                $"Runs: {profile.Definition.RunCount} × " +
+                $"{profile.Definition.DurationSeconds}s. " +
+                profile.RecommendedUse;
+        }
+
+        private async void RunWorkloadBenchmarkButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (WorkloadProfileComboBox.SelectedItem
+                is not BenchmarkWorkloadProfile profile)
+            {
+                WorkloadBenchmarkStatusText.Text =
+                    "SELECT A WORKLOAD";
+                return;
+            }
+
+            RunWorkloadBenchmarkButton.IsEnabled = false;
+            WorkloadProfileComboBox.IsEnabled = false;
+            WorkloadBenchmarkStatusText.Text = "RUNNING...";
+
+            try
+            {
+                BenchmarkWorkload definition = profile.Definition;
+
+                var workload =
+                    new TelemetryWorkload(
+                        _benchmarkService,
+                        definition);
+
+                var service =
+                    new WorkloadBenchmarkService(
+                        workload);
+
+                WorkloadBenchmarkResult result =
+                    await service.RunAsync();
+
+                WorkloadBenchmarkStorageService
+                    .SaveResult(result);
+
+                WorkloadBenchmarkStatusText.Text =
+                    result.IsComplete
+                        ? $"{result.ReliabilityStatus.ToUpperInvariant()} — " +
+                          $"{result.CompletedRuns}/{result.RequestedRuns} RUNS SAVED"
+                        : $"INCOMPLETE — " +
+                          $"{result.CompletedRuns}/{result.RequestedRuns} RUNS";
+
+                Debug.WriteLine(
+                    $"BUILDCORE WORKLOAD BENCHMARK: " +
+                    $"{result.WorkloadName} | " +
+                    $"{result.Status} | " +
+                    $"{result.CompletedRuns}/{result.RequestedRuns}");
+            }
+            catch (Exception ex)
+            {
+                WorkloadBenchmarkStatusText.Text =
+                    "BENCHMARK FAILED";
+
+                Debug.WriteLine(
+                    "BUILDCORE WORKLOAD BENCHMARK ERROR");
+
+                Debug.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                RunWorkloadBenchmarkButton.IsEnabled = true;
+                WorkloadProfileComboBox.IsEnabled = true;
             }
         }
 
