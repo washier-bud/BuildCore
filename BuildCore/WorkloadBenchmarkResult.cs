@@ -11,6 +11,7 @@ namespace BuildCore
         public string WorkloadName { get; set; } = "";
         public BenchmarkWorkloadType WorkloadType { get; set; } = BenchmarkWorkloadType.Custom;
         public string WorkloadFingerprint { get; set; } = "";
+        public WorkloadEnvironmentSnapshot? Environment { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime CompletedAt { get; set; }
         public string Status { get; set; } = "Incomplete";
