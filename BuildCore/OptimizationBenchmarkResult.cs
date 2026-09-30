@@ -26,6 +26,13 @@ namespace BuildCore
 
         public BenchmarkComparison? Comparison { get; set; }
 
+        // Reliable multi-run benchmark data used for statistical analysis.
+        // Keeping the original reliable results lets the History/Test Details UI
+        // show run counts and consistency information after the app is restarted.
+        public ReliableBenchmarkResult? BaselineReliable { get; set; }
+
+        public ReliableBenchmarkResult? AfterReliable { get; set; }
+
         public OptimizationTestAnalysis? Analysis { get; set; }
 
         public OptimizationApplyResult? ApplyResult { get; set; }
