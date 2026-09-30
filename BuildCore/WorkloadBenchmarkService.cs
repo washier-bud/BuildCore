@@ -55,7 +55,16 @@ namespace BuildCore
                         !runResult.IsSuccessful ||
                         runResult.BenchmarkRun == null)
                     {
-                        result.Status = $"Run {runNumber} failed.";
+                        result.Status =
+                            $"Run {runNumber} failed: " +
+                            (runResult?.Summary ?? "No run result was returned.");
+                        break;
+                    }
+
+                    if (!ValidateRun(runResult))
+                    {
+                        result.Status =
+                            $"Run {runNumber} failed validation.";
                         break;
                     }
 
@@ -116,6 +125,47 @@ namespace BuildCore
 
                 return result;
             }
+        }
+
+        private bool ValidateRun(WorkloadRunResult runResult)
+        {
+            BenchmarkRun? run = runResult.BenchmarkRun;
+
+            if (run == null)
+                return false;
+
+            if (!string.Equals(
+                    runResult.WorkloadId,
+                    _workload.Definition.WorkloadId,
+                    StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (!string.Equals(
+                    runResult.WorkloadName,
+                    _workload.Definition.Name,
+                    StringComparison.Ordinal))
+                return false;
+
+            if (run.StartedAt == default ||
+                run.CompletedAt < run.StartedAt)
+                return false;
+
+            if (run.DurationSeconds <= 0 ||
+                run.SampleCount <= 0)
+                return false;
+
+            // Interactive workloads must contain actual frame-time evidence.
+            // Never accept a telemetry-only run as a real frame-time run.
+            if (_workload.Definition.RequiresInteractiveWorkload)
+            {
+                if (run.FrameTime == null ||
+                    !run.FrameTime.HasData ||
+                    run.FrameTime.SampleCount <= 0 ||
+                    run.FrameTime.AverageFrameTimeMilliseconds <= 0)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
