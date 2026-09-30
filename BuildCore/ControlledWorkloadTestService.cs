@@ -211,6 +211,9 @@ namespace BuildCore
 
                 result.WorkloadAfter = after;
                 result.WorkloadAfterEnvironment = after.Environment;
+                result.WorkloadEnvironmentComparison = WorkloadEnvironmentComparison.Compare(
+                    result.WorkloadBaselineEnvironment,
+                    result.WorkloadAfterEnvironment);
 
                 if (!ValidateWorkloadResult(
                         after,
