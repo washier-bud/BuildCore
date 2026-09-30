@@ -251,6 +251,8 @@ namespace BuildCore
 
                 result.WorkloadEvidenceQuality =
                     WorkloadEvidenceQuality.Evaluate(result);
+                result.WorkloadEvidenceGatePassed =
+                    result.WorkloadEvidenceQuality.IsSufficient;
 
                 if (!result.WorkloadAnalysisCompleted)
                 {
@@ -262,6 +264,16 @@ namespace BuildCore
 
                 result.WorkloadEvidenceQuality =
                     WorkloadEvidenceQuality.Evaluate(result);
+                result.WorkloadEvidenceGatePassed =
+                    result.WorkloadEvidenceQuality.IsSufficient;
+
+                if (!result.WorkloadEvidenceGatePassed)
+                {
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
+                    result.Status =
+                        "Workload evidence gate not passed. The test is retained, but the result is not treated as a strong performance finding.";
+                    return CompleteAndSave(result);
+                }
 
                 result.Status = "Completed";
                 result.TestState = ControlledWorkloadTestState.Completed;
