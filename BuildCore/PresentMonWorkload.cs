@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace BuildCore
 {
@@ -49,11 +48,14 @@ namespace BuildCore
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (!IsProcessRunning(Definition.TargetProcessId))
+                if (!ProcessIdentityService.Matches(
+                        Definition.TargetProcessId,
+                        Definition.TargetProcessStartTimeUtc,
+                        Definition.TargetProcessPath))
                 {
                     return CreateFailedResult(
                         startedAt,
-                        "The selected target process is not running.");
+                        "The selected target process identity could not be verified.");
                 }
 
                 Task<BenchmarkResult> telemetryTask =
@@ -74,11 +76,14 @@ namespace BuildCore
                 BenchmarkResult benchmark = await telemetryTask;
                 FrameTimeCaptureResult frameTime = await frameTimeTask;
 
-                if (!IsProcessRunning(Definition.TargetProcessId))
+                if (!ProcessIdentityService.Matches(
+                        Definition.TargetProcessId,
+                        Definition.TargetProcessStartTimeUtc,
+                        Definition.TargetProcessPath))
                 {
                     return CreateFailedResult(
                         startedAt,
-                        "The selected target process ended during frame-time capture.");
+                        "The selected target process changed or ended during frame-time capture.");
                 }
 
                 if (!benchmark.Status.Equals(
@@ -159,18 +164,6 @@ namespace BuildCore
             }
         }
 
-        private static bool IsProcessRunning(int processId)
-        {
-            try
-            {
-                using Process process = Process.GetProcessById(processId);
-                return !process.HasExited;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private WorkloadRunResult CreateFailedResult(
             DateTime startedAt,
