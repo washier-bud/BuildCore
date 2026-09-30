@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BuildCore
 {
@@ -48,6 +49,13 @@ namespace BuildCore
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (!IsProcessRunning(Definition.TargetProcessId))
+                {
+                    return CreateFailedResult(
+                        startedAt,
+                        "The selected target process is not running.");
+                }
+
                 Task<BenchmarkResult> telemetryTask =
                     _benchmarkService.RunAsync(
                         Definition.DurationSeconds,
@@ -65,6 +73,13 @@ namespace BuildCore
 
                 BenchmarkResult benchmark = await telemetryTask;
                 FrameTimeCaptureResult frameTime = await frameTimeTask;
+
+                if (!IsProcessRunning(Definition.TargetProcessId))
+                {
+                    return CreateFailedResult(
+                        startedAt,
+                        "The selected target process ended during frame-time capture.");
+                }
 
                 if (!benchmark.Status.Equals(
                         "Completed",
@@ -141,6 +156,19 @@ namespace BuildCore
             catch (Exception ex)
             {
                 return CreateFailedResult(startedAt, ex.Message);
+            }
+        }
+
+        private static bool IsProcessRunning(int processId)
+        {
+            try
+            {
+                using Process process = Process.GetProcessById(processId);
+                return !process.HasExited;
+            }
+            catch
+            {
+                return false;
             }
         }
 
