@@ -62,6 +62,14 @@ namespace BuildCore
 
             try
             {
+                if (workload.RequiresInteractiveWorkload &&
+                    !IsProcessRunning(workload.TargetProcessId))
+                {
+                    result.Status =
+                        "Target workload process is not running.";
+                    return CompleteAndSave(result);
+                }
+
                 // 1. BASELINE — use the exact same workload definition.
                 result.Status = "Running workload baseline";
 
@@ -75,6 +83,16 @@ namespace BuildCore
                     await baselineService.RunAsync(cancellationToken);
 
                 result.WorkloadBaseline = baseline;
+
+                if (!ValidateWorkloadResult(
+                        baseline,
+                        workload,
+                        out string baselineValidationError))
+                {
+                    result.Status =
+                        $"Workload baseline validation failed: {baselineValidationError}";
+                    return CompleteAndSave(result);
+                }
 
                 if (!baseline.IsComplete || !baseline.HasEnoughRuns)
                 {
@@ -171,6 +189,16 @@ namespace BuildCore
 
                 result.WorkloadAfter = after;
 
+                if (!ValidateWorkloadResult(
+                        after,
+                        workload,
+                        out string afterValidationError))
+                {
+                    result.Status =
+                        $"Workload after validation failed: {afterValidationError}";
+                    return CompleteAndSave(result);
+                }
+
                 if (!after.IsComplete || !after.HasEnoughRuns)
                 {
                     result.Status =
@@ -243,6 +271,63 @@ namespace BuildCore
             return new TelemetryWorkload(
                 _benchmarkService,
                 definition);
+        }
+
+        private static bool ValidateWorkloadResult(
+            WorkloadBenchmarkResult result,
+            BenchmarkWorkload definition,
+            out string error)
+        {
+            error = "";
+
+            if (result == null)
+            {
+                error = "No result was returned.";
+                return false;
+            }
+
+            if (!string.Equals(
+                    result.WorkloadId,
+                    definition.WorkloadId,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                error = "Workload ID does not match the controlled test.";
+                return false;
+            }
+
+            if (result.WorkloadType != definition.Type)
+            {
+                error = "Workload type changed between test phases.";
+                return false;
+            }
+
+            if (result.RequestedRuns != definition.RunCount)
+            {
+                error = "Requested run count changed.";
+                return false;
+            }
+
+            if (definition.RequiresInteractiveWorkload)
+            {
+                if (definition.TargetProcessId <= 0)
+                {
+                    error = "No target process was assigned.";
+                    return false;
+                }
+
+                foreach (BenchmarkRun run in result.Runs)
+                {
+                    if (run.FrameTime == null ||
+                        !run.FrameTime.HasData ||
+                        run.FrameTime.SampleCount <= 0)
+                    {
+                        error = "A real frame-time capture is missing.";
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private static bool IsProcessRunning(int processId)
