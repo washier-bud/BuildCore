@@ -22,6 +22,10 @@ namespace BuildCore
 
         public bool RequiresInteractiveWorkload { get; set; }
 
+        // Process to monitor when a workload uses a real frame-time source.
+        // Zero means that no target process has been selected.
+        public int TargetProcessId { get; set; }
+
         public bool IsValid =>
             !string.IsNullOrWhiteSpace(WorkloadId) &&
             !string.IsNullOrWhiteSpace(Name) &&
