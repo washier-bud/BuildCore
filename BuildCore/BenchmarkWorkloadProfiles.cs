@@ -12,7 +12,7 @@ namespace BuildCore
                     "Gaming",
                     BenchmarkWorkloadType.Gaming,
                     "Generic interactive gaming workload profile. " +
-                    "Requires a real game or frame-time provider.",
+                    "Uses PresentMon when a target process is selected.",
                     true,
                     false),
 
@@ -109,7 +109,7 @@ namespace BuildCore
                 RecommendedUse = interactive
                     ? "Requires a compatible real workload provider."
                     : "Ready for a compatible workload provider.",
-                UsesRealFrameTimeSource = false,
+                UsesRealFrameTimeSource = interactive,
                 IsTelemetryOnly = telemetryOnly
             };
         }
