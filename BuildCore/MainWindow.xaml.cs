@@ -1115,10 +1115,52 @@ namespace BuildCore
             OptimizationResultsPanel.Children.Clear();
 
             OptimizationResultsTitleText.Text =
-                string.IsNullOrWhiteSpace(
-                    result.OptimizationTitle)
+                string.IsNullOrWhiteSpace(result.OptimizationTitle)
                     ? "Optimization Test"
                     : result.OptimizationTitle;
+
+            if (result.WorkloadAnalysis != null &&
+                result.WorkloadBaseline != null &&
+                result.WorkloadAfter != null)
+            {
+                WorkloadStatisticalAnalysis analysis =
+                    result.WorkloadAnalysis;
+
+                OptimizationResultsStatusText.Text =
+                    analysis.Outcome == WorkloadAnalysisOutcome.ImprovementDetected
+                        ? "WORKLOAD IMPROVEMENT DETECTED"
+                        : analysis.Outcome == WorkloadAnalysisOutcome.RegressionDetected
+                            ? "WORKLOAD REGRESSION DETECTED"
+                            : analysis.Outcome == WorkloadAnalysisOutcome.NoMeaningfulChange
+                                ? "NO MEANINGFUL WORKLOAD CHANGE"
+                                : "WORKLOAD TEST INCONCLUSIVE";
+
+                OptimizationResultsStatusText.Foreground =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        analysis.Outcome == WorkloadAnalysisOutcome.Inconclusive
+                            ? Microsoft.UI.Colors.Gold
+                            : Microsoft.UI.Colors.LightGreen);
+
+                OptimizationResultsSummaryText.Text =
+                    analysis.Summary;
+
+                AddWorkloadMetricRow("Average FPS", analysis.AverageFps, "FPS", "0.00");
+                AddWorkloadMetricRow("1% low FPS", analysis.OnePercentLowFps, "FPS", "0.00");
+                AddWorkloadMetricRow("0.1% low FPS", analysis.ZeroPointOnePercentLowFps, "FPS", "0.00");
+                AddWorkloadMetricRow("Average frame time", analysis.AverageFrameTime, "ms", "0.000");
+                AddWorkloadMetricRow("Frame-time SD", analysis.FrameTimeStandardDeviation, "ms", "0.000");
+                AddWorkloadMetricRow("GPU utilization", analysis.Gpu, "%", "0.0");
+                AddWorkloadMetricRow("GPU clock", analysis.GpuClock, "MHz", "0");
+                AddWorkloadMetricRow("GPU temperature", analysis.GpuTemperature, "°C", "0.0");
+
+                AddOptimizationResultRow(
+                    "Confidence",
+                    $"{analysis.ConfidenceScore:F0}/100",
+                    $"{result.WorkloadBaseline.CompletedRuns}/{result.WorkloadBaseline.RequestedRuns} runs",
+                    $"{result.WorkloadAfter.CompletedRuns}/{result.WorkloadAfter.RequestedRuns} runs");
+
+                return;
+            }
 
             if (!result.IsSuccessful)
             {
@@ -1130,12 +1172,12 @@ namespace BuildCore
                         Microsoft.UI.Colors.OrangeRed);
 
                 OptimizationResultsSummaryText.Text =
-                    OptimizationResultsFormatter
-                        .BuildStatus(result);
+                    OptimizationResultsFormatter.BuildStatus(result);
 
                 return;
             }
 
+            // Legacy telemetry-only controlled test display.
             BenchmarkComparison comparison =
                 result.Comparison!;
 
@@ -1151,135 +1193,43 @@ namespace BuildCore
 
             AddOptimizationResultRow(
                 "CPU average",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.CpuAverageBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.CpuAverageAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.CpuAverageDelta));
-
-            AddOptimizationResultRow(
-                "CPU peak",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.CpuPeakBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.CpuPeakAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.CpuPeakDelta));
-
-            AddOptimizationResultRow(
-                "RAM average",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.RamAverageBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.RamAverageAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.RamAverageDelta));
-
-            AddOptimizationResultRow(
-                "RAM peak",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.RamPeakBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.RamPeakAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.RamPeakDelta));
+                OptimizationResultsFormatter.FormatPercentage(comparison.CpuAverageBefore),
+                OptimizationResultsFormatter.FormatPercentage(comparison.CpuAverageAfter),
+                OptimizationResultsFormatter.FormatPercentageDelta(comparison.CpuAverageDelta));
 
             AddOptimizationResultRow(
                 "GPU average",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.GpuAverageBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.GpuAverageAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.GpuAverageDelta));
+                OptimizationResultsFormatter.FormatPercentage(comparison.GpuAverageBefore),
+                OptimizationResultsFormatter.FormatPercentage(comparison.GpuAverageAfter),
+                OptimizationResultsFormatter.FormatPercentageDelta(comparison.GpuAverageDelta));
+        }
+
+        private void AddWorkloadMetricRow(
+            string name,
+            WorkloadMetricAnalysis? metric,
+            string unit,
+            string format)
+        {
+            if (metric == null)
+            {
+                AddOptimizationResultRow(
+                    name,
+                    "N/A",
+                    "N/A",
+                    "NO DATA");
+                return;
+            }
+
+            string before = metric.Before.ToString(format);
+            string after = metric.After.ToString(format);
+            string change =
+                $"{metric.RelativeChangePercent:+0.00;-0.00;0.00}%";
 
             AddOptimizationResultRow(
-                "GPU peak",
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.GpuPeakBefore),
-                OptimizationResultsFormatter
-                    .FormatPercentage(
-                        comparison.GpuPeakAfter),
-                OptimizationResultsFormatter
-                    .FormatPercentageDelta(
-                        comparison.GpuPeakDelta));
-
-            AddOptimizationResultRow(
-                "GPU clock",
-                OptimizationResultsFormatter
-                    .FormatMegahertz(
-                        comparison.GpuClockBeforeMHz),
-                OptimizationResultsFormatter
-                    .FormatMegahertz(
-                        comparison.GpuClockAfterMHz),
-                OptimizationResultsFormatter
-                    .FormatMegahertzDelta(
-                        comparison.GpuClockDeltaMHz));
-
-            AddOptimizationResultRow(
-                "GPU temperature",
-                OptimizationResultsFormatter
-                    .FormatTemperature(
-                        comparison.GpuTemperatureBeforeC),
-                OptimizationResultsFormatter
-                    .FormatTemperature(
-                        comparison.GpuTemperatureAfterC),
-                OptimizationResultsFormatter
-                    .FormatTemperatureDelta(
-                        comparison.GpuTemperatureDeltaC));
-
-            AddOptimizationResultRow(
-                "VRAM average",
-                OptimizationResultsFormatter
-                    .FormatGigabytes(
-                        comparison.VramAverageBeforeGB),
-                OptimizationResultsFormatter
-                    .FormatGigabytes(
-                        comparison.VramAverageAfterGB),
-                OptimizationResultsFormatter
-                    .FormatGigabyteDelta(
-                        comparison.VramAverageDeltaGB));
-
-            AddOptimizationResultRow(
-                "VRAM peak",
-                OptimizationResultsFormatter
-                    .FormatGigabytes(
-                        comparison.VramPeakBeforeGB),
-                OptimizationResultsFormatter
-                    .FormatGigabytes(
-                        comparison.VramPeakAfterGB),
-                OptimizationResultsFormatter
-                    .FormatGigabyteDelta(
-                        comparison.VramPeakDeltaGB));
-
-            AddOptimizationResultRow(
-                "Benchmark duration",
-                OptimizationResultsFormatter
-                    .FormatDuration(
-                        comparison.BaselineDurationSeconds),
-                OptimizationResultsFormatter
-                    .FormatDuration(
-                        comparison.AfterDurationSeconds),
-                OptimizationResultsFormatter
-                    .FormatDuration(
-                        comparison.DurationDeltaSeconds));
+                name,
+                $"{before} {unit}",
+                $"{after} {unit}",
+                change);
         }
 
         private void AddOptimizationResultRow(
