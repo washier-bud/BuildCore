@@ -47,6 +47,10 @@ namespace BuildCore
 
         public string WorkloadFingerprint { get; set; } = "";
 
+        public WorkloadEnvironmentSnapshot? WorkloadBaselineEnvironment { get; set; }
+
+        public WorkloadEnvironmentSnapshot? WorkloadAfterEnvironment { get; set; }
+
         public WorkloadBenchmarkResult? WorkloadBaseline { get; set; }
 
         public WorkloadBenchmarkResult? WorkloadAfter { get; set; }
