@@ -2733,6 +2733,39 @@ namespace BuildCore
                 test);
         }
 
+        private static string FormatWorkloadMetric(
+            WorkloadMetricAnalysis? metric,
+            bool after = false)
+        {
+            if (metric == null)
+                return "N/A";
+
+            double value = after ? metric.After : metric.Before;
+
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                return "N/A";
+
+            string unit =
+                metric.Name.Contains("FPS", StringComparison.OrdinalIgnoreCase)
+                    ? " FPS"
+                    : metric.Name.Contains("frame time", StringComparison.OrdinalIgnoreCase)
+                        ? " ms"
+                        : "";
+
+            return $"{value:F2}{unit}";
+        }
+
+        private static string FormatWorkloadChange(
+            WorkloadMetricAnalysis? metric)
+        {
+            if (metric == null ||
+                double.IsNaN(metric.RelativeChangePercent) ||
+                double.IsInfinity(metric.RelativeChangePercent))
+                return "N/A";
+
+            return $"{metric.RelativeChangePercent:+0.00;-0.00;0.00}%";
+        }
+
         private async Task ShowOptimizationTestDialog(
             OptimizationBenchmarkResult test)
         {
@@ -2741,6 +2774,103 @@ namespace BuildCore
                 {
                     Spacing = 10
                 };
+
+            if (test.WorkloadAnalysis != null &&
+                test.WorkloadBaseline != null &&
+                test.WorkloadAfter != null)
+            {
+                WorkloadStatisticalAnalysis workloadAnalysis =
+                    test.WorkloadAnalysis;
+
+                root.Children.Add(new TextBlock
+                {
+                    Text = "REAL WORKLOAD PERFORMANCE ANALYSIS",
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold),
+                    Margin = new Thickness(0, 10, 0, 0)
+                });
+
+                root.Children.Add(new TextBlock
+                {
+                    Text =
+                        $"Workload: {test.WorkloadDefinition?.Name ?? "Unknown"} • " +
+                        $"Type: {test.WorkloadDefinition?.Type.ToString() ?? "Unknown"}",
+                    FontSize = 10,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGray)
+                });
+
+                root.Children.Add(CreateTestMetricRow(
+                    "Average FPS",
+                    FormatWorkloadMetric(workloadAnalysis.AverageFps),
+                    FormatWorkloadMetric(workloadAnalysis.AverageFps, true),
+                    FormatWorkloadChange(workloadAnalysis.AverageFps)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "1% low FPS",
+                    FormatWorkloadMetric(workloadAnalysis.OnePercentLowFps),
+                    FormatWorkloadMetric(workloadAnalysis.OnePercentLowFps, true),
+                    FormatWorkloadChange(workloadAnalysis.OnePercentLowFps)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "0.1% low FPS",
+                    FormatWorkloadMetric(workloadAnalysis.ZeroPointOnePercentLowFps),
+                    FormatWorkloadMetric(workloadAnalysis.ZeroPointOnePercentLowFps, true),
+                    FormatWorkloadChange(workloadAnalysis.ZeroPointOnePercentLowFps)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "Average frame time",
+                    FormatWorkloadMetric(workloadAnalysis.AverageFrameTime),
+                    FormatWorkloadMetric(workloadAnalysis.AverageFrameTime, true),
+                    FormatWorkloadChange(workloadAnalysis.AverageFrameTime)));
+
+                root.Children.Add(CreateTestMetricRow(
+                    "Frame-time SD",
+                    FormatWorkloadMetric(workloadAnalysis.FrameTimeStandardDeviation),
+                    FormatWorkloadMetric(workloadAnalysis.FrameTimeStandardDeviation, true),
+                    FormatWorkloadChange(workloadAnalysis.FrameTimeStandardDeviation)));
+
+                root.Children.Add(new TextBlock
+                {
+                    Text =
+                        $"Baseline runs: {test.WorkloadBaseline.CompletedRuns}/{test.WorkloadBaseline.RequestedRuns} • " +
+                        $"After runs: {test.WorkloadAfter.CompletedRuns}/{test.WorkloadAfter.RequestedRuns} • " +
+                        $"Confidence: {workloadAnalysis.ConfidenceScore:F0}/100",
+                    FontSize = 9,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                root.Children.Add(new TextBlock
+                {
+                    Text =
+                        workloadAnalysis.Summary +
+                        "\n\nFrame-time/FPS measurements are workload evidence; " +
+                        "they do not automatically prove lower input latency.",
+                    FontSize = 9,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                var workloadDialog = new ContentDialog
+                {
+                    Title = "Controlled Workload Test",
+                    Content = new ScrollViewer
+                    {
+                        MaxHeight = 650,
+                        Content = root
+                    },
+                    CloseButtonText = "CLOSE",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                await workloadDialog.ShowAsync();
+                return;
+            }
 
             OptimizationTestAnalysis? analysis = test.Analysis;
             ReliableBenchmarkResult? baseline = test.BaselineReliable;
