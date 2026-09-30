@@ -49,6 +49,7 @@ namespace BuildCore
                 TestId = Guid.NewGuid().ToString("N"),
                 StartedAt = DateTime.Now,
                 Status = "Starting workload test",
+                TestState = ControlledWorkloadTestState.Preparing,
                 OptimizationTitle = recommendation.Title,
                 SnapshotId = "",
                 WorkloadDefinition = workload,
@@ -67,11 +68,13 @@ namespace BuildCore
                 {
                     result.Status =
                         "Target workload process is not running.";
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
                     return CompleteAndSave(result);
                 }
 
                 // 1. BASELINE — use the exact same workload definition.
                 result.Status = "Running workload baseline";
+                result.TestState = ControlledWorkloadTestState.BaselineRunning;
 
                 IBenchmarkWorkload baselineWorkload =
                     CreateWorkload(workload);
@@ -96,18 +99,21 @@ namespace BuildCore
 
                 if (!baseline.IsComplete || !baseline.HasEnoughRuns)
                 {
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
                     result.Status =
-                        $"Workload baseline incomplete: " +
+                        $"Workload baseline incomplete: "
                         $"{baseline.CompletedRuns}/{baseline.RequestedRuns} runs.";
                     return CompleteAndSave(result);
                 }
 
                 result.WorkloadBaselineCompleted = true;
+                result.TestState = ControlledWorkloadTestState.BaselineValidated;
 
                 // 2. SAFETY SNAPSHOT
                 cancellationToken.ThrowIfCancellationRequested();
 
                 result.Status = "Creating safety snapshot";
+                result.TestState = ControlledWorkloadTestState.Preparing;
 
                 BuildCoreSnapshot snapshot =
                     SnapshotService.CreateSnapshot();
@@ -121,6 +127,7 @@ namespace BuildCore
 
                 result.SnapshotId = snapshot.Id;
                 result.WorkloadSnapshotCreated = true;
+                result.TestState = ControlledWorkloadTestState.SnapshotCreated;
 
                 // 3. TRANSACTION
                 OptimizationTransaction transaction =
@@ -132,6 +139,7 @@ namespace BuildCore
                 cancellationToken.ThrowIfCancellationRequested();
 
                 result.Status = "Applying optimization";
+                result.TestState = ControlledWorkloadTestState.OptimizationApplying;
 
                 OptimizationApplyResult applyResult =
                     OptimizationApplyService.Apply(recommendation);
@@ -148,6 +156,9 @@ namespace BuildCore
                 result.WorkloadOptimizationVerified =
                     applyResult.Verified;
 
+                if (applyResult.Success && applyResult.Verified)
+                    result.TestState = ControlledWorkloadTestState.OptimizationVerified;
+
                 if (!applyResult.Success || !applyResult.Verified)
                 {
                     result.Status =
@@ -159,6 +170,7 @@ namespace BuildCore
                 if (settleDelayMilliseconds > 0)
                 {
                     result.Status = "Allowing system to settle";
+                    result.TestState = ControlledWorkloadTestState.Settling;
 
                     await Task.Delay(
                         settleDelayMilliseconds,
@@ -169,6 +181,7 @@ namespace BuildCore
                 cancellationToken.ThrowIfCancellationRequested();
 
                 result.Status = "Running workload after benchmark";
+                result.TestState = ControlledWorkloadTestState.AfterRunning;
 
                 if (workload.TargetProcessId > 0 &&
                     !IsProcessRunning(workload.TargetProcessId))
@@ -201,16 +214,19 @@ namespace BuildCore
 
                 if (!after.IsComplete || !after.HasEnoughRuns)
                 {
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
                     result.Status =
-                        $"Workload after benchmark incomplete: " +
+                        $"Workload after benchmark incomplete: "
                         $"{after.CompletedRuns}/{after.RequestedRuns} runs.";
                     return CompleteAndSave(result);
                 }
 
                 result.WorkloadAfterCompleted = true;
+                result.TestState = ControlledWorkloadTestState.AfterValidated;
 
                 // 7. STATISTICAL COMPARISON
                 result.Status = "Analyzing workload performance";
+                result.TestState = ControlledWorkloadTestState.AnalysisRunning;
 
                 result.WorkloadAnalysis =
                     WorkloadStatisticalAnalysis.Analyze(
@@ -222,23 +238,27 @@ namespace BuildCore
 
                 if (!result.WorkloadAnalysisCompleted)
                 {
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
                     result.Status =
                         "Workload comparison was inconclusive.";
                     return CompleteAndSave(result);
                 }
 
                 result.Status = "Completed";
+                result.TestState = ControlledWorkloadTestState.Completed;
 
                 return CompleteAndSave(result);
             }
             catch (OperationCanceledException)
             {
                 result.Status = "Canceled";
+                result.TestState = ControlledWorkloadTestState.Canceled;
                 return CompleteAndSave(result);
             }
             catch (Exception ex)
             {
                 result.Status = "Failed";
+                result.TestState = ControlledWorkloadTestState.Failed;
 
                 Debug.WriteLine(
                     "BUILDCORE CONTROLLED WORKLOAD TEST ERROR");
