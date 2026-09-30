@@ -249,6 +249,9 @@ namespace BuildCore
                 result.WorkloadAnalysisCompleted =
                     result.WorkloadAnalysis.IsComparable;
 
+                result.WorkloadEvidenceQuality =
+                    WorkloadEvidenceQuality.Evaluate(result);
+
                 if (!result.WorkloadAnalysisCompleted)
                 {
                     result.TestState = ControlledWorkloadTestState.Inconclusive;
@@ -256,6 +259,9 @@ namespace BuildCore
                         "Workload comparison was inconclusive.";
                     return CompleteAndSave(result);
                 }
+
+                result.WorkloadEvidenceQuality =
+                    WorkloadEvidenceQuality.Evaluate(result);
 
                 result.Status = "Completed";
                 result.TestState = ControlledWorkloadTestState.Completed;
