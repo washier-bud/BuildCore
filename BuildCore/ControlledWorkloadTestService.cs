@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,10 +63,13 @@ namespace BuildCore
             try
             {
                 if (workload.RequiresInteractiveWorkload &&
-                    !IsProcessRunning(workload.TargetProcessId))
+                    !ProcessIdentityService.Matches(
+                        workload.TargetProcessId,
+                        workload.TargetProcessStartTimeUtc,
+                        workload.TargetProcessPath))
                 {
                     result.Status =
-                        "Target workload process is not running.";
+                        "Target workload process identity could not be verified.";
                     result.TestState = ControlledWorkloadTestState.Inconclusive;
                     return CompleteAndSave(result);
                 }
@@ -183,11 +185,15 @@ namespace BuildCore
                 result.Status = "Running workload after benchmark";
                 result.TestState = ControlledWorkloadTestState.AfterRunning;
 
-                if (workload.TargetProcessId > 0 &&
-                    !IsProcessRunning(workload.TargetProcessId))
+                if (workload.RequiresInteractiveWorkload &&
+                    !ProcessIdentityService.Matches(
+                        workload.TargetProcessId,
+                        workload.TargetProcessStartTimeUtc,
+                        workload.TargetProcessPath))
                 {
                     result.Status =
-                        "Target workload process is no longer running.";
+                        "Target workload process changed or ended before the after-test.";
+                    result.TestState = ControlledWorkloadTestState.Inconclusive;
                     return CompleteAndSave(result);
                 }
 
@@ -329,9 +335,12 @@ namespace BuildCore
 
             if (definition.RequiresInteractiveWorkload)
             {
-                if (definition.TargetProcessId <= 0)
+                if (!ProcessIdentityService.Matches(
+                        definition.TargetProcessId,
+                        definition.TargetProcessStartTimeUtc,
+                        definition.TargetProcessPath))
                 {
-                    error = "No target process was assigned.";
+                    error = "The target process identity is not valid.";
                     return false;
                 }
 
@@ -350,18 +359,6 @@ namespace BuildCore
             return true;
         }
 
-        private static bool IsProcessRunning(int processId)
-        {
-            try
-            {
-                using Process process = Process.GetProcessById(processId);
-                return !process.HasExited;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private static OptimizationBenchmarkResult CompleteAndSave(
             OptimizationBenchmarkResult result)
