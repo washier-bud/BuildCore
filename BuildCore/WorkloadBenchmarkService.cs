@@ -33,6 +33,7 @@ namespace BuildCore
                 WorkloadName = definition.Name,
                 WorkloadType = definition.Type,
                 WorkloadFingerprint = _lockedFingerprint,
+                Environment = WorkloadEnvironmentSnapshot.Capture(),
                 StartedAt = DateTime.Now,
                 Status = "Running",
                 RequestedRuns = definition.RunCount
