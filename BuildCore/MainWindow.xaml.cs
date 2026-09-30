@@ -847,6 +847,35 @@ namespace BuildCore
             TextBlock statusText =
                 context.StatusText;
 
+            if (WorkloadProfileComboBox.SelectedItem
+                is not BenchmarkWorkloadProfile workloadProfile)
+            {
+                statusText.Text = "SELECT A WORKLOAD PROFILE";
+                statusText.Foreground =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold);
+                return;
+            }
+
+            BenchmarkWorkload workloadDefinition =
+                workloadProfile.Definition;
+
+            if (workloadProfile.UsesRealFrameTimeSource)
+            {
+                if (WorkloadProcessComboBox.SelectedItem
+                    is not RunningProcessInfo workloadProcess)
+                {
+                    statusText.Text = "SELECT A TARGET PROCESS";
+                    statusText.Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.Gold);
+                    return;
+                }
+
+                workloadDefinition.TargetProcessId =
+                    workloadProcess.ProcessId;
+            }
+
             // ========================================================
             // REBOOT-BASED EXPERIMENTS
             // ========================================================
@@ -938,11 +967,14 @@ namespace BuildCore
 
             try
             {
+                var controlledWorkloadTestService =
+                    new ControlledWorkloadTestService(
+                        _benchmarkService);
+
                 OptimizationBenchmarkResult result =
-                    await _optimizationBenchmarkService.RunAsync(
+                    await controlledWorkloadTestService.RunAsync(
                         recommendation,
-                        5,
-                        100,
+                        workloadDefinition,
                         1500);
 
                 DisplayOptimizationBenchmarkResult(
@@ -964,7 +996,9 @@ namespace BuildCore
                         "Controlled test complete";
 
                     OptimizationSummaryText.Text =
-                        "BuildCore completed a before/after telemetry comparison.";
+                        result.WorkloadAnalysis != null
+                            ? result.WorkloadAnalysis.Summary
+                            : "BuildCore completed the controlled workload test.";
                 }
                 else
                 {
