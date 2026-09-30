@@ -23,6 +23,11 @@ namespace BuildCore
         public double AfterStandardDeviation { get; set; }
         public double NoiseThresholdPercent { get; set; } = 2.0;
 
+        public int BeforeSampleCount { get; set; }
+        public int AfterSampleCount { get; set; }
+        public double PooledStandardDeviation { get; set; }
+        public double SignalToNoiseRatio { get; set; }
+
         public bool ChangeExceedsNoise =>
             Math.Abs(RelativeChangePercent) >= NoiseThresholdPercent;
     }
@@ -113,36 +118,40 @@ namespace BuildCore
                 after.Runs.Select(r => r.GpuAverageMemoryUsedGB),
                 analysis.NoiseThresholdPercent);
 
-            var baselineFps = GetFrameTimeMetric(baseline.Runs, r => r.FrameTime?.AverageFps);
-            var afterFps = GetFrameTimeMetric(after.Runs, r => r.FrameTime?.AverageFps);
-            var baseline1 = GetFrameTimeMetric(baseline.Runs, r => r.FrameTime?.OnePercentLowFps);
-            var after1 = GetFrameTimeMetric(after.Runs, r => r.FrameTime?.OnePercentLowFps);
-            var baseline01 = GetFrameTimeMetric(baseline.Runs, r => r.FrameTime?.ZeroPointOnePercentLowFps);
-            var after01 = GetFrameTimeMetric(after.Runs, r => r.FrameTime?.ZeroPointOnePercentLowFps);
-            var baselineFt = GetFrameTimeMetric(baseline.Runs, r => r.FrameTime?.AverageFrameTimeMilliseconds);
-            var afterFt = GetFrameTimeMetric(after.Runs, r => r.FrameTime?.AverageFrameTimeMilliseconds);
-            var baselineFtSd = GetFrameTimeMetric(baseline.Runs, r => r.FrameTime?.FrameTimeStandardDeviationMilliseconds);
-            var afterFtSd = GetFrameTimeMetric(after.Runs, r => r.FrameTime?.FrameTimeStandardDeviationMilliseconds);
+            analysis.AverageFps = CreateFrameTimeMetric(
+                "Average FPS",
+                baseline.Runs,
+                after.Runs,
+                r => r.FrameTime?.AverageFps,
+                analysis.NoiseThresholdPercent);
 
-            if (baselineFps.HasValue && afterFps.HasValue)
-                analysis.AverageFps = CreateMetric(
-                    "Average FPS", new[] { baselineFps.Value }, new[] { afterFps.Value }, analysis.NoiseThresholdPercent);
+            analysis.OnePercentLowFps = CreateFrameTimeMetric(
+                "1% low FPS",
+                baseline.Runs,
+                after.Runs,
+                r => r.FrameTime?.OnePercentLowFps,
+                analysis.NoiseThresholdPercent);
 
-            if (baseline1.HasValue && after1.HasValue)
-                analysis.OnePercentLowFps = CreateMetric(
-                    "1% low FPS", new[] { baseline1.Value }, new[] { after1.Value }, analysis.NoiseThresholdPercent);
+            analysis.ZeroPointOnePercentLowFps = CreateFrameTimeMetric(
+                "0.1% low FPS",
+                baseline.Runs,
+                after.Runs,
+                r => r.FrameTime?.ZeroPointOnePercentLowFps,
+                analysis.NoiseThresholdPercent);
 
-            if (baseline01.HasValue && after01.HasValue)
-                analysis.ZeroPointOnePercentLowFps = CreateMetric(
-                    "0.1% low FPS", new[] { baseline01.Value }, new[] { after01.Value }, analysis.NoiseThresholdPercent);
+            analysis.AverageFrameTime = CreateFrameTimeMetric(
+                "Average frame time",
+                baseline.Runs,
+                after.Runs,
+                r => r.FrameTime?.AverageFrameTimeMilliseconds,
+                analysis.NoiseThresholdPercent);
 
-            if (baselineFt.HasValue && afterFt.HasValue)
-                analysis.AverageFrameTime = CreateMetric(
-                    "Average frame time", new[] { baselineFt.Value }, new[] { afterFt.Value }, analysis.NoiseThresholdPercent);
-
-            if (baselineFtSd.HasValue && afterFtSd.HasValue)
-                analysis.FrameTimeStandardDeviation = CreateMetric(
-                    "Frame-time standard deviation", new[] { baselineFtSd.Value }, new[] { afterFtSd.Value }, analysis.NoiseThresholdPercent);
+            analysis.FrameTimeStandardDeviation = CreateFrameTimeMetric(
+                "Frame-time standard deviation",
+                baseline.Runs,
+                after.Runs,
+                r => r.FrameTime?.FrameTimeStandardDeviationMilliseconds,
+                analysis.NoiseThresholdPercent);
 
             analysis.ConfidenceScore = CalculateConfidence(baseline, after, analysis);
             analysis.Outcome = DetermineOutcome(analysis);
@@ -163,29 +172,54 @@ namespace BuildCore
             double beforeAverage = before.Length == 0 ? 0 : before.Average();
             double afterAverage = after.Length == 0 ? 0 : after.Average();
 
+            double beforeSd = StandardDeviation(before);
+            double afterSd = StandardDeviation(after);
+            double pooledSd = CalculatePooledStandardDeviation(
+                before, after, beforeSd, afterSd);
+
+            double signal = Math.Abs(afterAverage - beforeAverage);
+            double signalToNoise =
+                pooledSd > 0 ? signal / pooledSd : (signal > 0 ? double.PositiveInfinity : 0);
+
             return new WorkloadMetricAnalysis
             {
                 Name = name,
                 Before = beforeAverage,
                 After = afterAverage,
                 RelativeChangePercent = CalculateRelativeChange(beforeAverage, afterAverage),
-                BeforeStandardDeviation = StandardDeviation(before),
-                AfterStandardDeviation = StandardDeviation(after),
+                BeforeStandardDeviation = beforeSd,
+                AfterStandardDeviation = afterSd,
+                PooledStandardDeviation = pooledSd,
+                SignalToNoiseRatio = signalToNoise,
+                BeforeSampleCount = before.Length,
+                AfterSampleCount = after.Length,
                 NoiseThresholdPercent = threshold
             };
         }
 
-        private static double? GetFrameTimeMetric(
-            IEnumerable<BenchmarkRun> runs,
-            Func<BenchmarkRun, double?> selector)
+        private static WorkloadMetricAnalysis? CreateFrameTimeMetric(
+            string name,
+            IEnumerable<BenchmarkRun> baselineRuns,
+            IEnumerable<BenchmarkRun> afterRuns,
+            Func<BenchmarkRun, double?> selector,
+            double threshold)
         {
-            double[] values = runs
+            double[] before = baselineRuns
                 .Select(selector)
                 .Where(v => v.HasValue && IsFinite(v.Value))
                 .Select(v => v!.Value)
                 .ToArray();
 
-            return values.Length == 0 ? null : values.Average();
+            double[] after = afterRuns
+                .Select(selector)
+                .Where(v => v.HasValue && IsFinite(v.Value))
+                .Select(v => v!.Value)
+                .ToArray();
+
+            if (before.Length == 0 || after.Length == 0)
+                return null;
+
+            return CreateMetric(name, before, after, threshold);
         }
 
         private static double CalculateConfidence(
@@ -214,11 +248,13 @@ namespace BuildCore
 
                 double scale = Math.Max(Math.Abs(metric.Before), 0.000001);
                 double relativeNoise =
-                    Math.Max(metric.BeforeStandardDeviation, metric.AfterStandardDeviation) /
-                    scale * 100.0;
+                    metric.PooledStandardDeviation / scale * 100.0;
 
                 if (relativeNoise > 5) score -= 5;
                 if (relativeNoise > 10) score -= 10;
+
+                if (metric.SignalToNoiseRatio < 1)
+                    score -= 5;
             }
 
             return Math.Clamp(score, 0, 100);
@@ -299,6 +335,26 @@ namespace BuildCore
             double average = values.Average();
             double variance = values.Select(v => Math.Pow(v - average, 2)).Average();
             return Math.Sqrt(variance);
+        }
+
+        private static double CalculatePooledStandardDeviation(
+            double[] before,
+            double[] after,
+            double beforeSd,
+            double afterSd)
+        {
+            int n1 = before.Length;
+            int n2 = after.Length;
+
+            if (n1 + n2 <= 2)
+                return Math.Max(beforeSd, afterSd);
+
+            double pooledVariance =
+                (((n1 - 1) * beforeSd * beforeSd) +
+                 ((n2 - 1) * afterSd * afterSd)) /
+                (n1 + n2 - 2);
+
+            return Math.Sqrt(Math.Max(0, pooledVariance));
         }
 
         private static bool IsFinite(double value) =>
