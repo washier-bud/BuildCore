@@ -24,6 +24,10 @@ namespace BuildCore
         public WorkloadEnvironmentSnapshot? WorkloadAfterEnvironment { get; set; }
         public WorkloadEnvironmentComparison? WorkloadEnvironmentComparison { get; set; }
         public WorkloadEvidenceQuality? WorkloadEvidenceQuality { get; set; }
+
+        // Phase 1.12U: explicit gate indicating whether the workload result
+        // meets BuildCore's minimum evidence requirements.
+        public bool WorkloadEvidenceGatePassed { get; set; }
         public WorkloadBenchmarkResult? WorkloadBaseline { get; set; }
         public WorkloadBenchmarkResult? WorkloadAfter { get; set; }
         public WorkloadStatisticalAnalysis? WorkloadAnalysis { get; set; }
