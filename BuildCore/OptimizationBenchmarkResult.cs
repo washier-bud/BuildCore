@@ -45,6 +45,8 @@ namespace BuildCore
         // be reviewed after the application is restarted.
         public BenchmarkWorkload? WorkloadDefinition { get; set; }
 
+        public string WorkloadFingerprint { get; set; } = "";
+
         public WorkloadBenchmarkResult? WorkloadBaseline { get; set; }
 
         public WorkloadBenchmarkResult? WorkloadAfter { get; set; }
@@ -102,7 +104,10 @@ namespace BuildCore
                     WorkloadBaseline != null &&
                     WorkloadAfter != null &&
                     WorkloadAnalysis != null &&
-                    WorkloadAnalysis.IsComparable;
+                    WorkloadAnalysis.IsComparable &&
+                    !string.IsNullOrWhiteSpace(WorkloadFingerprint) &&
+                    string.Equals(WorkloadFingerprint, WorkloadBaseline.WorkloadFingerprint, StringComparison.Ordinal) &&
+                    string.Equals(WorkloadFingerprint, WorkloadAfter.WorkloadFingerprint, StringComparison.Ordinal);
 
                 return legacySuccessful || workloadSuccessful;
             }
