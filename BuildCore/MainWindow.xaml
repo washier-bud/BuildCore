@@ -1128,6 +1128,79 @@
 
                     </Border>
 
+                    <!-- ================================================= -->
+                    <!-- WORKLOAD BENCHMARK -->
+                    <!-- ================================================= -->
+
+                    <Border
+                        Margin="0,20,0,0"
+                        Padding="22"
+                        CornerRadius="14"
+                        Background="#101014"
+                        BorderBrush="#28282E"
+                        BorderThickness="1">
+
+                        <StackPanel>
+                            <TextBlock
+                                Text="WORKLOAD LAB"
+                                Foreground="#7CFF8A"
+                                FontSize="10"
+                                FontWeight="SemiBold"/>
+
+                            <TextBlock
+                                Text="Choose a generic workload profile"
+                                Foreground="White"
+                                FontSize="19"
+                                FontWeight="SemiBold"
+                                Margin="0,5,0,0"/>
+
+                            <TextBlock
+                                Text="Profiles define the test configuration. Gaming requires a real workload provider before frame-time metrics can be measured."
+                                Foreground="#77777E"
+                                FontSize="10"
+                                TextWrapping="Wrap"
+                                Margin="0,6,0,12"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="160"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox
+                                    x:Name="WorkloadProfileComboBox"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    PlaceholderText="Select workload profile"/>
+
+                                <Button
+                                    x:Name="RunWorkloadBenchmarkButton"
+                                    Grid.Column="1"
+                                    Content="RUN WORKLOAD"
+                                    HorizontalAlignment="Right"
+                                    Padding="18,10"
+                                    Margin="12,0,0,0"
+                                    Click="RunWorkloadBenchmarkButton_Click"/>
+                            </Grid>
+
+                            <TextBlock
+                                x:Name="WorkloadProfileDescriptionText"
+                                Text="Select a profile to view its description."
+                                Foreground="#66666D"
+                                FontSize="9"
+                                TextWrapping="Wrap"
+                                Margin="0,10,0,0"/>
+
+                            <TextBlock
+                                x:Name="WorkloadBenchmarkStatusText"
+                                Text="READY"
+                                Foreground="#66666D"
+                                FontSize="9"
+                                FontWeight="SemiBold"
+                                Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
                     <!-- BENCHMARK -->
 
                     <Border
