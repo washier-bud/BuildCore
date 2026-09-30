@@ -15,6 +15,8 @@ namespace BuildCore
             _workload = workload
                 ?? throw new ArgumentNullException(nameof(workload));
 
+            _lockedFingerprint = WorkloadFingerprintService.Calculate(_workload.Definition);
+
             if (!_workload.Definition.IsValid)
                 throw new ArgumentException(
                     "The benchmark workload definition is invalid.",
@@ -41,11 +43,30 @@ namespace BuildCore
 
             try
             {
+                if (!IsConfigurationLocked(definition))
+                {
+                    result.Status = "Configuration changed";
+                    result.Summary =
+                        "The workload configuration changed before execution. " +
+                        "The benchmark was rejected to preserve reproducibility.";
+                    result.CompletedAt = DateTime.Now;
+                    return result;
+                }
+
                 for (int runNumber = 1;
                      runNumber <= definition.RunCount;
                      runNumber++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
+
+                    if (!IsConfigurationLocked(definition))
+                    {
+                        result.Status = "Configuration changed";
+                        result.Summary =
+                            "The workload configuration changed during the benchmark. " +
+                            "The result was rejected to preserve reproducibility.";
+                        break;
+                    }
 
                     result.Status =
                         $"Running {definition.Name} " +
@@ -73,6 +94,14 @@ namespace BuildCore
 
                     BenchmarkRun run = runResult.BenchmarkRun;
                     run.RunNumber = runNumber;
+                    run.Environment = WorkloadEnvironmentSnapshot.Capture();
+
+                    if (definition.RequiresInteractiveWorkload)
+                    {
+                        run.TargetProcessIdentity = ProcessIdentityService.Capture(
+                            definition.TargetProcessId);
+                    }
+
                     result.Runs.Add(run);
 
                     if (runNumber < definition.RunCount &&
@@ -130,7 +159,7 @@ namespace BuildCore
             }
         }
 
-        private bool ValidateRun(WorkloadRunResult runResult)
+        private bool IsConfigurationLocked(BenchmarkWorkload definition)\n        {\n            return string.Equals(\n                WorkloadFingerprintService.Calculate(definition),\n                _lockedFingerprint,\n                StringComparison.Ordinal);\n        }\n\n        private bool ValidateRun(WorkloadRunResult runResult)
         {
             BenchmarkRun? run = runResult.BenchmarkRun;
 
