@@ -71,10 +71,13 @@ namespace BuildCore
                 string json =
                     File.ReadAllText(filePath);
 
-                return JsonSerializer.Deserialize<
-                    OptimizationBenchmarkResult>(
-                        json,
-                        JsonOptions);
+                OptimizationBenchmarkResult? test =
+                    JsonSerializer.Deserialize<
+                        OptimizationBenchmarkResult>(
+                            json,
+                            JsonOptions);
+
+                return NormalizeLoadedTest(test);
             }
             catch
             {
@@ -124,7 +127,12 @@ namespace BuildCore
                         continue;
                     }
 
-                    test = NormalizeLoadedTest(test);\n\n                    if (test == null)\n                        continue;\n\n                    tests.Add(test);
+                    test = NormalizeLoadedTest(test);
+
+                    if (test == null)
+                        continue;
+
+                    tests.Add(test);
                 }
                 catch
                 {
@@ -220,12 +228,38 @@ namespace BuildCore
                 if (test.Comparison == null)
                     return false;
 
+                if (test.CompletedAt != default &&
+                    test.CompletedAt < test.StartedAt)
+                {
+                    return false;
+                }
+
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        // ============================================================
+        // BACKWARD COMPATIBILITY
+        // ============================================================
+
+        private static OptimizationBenchmarkResult? NormalizeLoadedTest(
+            OptimizationBenchmarkResult? test)
+        {
+            if (test == null)
+                return null;
+
+            // Older saved tests may not contain fields added in later
+            // BuildCore versions. Keep those fields null rather than
+            // inventing benchmark data.
+            test.OptimizationTitle ??= "";
+            test.SnapshotId ??= "";
+            test.Status ??= "Unknown";
+
+            return test;
         }
 
         // ============================================================
