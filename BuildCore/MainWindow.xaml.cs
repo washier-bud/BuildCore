@@ -1933,6 +1933,62 @@ namespace BuildCore
                 }
 
                 // ====================================================
+                // WORKLOAD BENCHMARKS
+                // ====================================================
+
+                var workloadResults =
+                    WorkloadBenchmarkStorageService.GetResults();
+
+                root.Children.Add(
+                    new TextBlock
+                    {
+                        Text = "WORKLOAD BENCHMARKS",
+                        FontSize = 11,
+                        FontWeight =
+                            Microsoft.UI.Text.FontWeights.SemiBold,
+                        Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gold),
+                        Margin = new Thickness(0, 18, 0, 0)
+                    });
+
+                root.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            $"{workloadResults.Count} workload benchmark(s) recorded",
+                        FontSize = 10,
+                        Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gray)
+                    });
+
+                if (workloadResults.Count == 0)
+                {
+                    root.Children.Add(
+                        new TextBlock
+                        {
+                            Text =
+                                "No workload benchmarks have been recorded yet.",
+                            FontSize = 12,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.LightGray),
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                }
+                else
+                {
+                    foreach (WorkloadBenchmarkResult workloadResult
+                        in workloadResults)
+                    {
+                        root.Children.Add(
+                            CreateWorkloadBenchmarkHistoryCard(
+                                workloadResult));
+                    }
+                }
+
+                // ====================================================
                 // OPTIMIZATION TESTS
                 // ====================================================
 
@@ -2256,6 +2312,231 @@ namespace BuildCore
                 Child =
                     panel
             };
+        }
+
+        // ============================================================
+        // WORKLOAD BENCHMARK HISTORY CARD
+        // ============================================================
+
+        private Border CreateWorkloadBenchmarkHistoryCard(
+            WorkloadBenchmarkResult result)
+        {
+            bool complete = result.IsComplete;
+
+            var panel = new StackPanel { Spacing = 7 };
+
+            panel.Children.Add(
+                new TextBlock
+                {
+                    Text = "◈  " +
+                        (string.IsNullOrWhiteSpace(result.WorkloadName)
+                            ? "Workload Benchmark"
+                            : result.WorkloadName),
+                    FontSize = 14,
+                    FontWeight =
+                        Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.White)
+                });
+
+            panel.Children.Add(
+                new TextBlock
+                {
+                    Text =
+                        result.StartedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                    FontSize = 9,
+                    Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.Gray)
+                });
+
+            panel.Children.Add(
+                new TextBlock
+                {
+                    Text =
+                        complete
+                            ? $"✓ {result.ReliabilityStatus.ToUpperInvariant()} — " +
+                              $"{result.CompletedRuns}/{result.RequestedRuns} RUNS"
+                            : $"✕ {result.ReliabilityStatus.ToUpperInvariant()} — " +
+                              $"{result.CompletedRuns}/{result.RequestedRuns} RUNS",
+                    FontSize = 9,
+                    FontWeight =
+                        Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground =
+                        complete
+                            ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.LightGreen)
+                            : new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.OrangeRed)
+                });
+
+            if (complete && result.Runs.Count > 0)
+            {
+                panel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            $"CPU {result.Runs.Average(r => r.CpuAverageUsage):F1}%   •   " +
+                            $"GPU {result.Runs.Average(r => r.GpuAverageUsage):F1}%   •   " +
+                            $"Duration {result.Duration.TotalSeconds:F1}s",
+                        FontSize = 10,
+                        Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.LightGray)
+                    });
+            }
+
+            panel.Children.Add(
+                new TextBlock
+                {
+                    Text =
+                        $"Type: {result.WorkloadType}   •   ID: {result.ResultId}",
+                    FontSize = 8,
+                    Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+            var viewButton = new Button
+            {
+                Content = "VIEW BENCHMARK",
+                Padding = new Thickness(12, 7, 12, 7),
+                Tag = result
+            };
+
+            viewButton.Click += ViewWorkloadBenchmarkButton_Click;
+
+            panel.Children.Add(viewButton);
+
+            var deleteButton = new Button
+            {
+                Content = "DELETE",
+                Padding = new Thickness(12, 7, 12, 7),
+                Tag = result
+            };
+
+            deleteButton.Click += DeleteWorkloadBenchmarkButton_Click;
+
+            panel.Children.Add(deleteButton);
+
+            return new Border
+            {
+                Background =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Transparent),
+                CornerRadius = new CornerRadius(10),
+                Padding = new Thickness(16),
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderBrush =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1),
+                Child = panel
+            };
+        }
+
+        private async void ViewWorkloadBenchmarkButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not WorkloadBenchmarkResult result)
+                return;
+
+            var lines = new List<string>
+            {
+                $"Workload: {result.WorkloadName}",
+                $"Type: {result.WorkloadType}",
+                $"Status: {result.Status}",
+                $"Reliability: {result.ReliabilityStatus}",
+                $"Runs: {result.CompletedRuns}/{result.RequestedRuns}",
+                $"Started: {result.StartedAt:yyyy-MM-dd HH:mm:ss}",
+                $"Completed: {result.CompletedAt:yyyy-MM-dd HH:mm:ss}",
+                $"Result ID: {result.ResultId}"
+            };
+
+            if (result.Runs.Count > 0)
+            {
+                lines.Add("");
+                lines.Add("RUN DETAILS");
+
+                foreach (BenchmarkRun run in result.Runs)
+                {
+                    lines.Add(
+                        $"Run {run.RunNumber}: CPU {run.CpuAverageUsage:F1}% | " +
+                        $"GPU {run.GpuAverageUsage:F1}% | " +
+                        $"GPU Clock {run.GpuAverageClockMHz:F0} MHz | " +
+                        $"GPU Temp {run.GpuAverageTemperature:F1}°C");
+
+                    if (run.FrameTime != null &&
+                        run.FrameTime.HasData)
+                    {
+                        lines.Add(
+                            $"  Frame time: {run.FrameTime.AverageFrameTimeMilliseconds:F2} ms | " +
+                            $"FPS: {run.FrameTime.AverageFps:F1} | " +
+                            $"1% Low: {run.FrameTime.OnePercentLowFps:F1} | " +
+                            $"0.1% Low: {run.FrameTime.ZeroPointOnePercentLowFps:F1}");
+                    }
+                }
+            }
+
+            var dialog = new ContentDialog
+            {
+                Title = "Workload Benchmark Details",
+                Content = new ScrollViewer
+                {
+                    MaxHeight = 520,
+                    Content = new TextBlock
+                    {
+                        Text = string.Join("\n", lines),
+                        TextWrapping = TextWrapping.Wrap
+                    }
+                },
+                CloseButtonText = "CLOSE",
+                XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private async void DeleteWorkloadBenchmarkButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not WorkloadBenchmarkResult result)
+                return;
+
+            var confirmation = new ContentDialog
+            {
+                Title = "Delete Workload Benchmark?",
+                Content = new TextBlock
+                {
+                    Text =
+                        $"This will permanently delete the saved benchmark " +
+                        $"'{result.WorkloadName}'.",
+                    TextWrapping = TextWrapping.Wrap
+                },
+                PrimaryButtonText = "DELETE",
+                CloseButtonText = "CANCEL",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+            };
+
+            ContentDialogResult choice =
+                await confirmation.ShowAsync();
+
+            if (choice != ContentDialogResult.Primary)
+                return;
+
+            if (WorkloadBenchmarkStorageService.DeleteResult(
+                result.ResultId))
+            {
+                button.Content = "DELETED ✓";
+                button.IsEnabled = false;
+            }
         }
 
         // ============================================================
