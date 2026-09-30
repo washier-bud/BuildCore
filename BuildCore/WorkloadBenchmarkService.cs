@@ -48,23 +48,20 @@ namespace BuildCore
                         $"Running {definition.Name} " +
                         $"({runNumber}/{definition.RunCount})";
 
-                    WorkloadBenchmarkResult runResult =
+                    WorkloadRunResult runResult =
                         await _workload.RunAsync(cancellationToken);
 
-                    if (runResult == null)
+                    if (runResult == null ||
+                        !runResult.IsSuccessful ||
+                        runResult.BenchmarkRun == null)
                     {
                         result.Status = $"Run {runNumber} failed.";
                         break;
                     }
 
-                    foreach (BenchmarkRun run in runResult.Runs)
-                    {
-                        if (run != null && run.IsSuccessful)
-                        {
-                            run.RunNumber = runNumber;
-                            result.Runs.Add(run);
-                        }
-                    }
+                    BenchmarkRun run = runResult.BenchmarkRun;
+                    run.RunNumber = runNumber;
+                    result.Runs.Add(run);
 
                     if (runNumber < definition.RunCount &&
                         definition.DelayBetweenRunsMilliseconds > 0)
