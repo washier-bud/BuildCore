@@ -51,6 +51,8 @@ namespace BuildCore
 
         public WorkloadEnvironmentSnapshot? WorkloadAfterEnvironment { get; set; }
 
+        public WorkloadEnvironmentComparison? WorkloadEnvironmentComparison { get; set; }
+
         public WorkloadBenchmarkResult? WorkloadBaseline { get; set; }
 
         public WorkloadBenchmarkResult? WorkloadAfter { get; set; }
