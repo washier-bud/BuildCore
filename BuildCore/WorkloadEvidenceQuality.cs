@@ -19,6 +19,7 @@ namespace BuildCore
 
         public string ConsistencyStatus { get; set; } = "Unknown";
         public string ReliabilityStatus { get; set; } = "Insufficient Evidence";
+        public string EvidenceGrade { get; set; } = "F";
         public List<string> Warnings { get; set; } = new();
         public string Summary { get; set; } = "";
 
@@ -153,6 +154,10 @@ namespace BuildCore
                 ? "Sufficient Evidence"
                 : "Limited Evidence";
 
+            // Phase 1.12W: expose evidence quality as a transparent grade.
+            // This is a data-quality grade, not a rating of the optimization itself.
+            quality.EvidenceGrade = CalculateEvidenceGrade(quality, analysis);
+
             quality.Summary = quality.IsSufficient
                 ? "The test contains locked workload configuration, comparable environment data, "
                   + "sufficient repeated runs, and completed paired analysis."
@@ -160,6 +165,31 @@ namespace BuildCore
                   + "treating the result as a strong workload-performance signal.";
 
             return quality;
+        }
+
+
+        private static string CalculateEvidenceGrade(
+            WorkloadEvidenceQuality quality,
+            WorkloadStatisticalAnalysis? analysis)
+        {
+            int points = 0;
+
+            if (quality.HasRealFrameTimeData) points += 25;
+            if (quality.FingerprintsMatch) points += 15;
+            if (quality.EnvironmentComparable) points += 15;
+            if (quality.ProcessIdentityVerified) points += 10;
+            if (quality.BaselineRunCount >= 3) points += 10;
+            if (quality.AfterRunCount >= 3) points += 10;
+            if (quality.PairedRunCount >= 3) points += 10;
+            if (quality.AnalysisComplete) points += 5;
+
+            if (analysis?.PairedDifferenceStandardDeviationPercent > 5)
+                points -= 10;
+
+            return points >= 90 ? "A" :
+                   points >= 80 ? "B" :
+                   points >= 70 ? "C" :
+                   points >= 60 ? "D" : "F";
         }
 
         private static bool HasValidProcessIdentity(BenchmarkRun run)
