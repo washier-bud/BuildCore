@@ -12,7 +12,7 @@ namespace BuildCore
 {
     public class PresentMonFrameTimeSource : IFrameTimeSource
     {
-        private readonly string _presentMonPath;
+        private readonly string? _presentMonPath;
 
         public PresentMonFrameTimeSource(string? presentMonPath = null)
         {
@@ -69,7 +69,7 @@ namespace BuildCore
             {
                 var startInfo = new ProcessStartInfo
                 {
-                    FileName = _presentMonPath,
+                    FileName = _presentMonPath!,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
