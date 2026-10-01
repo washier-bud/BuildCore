@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Versioning;
 
 namespace BuildCore
 {
@@ -207,11 +208,10 @@ namespace BuildCore
                 new WorkloadBenchmarkService(
                     provider);
 
-            return await service.RunAsync(
-                workload,
-                cancellationToken);
+            return await service.RunAsync(cancellationToken);
         }
 
+        [SupportedOSPlatform("windows")]
         private static OptimizationApplyResult
             ApplyRebootOptimization(
                 OptimizationRecommendation recommendation)
