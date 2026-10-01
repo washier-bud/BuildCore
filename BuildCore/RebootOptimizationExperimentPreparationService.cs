@@ -141,6 +141,14 @@ namespace BuildCore
                     workload.TargetProcessStartTimeUtc;
             }
 
+            if (recommendation.Title == "Hardware-Accelerated GPU Scheduling")
+            {
+                RebootOptimizationExperimentRecoveryService.CaptureOriginalHagsState(experiment);
+                experiment.RecoveryAvailable = true;
+                experiment.RecoveryStatus = "Original HAGS state captured. Rollback is available.";
+                RebootOptimizationExperimentStorageService.Save(experiment);
+            }
+
             OptimizationApplyResult applyResult =
                 OperatingSystem.IsWindows()
                     ? ApplyRebootOptimization(recommendation)
