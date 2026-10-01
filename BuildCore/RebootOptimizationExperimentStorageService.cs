@@ -41,9 +41,31 @@ namespace BuildCore
             }
 
             string path = GetPath(experiment.ExperimentId);
+            string tempPath = path + ".tmp";
             string json = JsonSerializer.Serialize(experiment, JsonOptions);
 
-            File.WriteAllText(path, json);
+            try
+            {
+                // Write the complete document before replacing the live state file.
+                // This prevents a partial JSON document from becoming the persisted
+                // experiment if the process is interrupted during the write.
+                File.WriteAllText(tempPath, json);
+                File.Move(tempPath, path, overwrite: true);
+            }
+            catch
+            {
+                try
+                {
+                    if (File.Exists(tempPath))
+                        File.Delete(tempPath);
+                }
+                catch
+                {
+                    // Preserve the original save failure.
+                }
+
+                throw;
+            }
         }
 
         public static RebootOptimizationExperimentState? Load(
