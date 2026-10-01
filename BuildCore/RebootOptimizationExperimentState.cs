@@ -27,6 +27,16 @@ namespace BuildCore
     }
 
     public class RebootOptimizationExperimentState
+{
+    /// <summary>
+    /// Version of the persisted experiment-state schema.
+    /// Increment when the JSON contract changes and add migration logic
+    /// before accepting newer schema versions.
+    /// </summary>
+    public const int CurrentSchemaVersion = 1;
+
+    public int SchemaVersion { get; set; } = CurrentSchemaVersion;
+
     {
         public string ExperimentId { get; set; } = Guid.NewGuid().ToString("N");
         public DateTime CreatedAt { get; set; } = DateTime.Now;
