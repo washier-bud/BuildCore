@@ -23,13 +23,9 @@ namespace BuildCore
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        // System boot time captured before the reboot.
         public DateTime? BaselineBootTimeUtc { get; set; }
-
-        // Boot time observed when BuildCore resumes after restart.
         public DateTime? AfterRebootBootTimeUtc { get; set; }
 
-        // Validation results recorded before the experiment continues.
         public bool RebootDetected { get; set; }
         public bool AfterRebootValidationPassed { get; set; }
 
@@ -54,6 +50,17 @@ namespace BuildCore
 
         public string ExpectedTargetProcessPath { get; set; } = "";
         public DateTime? ExpectedTargetProcessStartTimeUtc { get; set; }
+
+        // Recovery metadata for optimizations with an explicit rollback handler.
+        public bool RecoveryAvailable { get; set; }
+        public bool RecoveryAttempted { get; set; }
+        public bool RecoverySucceeded { get; set; }
+        public string RecoveryStatus { get; set; } = "No recovery attempted.";
+
+        // HAGS HwSchMode preservation. A missing value represents the
+        // Windows default state and must not be confused with DWORD 0.
+        public bool OriginalHagsValueExists { get; set; }
+        public int? OriginalHagsMode { get; set; }
 
         public bool BaselineCompleted { get; set; }
         public bool SnapshotCreated { get; set; }
