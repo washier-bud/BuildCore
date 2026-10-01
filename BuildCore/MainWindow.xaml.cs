@@ -2758,6 +2758,19 @@ namespace BuildCore
                                 Microsoft.UI.Colors.Gray)
             });
 
+            if (experiment.RecoveryRequiresReboot)
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Text = "↻ WINDOWS RESTART REQUIRED TO FINALIZE RESTORATION",
+                    FontSize = 9,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold),
+                    TextWrapping = TextWrapping.Wrap
+                });
+            }
+
             panel.Children.Add(new TextBlock
             {
                 Text =
