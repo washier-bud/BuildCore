@@ -243,7 +243,7 @@ namespace BuildCore
             var quality = new WorkloadEvidenceQuality
             {
                 HasRealFrameTimeData =
-                    experiment.Baseline.Runs.Any(r => r.FrameTime?.StatisticsHasData() == true) ||
+                    experiment.Baseline.Runs.Any(r => r.FrameTime?.HasData == true) ||
                     experiment.AfterBenchmark.Runs.Any(r => r.FrameTime?.StatisticsHasData() == true),
 
                 ConfigurationLocked =
