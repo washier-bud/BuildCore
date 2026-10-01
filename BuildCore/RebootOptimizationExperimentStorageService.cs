@@ -119,6 +119,19 @@ namespace BuildCore
                         continue;
                     }
 
+                    if (!string.Equals(
+                        Path.GetFileNameWithoutExtension(file),
+                        experiment.ExperimentId,
+                        StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    if (!ValidateLoadedExperiment(experiment))
+                    {
+                        continue;
+                    }
+
                     experiments.Add(experiment);
                 }
                 catch
@@ -130,6 +143,23 @@ namespace BuildCore
             return experiments
                 .OrderByDescending(e => e.UpdatedAt)
                 .ToList();
+        }
+
+        private static bool ValidateLoadedExperiment(
+            RebootOptimizationExperimentState experiment)
+        {
+            try
+            {
+                return !string.IsNullOrWhiteSpace(experiment.ExperimentId) &&
+                       experiment.CreatedAt != default &&
+                       experiment.UpdatedAt != default &&
+                       experiment.UpdatedAt >= experiment.CreatedAt &&
+                       !string.IsNullOrWhiteSpace(experiment.OptimizationTitle);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static RebootOptimizationExperimentState? GetPending()
