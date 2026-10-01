@@ -133,6 +133,45 @@ namespace BuildCore
             return VerifyHagsState(experiment);
         }
 
+        public static bool RetryFinalizationAfterFailure(
+            RebootOptimizationExperimentState experiment)
+        {
+            if (experiment == null ||
+                experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.Failed ||
+                !experiment.RecoverySucceeded ||
+                !experiment.RecoveryAttemptedAtUtc.HasValue)
+            {
+                return false;
+            }
+
+            try
+            {
+                DateTime bootTimeUtc = GetCurrentBootTimeUtc();
+                if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
+                    return false;
+
+                if (!VerifyHagsState(experiment))
+                    return false;
+
+                experiment.RecoveryFinalized = true;
+                experiment.RecoveryFinalizedAtUtc = DateTime.UtcNow;
+                experiment.RecoveryRequiresReboot = false;
+                experiment.RecoveryPhase =
+                    RebootOptimizationExperimentRecoveryPhase.Finalized;
+                experiment.RecoveryStatus =
+                    "Original HAGS state restored and verified after recovery re-verification.";
+                RebootOptimizationExperimentStorageService.Save(experiment);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                experiment.RecoveryStatus =
+                    $"Recovery re-verification failed: {ex.Message}";
+                RebootOptimizationExperimentStorageService.Save(experiment);
+                return false;
+            }
+        }
+
         public static OptimizationApplyResult Rollback(
             RebootOptimizationExperimentState experiment)
         {
