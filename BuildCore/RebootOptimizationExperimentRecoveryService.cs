@@ -5,9 +5,26 @@ namespace BuildCore
 {
     public static class RebootOptimizationExperimentRecoveryService
     {
-        public static void CaptureOriginalHagsState(RebootOptimizationExperimentState experiment)
+        public static bool HasRecoveryHandler(
+            RebootOptimizationExperimentState experiment)
         {
-            GetRequiredHagsHandler().CaptureOriginalState(experiment);
+            return RebootOptimizationRecoveryHandlerRegistry.Find(experiment) != null;
+        }
+
+        public static void CaptureOriginalState(
+            RebootOptimizationExperimentState experiment)
+        {
+            if (experiment == null)
+                throw new ArgumentNullException(nameof(experiment));
+
+            IRebootOptimizationRecoveryHandler? handler =
+                RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
+
+            if (handler == null)
+                throw new InvalidOperationException(
+                    $"No recovery handler is registered for '{experiment.OptimizationTitle}'.");
+
+            handler.CaptureOriginalState(experiment);
         }
 
         public static bool CanRollback(RebootOptimizationExperimentState experiment)
@@ -125,22 +142,6 @@ namespace BuildCore
             }
 
             return handler.Rollback(experiment);
-        }
-
-        private static IRebootOptimizationRecoveryHandler GetRequiredHagsHandler()
-        {
-            IRebootOptimizationRecoveryHandler? handler =
-                RebootOptimizationRecoveryHandlerRegistry.Find(
-                    new RebootOptimizationExperimentState
-                    {
-                        OptimizationTitle = "Hardware-Accelerated GPU Scheduling"
-                    });
-
-            if (handler == null)
-                throw new InvalidOperationException(
-                    "No recovery handler is registered for HAGS.");
-
-            return handler;
         }
 
         private static DateTime GetCurrentBootTimeUtc()
