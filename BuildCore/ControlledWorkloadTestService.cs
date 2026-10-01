@@ -27,13 +27,18 @@ namespace BuildCore
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            if (!recommendation.CanApply)
+            if (!recommendation.CanAnalyze)
                 throw new InvalidOperationException(
-                    "This optimization cannot be applied automatically.");
+                    "This optimization is not available for analysis.");
 
             if (!recommendation.CanTest)
                 throw new InvalidOperationException(
                     "This optimization is not enabled for controlled testing.");
+
+            if (!recommendation.CanRunImmediateControlledTest)
+                throw new InvalidOperationException(
+                    "This optimization is not eligible for an immediate controlled test. " +
+                    "It may require automatic application support or a reboot-aware test flow.");
 
             if (!workload.IsValid)
                 throw new ArgumentException(
