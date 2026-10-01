@@ -84,7 +84,12 @@ namespace BuildCore
                     return false;
 
                 if (!VerifyHagsState(experiment))
+                {
+                    RecordFinalizationFailure(
+                        experiment,
+                        "Windows restarted, but BuildCore could not verify the original HAGS state after recovery.");
                     return false;
+                }
 
                 experiment.RecoveryFinalized = true;
                 experiment.RecoveryFinalizedAtUtc = DateTime.UtcNow;
@@ -95,8 +100,11 @@ namespace BuildCore
                 RebootOptimizationExperimentStorageService.Save(experiment);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                RecordFinalizationFailure(
+                    experiment,
+                    $"Recovery finalization failed: {ex.Message}");
                 return false;
             }
         }
@@ -263,6 +271,17 @@ namespace BuildCore
             return value is int mode &&
                    experiment.OriginalHagsMode.HasValue &&
                    mode == experiment.OriginalHagsMode.Value;
+        }
+
+        private static void RecordFinalizationFailure(
+            RebootOptimizationExperimentState experiment,
+            string message)
+        {
+            experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Failed;
+            experiment.RecoveryRequiresReboot = false;
+            experiment.RecoveryFinalized = false;
+            experiment.RecoveryStatus = message;
+            RebootOptimizationExperimentStorageService.Save(experiment);
         }
 
         private static void RecordFailure(
