@@ -49,7 +49,24 @@ namespace BuildCore
                 // Write the complete document before replacing the live state file.
                 // This prevents a partial JSON document from becoming the persisted
                 // experiment if the process is interrupted during the write.
-                File.WriteAllText(tempPath, json);
+                using (var stream = new FileStream(
+                    tempPath,
+                    FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.None))
+                using (var writer = new StreamWriter(stream))
+                {
+                    writer.Write(json);
+                    writer.Flush();
+                    stream.Flush(flushToDisk: true);
+                }
+
+                // Keep the last known-good document as a recovery copy.
+                if (File.Exists(path))
+                {
+                    File.Copy(path, path + ".bak", overwrite: true);
+                }
+
                 File.Move(tempPath, path, overwrite: true);
             }
             catch
@@ -86,6 +103,11 @@ namespace BuildCore
                     JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
                         json,
                         JsonOptions);
+
+                if (experiment == null)
+                {
+                    experiment = TryLoadBackup(experimentId);
+                }
 
                 if (experiment != null && MigrateLoadedExperiment(experiment))
                     Save(experiment);
@@ -154,6 +176,28 @@ namespace BuildCore
             return experiments
                 .OrderByDescending(e => e.UpdatedAt)
                 .ToList();
+        }
+
+        private static RebootOptimizationExperimentState? TryLoadBackup(
+            string experimentId)
+        {
+            try
+            {
+                string backupPath = GetPath(experimentId) + ".bak";
+
+                if (!File.Exists(backupPath))
+                    return null;
+
+                string json = File.ReadAllText(backupPath);
+
+                return JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                    json,
+                    JsonOptions);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static bool MigrateLoadedExperiment(
