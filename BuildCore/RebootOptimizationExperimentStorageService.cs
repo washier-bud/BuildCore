@@ -180,6 +180,47 @@ namespace BuildCore
                     return false;
                 }
 
+                if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.None &&
+                    (experiment.RecoveryAvailable ||
+                     experiment.RecoveryAttempted ||
+                     experiment.RecoverySucceeded ||
+                     experiment.RecoveryRequiresReboot ||
+                     experiment.RecoveryFinalized ||
+                     experiment.RecoveryAttemptedAtUtc.HasValue ||
+                     experiment.RecoveryFinalizedAtUtc.HasValue))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None &&
+                    string.IsNullOrWhiteSpace(experiment.RecoveryStatus))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryFinalized &&
+                    (!experiment.RecoverySucceeded ||
+                     experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.Finalized ||
+                     !experiment.RecoveryFinalizedAtUtc.HasValue ||
+                     experiment.RecoveryRequiresReboot))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryAttempted &&
+                    !experiment.RecoveryAttemptedAtUtc.HasValue)
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryRequiresReboot &&
+                    (!experiment.RecoverySucceeded ||
+                     !experiment.RecoveryAttempted ||
+                     experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.RebootRequired))
+                {
+                    return false;
+                }
+
                 if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Failed &&
                     (!experiment.RecoveryAttempted ||
                      !experiment.RecoveryAttemptedAtUtc.HasValue ||
