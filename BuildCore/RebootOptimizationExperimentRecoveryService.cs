@@ -76,12 +76,6 @@ namespace BuildCore
             }
         }
 
-        public static bool VerifyRestoredState(RebootOptimizationExperimentState experiment)
-        {
-            return RebootOptimizationRecoveryHandlerRegistry.Find(experiment)
-                ?.VerifyRestoredState(experiment) == true;
-        }
-
         public static bool RetryFinalizationAfterFailure(RebootOptimizationExperimentState experiment)
         {
             if (experiment == null ||
