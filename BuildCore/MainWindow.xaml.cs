@@ -162,6 +162,8 @@ namespace BuildCore
 
         private async Task DetectPendingRebootExperimentAsync()
         {
+            RebootOptimizationExperimentStorageService.CleanupTemporaryFiles();
+
             List<string> recoveryFailures =
                 FinalizeCompletedRecoveryExperiments();
 
