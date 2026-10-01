@@ -82,9 +82,15 @@ namespace BuildCore
 
                 string json = File.ReadAllText(path);
 
-                return JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
-                    json,
-                    JsonOptions);
+                RebootOptimizationExperimentState? experiment =
+                    JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                        json,
+                        JsonOptions);
+
+                if (experiment != null && MigrateLoadedExperiment(experiment))
+                    Save(experiment);
+
+                return experiment;
             }
             catch
             {
@@ -127,6 +133,11 @@ namespace BuildCore
                         continue;
                     }
 
+                    if (MigrateLoadedExperiment(experiment))
+                    {
+                        Save(experiment);
+                    }
+
                     if (!ValidateLoadedExperiment(experiment))
                     {
                         continue;
@@ -143,6 +154,21 @@ namespace BuildCore
             return experiments
                 .OrderByDescending(e => e.UpdatedAt)
                 .ToList();
+        }
+
+        private static bool MigrateLoadedExperiment(
+            RebootOptimizationExperimentState experiment)
+        {
+            if (experiment.SchemaVersion == 0)
+            {
+                // Version 0 predates explicit schema versioning. The persisted
+                // object shape is the Version 1 contract, so safely adopt it.
+                experiment.SchemaVersion =
+                    RebootOptimizationExperimentState.CurrentSchemaVersion;
+                return true;
+            }
+
+            return false;
         }
 
         private static bool ValidateLoadedExperiment(
