@@ -93,6 +93,10 @@ namespace BuildCore
 
                 File.Move(tempPath, path, overwrite: true);
 
+                // The primary file is now the newest known-good state.
+                // Keep the backup as the previous known-good state for recovery.
+                // It is intentionally not deleted here.
+
                 // Confirm the persisted document is readable and represents
                 // the same experiment before reporting a successful save.
                 RebootOptimizationExperimentState? persisted =
@@ -376,6 +380,49 @@ namespace BuildCore
         {
             return GetExperiments()
                 .FirstOrDefault(e => e.IsPendingReboot);
+        }
+
+        public static bool CleanupTemporaryFiles()
+        {
+            try
+            {
+                if (!Directory.Exists(ExperimentDirectory))
+                    return true;
+
+                foreach (string file in Directory.GetFiles(
+                    ExperimentDirectory,
+                    "*.tmp"))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch
+                    {
+                        // A temporary file that is in use can be removed later.
+                    }
+                }
+
+                foreach (string file in Directory.GetFiles(
+                    ExperimentDirectory,
+                    "*.recovery.tmp"))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch
+                    {
+                        // A temporary recovery file that is in use can be removed later.
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static bool Delete(string experimentId)
