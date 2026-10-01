@@ -76,7 +76,7 @@ namespace BuildCore
             }
         }
 
-        public static bool VerifyRestoredHagsState(RebootOptimizationExperimentState experiment)
+        public static bool VerifyRestoredState(RebootOptimizationExperimentState experiment)
         {
             return RebootOptimizationRecoveryHandlerRegistry.Find(experiment)
                 ?.VerifyRestoredState(experiment) == true;
