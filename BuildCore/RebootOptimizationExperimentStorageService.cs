@@ -287,6 +287,22 @@ namespace BuildCore
 
                 File.Copy(backupPath, tempPath, overwrite: true);
                 File.Move(tempPath, primaryPath, overwrite: true);
+
+                RebootOptimizationExperimentState? restored =
+                    JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                        File.ReadAllText(primaryPath),
+                        JsonOptions);
+
+                if (restored == null ||
+                    !string.Equals(
+                        restored.ExperimentId,
+                        experimentId,
+                        StringComparison.Ordinal) ||
+                    !ValidateLoadedExperiment(restored))
+                {
+                    throw new IOException(
+                        "Recovered reboot experiment failed post-restore validation.");
+                }
             }
             catch
             {
