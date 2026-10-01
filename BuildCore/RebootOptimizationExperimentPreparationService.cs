@@ -2,7 +2,6 @@ using Microsoft.Win32;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.Versioning;
 
 namespace BuildCore
 {
@@ -143,8 +142,15 @@ namespace BuildCore
             }
 
             OptimizationApplyResult applyResult =
-                ApplyRebootOptimization(
-                    recommendation);
+                OperatingSystem.IsWindows()
+                    ? ApplyRebootOptimization(recommendation)
+                    : new OptimizationApplyResult
+                    {
+                        Success = false,
+                        Verified = false,
+                        Message = "BuildCore reboot optimizations are supported only on Windows.",
+                        Error = "Unsupported platform."
+                    };
 
             if (!applyResult.Success)
             {
@@ -211,7 +217,6 @@ namespace BuildCore
             return await service.RunAsync(cancellationToken);
         }
 
-        [SupportedOSPlatform("windows")]
         private static OptimizationApplyResult
             ApplyRebootOptimization(
                 OptimizationRecommendation recommendation)
