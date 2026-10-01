@@ -82,6 +82,23 @@ namespace BuildCore
 
             try
             {
+                if (string.IsNullOrWhiteSpace(experiment.SnapshotId) ||
+                    !experiment.SnapshotCreated ||
+                    !SnapshotService.ValidateSnapshot(experiment.SnapshotId))
+                {
+                    RecordFailure(
+                        experiment,
+                        "Rollback blocked because the experiment snapshot is missing or invalid.");
+
+                    return new OptimizationApplyResult
+                    {
+                        Success = false,
+                        Verified = false,
+                        Message = experiment.RecoveryStatus,
+                        Error = "Invalid snapshot."
+                    };
+                }
+
                 using RegistryKey? key =
                     Registry.LocalMachine.CreateSubKey(
                         GraphicsDriversPath);
