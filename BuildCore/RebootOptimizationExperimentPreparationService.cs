@@ -141,13 +141,30 @@ namespace BuildCore
                     workload.TargetProcessStartTimeUtc;
             }
 
-            if (recommendation.Title == "Hardware-Accelerated GPU Scheduling")
+            IRebootOptimizationRecoveryHandler? recoveryHandler =
+                RebootOptimizationRecoveryHandlerRegistry.Find(
+                    recommendation.Title);
+
+            if (recoveryHandler == null)
             {
-                RebootOptimizationExperimentRecoveryService.CaptureOriginalHagsState(experiment);
-                experiment.RecoveryAvailable = true;
-                experiment.RecoveryStatus = "Original HAGS state captured. Rollback is available.";
+                experiment.Phase =
+                    RebootOptimizationExperimentPhase.Failed;
+
+                experiment.Status =
+                    "No recovery handler is registered for this reboot optimization. " +
+                    "The experiment was blocked before the optimization was applied.";
+
                 RebootOptimizationExperimentStorageService.Save(experiment);
+
+                throw new InvalidOperationException(
+                    $"No recovery handler is registered for '{recommendation.Title}'.");
             }
+
+            recoveryHandler.CaptureOriginalState(experiment);
+            experiment.RecoveryAvailable = true;
+            experiment.RecoveryStatus =
+                $"Original state captured. Rollback is available through {recoveryHandler.GetType().Name}.";
+            RebootOptimizationExperimentStorageService.Save(experiment);
 
             OptimizationApplyResult applyResult =
                 OperatingSystem.IsWindows()
