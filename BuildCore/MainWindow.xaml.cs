@@ -1009,47 +1009,111 @@ namespace BuildCore
             }
 
             // ========================================================
-            // REBOOT-BASED EXPERIMENTS
+            // PHASE 1.14D - REBOOT-BASED EXPERIMENT PREPARATION
             // ========================================================
 
             if (recommendation.RequiresReboot)
             {
+                if (_optimizationTestRunning)
+                    return;
+
+                _optimizationTestRunning = true;
+                button.IsEnabled = false;
+                button.Content = "PREPARING...";
+
                 OptimizationResultsBorder.Visibility =
                     Visibility.Visible;
-
-                OptimizationResultsPanel.Children.Clear();
 
                 OptimizationResultsTitleText.Text =
                     recommendation.Title;
 
                 OptimizationResultsStatusText.Text =
-                    "REBOOT-BASED TEST NOT READY";
+                    "PREPARING REBOOT EXPERIMENT...";
 
                 OptimizationResultsStatusText.Foreground =
                     new Microsoft.UI.Xaml.Media.SolidColorBrush(
                         Microsoft.UI.Colors.Gold);
 
-                OptimizationResultsSummaryText.Text =
-                    "This optimization requires a Windows restart. " +
-                    "BuildCore has not yet enabled the reboot-persistent " +
-                    "experiment workflow, so no system setting was changed.";
+                OptimizationResultsPanel.Children.Clear();
 
-                statusText.Text =
-                    "REBOOT TEST COMING IN 1.11D";
+                try
+                {
+                    var preparationService =
+                        new RebootOptimizationExperimentPreparationService(
+                            _benchmarkService);
 
-                statusText.Foreground =
-                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                        Microsoft.UI.Colors.Gold);
+                    RebootOptimizationExperimentState experiment =
+                        await preparationService.PrepareAsync(
+                            recommendation,
+                            workloadDefinition);
 
-                Debug.WriteLine(
-                    "BUILDCORE EXPERIMENT BLOCKED");
+                    if (experiment.Phase ==
+                        RebootOptimizationExperimentPhase.OptimizationPendingReboot)
+                    {
+                        OptimizationResultsStatusText.Text =
+                            "REBOOT REQUIRED";
 
-                Debug.WriteLine(
-                    $"Optimization '{recommendation.Title}' " +
-                    "requires a reboot-persistent test workflow.");
+                        OptimizationResultsSummaryText.Text =
+                            "Baseline completed and the optimization change " +
+                            "has been prepared. Restart Windows to continue " +
+                            "the experiment. BuildCore will not restart Windows " +
+                            "without your confirmation.";
 
-                await ShowRebootTestNotReadyDialog(
-                    recommendation);
+                        statusText.Text =
+                            "RESTART REQUIRED";
+
+                        statusText.Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gold);
+
+                        await ShowRebootReadyDialog(experiment);
+                    }
+                    else
+                    {
+                        OptimizationResultsStatusText.Text =
+                            "EXPERIMENT NOT READY";
+
+                        OptimizationResultsSummaryText.Text =
+                            experiment.Status;
+
+                        statusText.Text =
+                            "TEST INCONCLUSIVE";
+
+                        statusText.Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Xaml.MediaColors.Gold);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    statusText.Text = "TEST CANCELED";
+                }
+                catch (Exception ex)
+                {
+                    statusText.Text = "TEST FAILED";
+
+                    statusText.Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.OrangeRed);
+
+                    OptimizationResultsStatusText.Text =
+                        "REBOOT EXPERIMENT FAILED";
+
+                    OptimizationResultsSummaryText.Text =
+                        ex.Message;
+
+                    Debug.WriteLine(
+                        "BUILDCORE REBOOT EXPERIMENT PREPARATION ERROR");
+
+                    Debug.WriteLine(
+                        ex.ToString());
+                }
+                finally
+                {
+                    _optimizationTestRunning = false;
+                    button.IsEnabled = true;
+                    button.Content = "TEST • REBOOT";
+                }
 
                 return;
             }
@@ -1198,6 +1262,67 @@ namespace BuildCore
 
                 button.IsEnabled =
                     true;
+            }
+        }
+
+        private async Task ShowRebootReadyDialog(
+            RebootOptimizationExperimentState experiment)
+        {
+            var dialog =
+                new ContentDialog
+                {
+                    Title =
+                        "REBOOT REQUIRED",
+
+                    Content =
+                        new TextBlock
+                        {
+                            Text =
+                                "BuildCore has completed the baseline and " +
+                                "prepared the optimization change.\\n\\n" +
+                                $"Optimization: {experiment.OptimizationTitle}\\n" +
+                                $"Snapshot: {experiment.SnapshotId}\\n\\n" +
+                                "Restart Windows to continue the experiment. " +
+                                "After BuildCore starts again, it will detect " +
+                                "the saved experiment and validate the reboot.",
+
+                            TextWrapping =
+                                TextWrapping.Wrap
+                        },
+
+                    PrimaryButtonText =
+                        "RESTART WINDOWS",
+
+                    CloseButtonText =
+                        "CANCEL",
+
+                    XamlRoot =
+                        Content.XamlRoot
+                };
+
+            ContentDialogResult result =
+                await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    Process.Start(
+                        new ProcessStartInfo
+                        {
+                            FileName = "shutdown.exe",
+                            Arguments = "/r /t 0",
+                            UseShellExecute = true
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(
+                        "BUILDCORE RESTART ERROR");
+
+                    Debug.WriteLine(
+                        ex.ToString());
+                }
             }
         }
 
