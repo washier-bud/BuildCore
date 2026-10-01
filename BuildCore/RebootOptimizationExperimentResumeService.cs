@@ -179,6 +179,9 @@ namespace BuildCore
             experiment.EvidenceQuality =
                 BuildEvidenceQuality(experiment);
 
+            experiment.EvidenceGatePassed =
+                experiment.EvidenceQuality.IsSufficient;
+
             if (!experiment.AnalysisCompleted)
             {
                 experiment.Phase =
