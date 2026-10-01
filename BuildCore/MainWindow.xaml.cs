@@ -3029,6 +3029,16 @@ namespace BuildCore
                 "ENVIRONMENT",
                 environment));
 
+            RebootOptimizationExperimentStorageHealth storageHealth =
+                RebootOptimizationExperimentStorageService.GetHealth(
+                    experiment.ExperimentId);
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "STORAGE / PERSISTENCE",
+                $"Primary state: {(storageHealth.PrimaryValid ? "VALID" : storageHealth.PrimaryExists ? "INVALID" : "MISSING")}\n" +
+                $"Backup state: {(storageHealth.BackupValid ? "VALID" : storageHealth.BackupExists ? "INVALID" : "MISSING")}\n" +
+                $"Storage health: {(storageHealth.IsHealthy ? "HEALTHY" : storageHealth.CanRecoverFromBackup ? "RECOVERABLE FROM BACKUP" : "UNRESOLVED")}"));
+
             root.Children.Add(CreateRebootDetailsSection(
                 "RECOVERY / VALIDATION",
                 $"Snapshot: {experiment.SnapshotId}\n" +
