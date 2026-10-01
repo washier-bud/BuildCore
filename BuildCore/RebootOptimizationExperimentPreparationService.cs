@@ -226,7 +226,7 @@ namespace BuildCore
             {
                 using RegistryKey? key =
                     Registry.LocalMachine.CreateSubKey(
-                        @"SYSTEMCurrentControlSetControlGraphicsDrivers");
+                        @"SYSTEM\CurrentControlSet\Control\GraphicsDrivers");
 
                 if (key == null)
                 {
