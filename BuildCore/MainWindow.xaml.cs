@@ -2742,6 +2742,17 @@ namespace BuildCore
                 TextWrapping = TextWrapping.Wrap
             });
 
+            var detailsButton = new Button
+            {
+                Content = "VIEW DETAILS",
+                Padding = new Thickness(12, 7, 12, 7),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Tag = experiment
+            };
+
+            detailsButton.Click += RebootExperimentDetailsButton_Click;
+            panel.Children.Add(detailsButton);
+
             var deleteButton = new Button
             {
                 Content = "DELETE",
@@ -2760,6 +2771,166 @@ namespace BuildCore
                 CornerRadius = new CornerRadius(10),
                 Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
                     Microsoft.UI.Colors.Transparent),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1),
+                Child = panel
+            };
+        }
+
+        private async void RebootExperimentDetailsButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not RebootOptimizationExperimentState experiment)
+                return;
+
+            await ShowRebootExperimentDetailsDialog(experiment);
+        }
+
+        private async Task ShowRebootExperimentDetailsDialog(
+            RebootOptimizationExperimentState experiment)
+        {
+            string workloadName =
+                experiment.WorkloadDefinition?.Name ??
+                "Unknown workload";
+
+            string baselineRuns =
+                experiment.Baseline != null
+                    ? $"${experiment.Baseline.CompletedRuns} / " +
+                      $"${experiment.Baseline.RequestedRuns}"
+                    : "Not recorded";
+
+            string afterRuns =
+                experiment.AfterBenchmark != null
+                    ? $"${experiment.AfterBenchmark.CompletedRuns} / " +
+                      $"${experiment.AfterBenchmark.RequestedRuns}"
+                    : "Not recorded";
+
+            string frameTime =
+                experiment.Analysis != null
+                    ? $"Paired runs: {experiment.Analysis.PairedRunCount}\n" +
+                      $"Paired mean difference: {experiment.Analysis.PairedMeanDifference:F3}\n" +
+                      $"Paired SD: {experiment.Analysis.PairedDifferenceStandardDeviation:F3}\n" +
+                      $"Paired SD %: {experiment.Analysis.PairedDifferenceStandardDeviationPercent:F2}%"
+                    : "Statistical analysis not available.";
+
+            string evidence =
+                experiment.EvidenceQuality != null
+                    ? $"Grade: {experiment.EvidenceQuality.EvidenceGrade}\n" +
+                      $"Gate passed: {(experiment.EvidenceGatePassed ? "YES" : "NO")}\n" +
+                      $"Frame-time evidence: {(experiment.EvidenceQuality.HasRealFrameTimeData ? "YES" : "NO")}\n" +
+                      $"Fingerprints match: {(experiment.EvidenceQuality.FingerprintsMatch ? "YES" : "NO")}\n" +
+                      $"Environment comparable: {(experiment.EvidenceQuality.EnvironmentComparable ? "YES" : "NO")}\n" +
+                      $"Process identity verified: {(experiment.EvidenceQuality.ProcessIdentityVerified ? "YES" : "NO")}"
+                    : "Evidence quality not available.";
+
+            string environment =
+                experiment.EnvironmentComparison != null
+                    ? experiment.EnvironmentComparison.ToString() ?? "Comparison recorded."
+                    : "Environment comparison not available.";
+
+            var root = new StackPanel { Spacing = 10 };
+
+            root.Children.Add(new TextBlock
+            {
+                Text = experiment.OptimizationTitle,
+                FontSize = 20,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            root.Children.Add(new TextBlock
+            {
+                Text =
+                    $"Status: {experiment.Status}\n" +
+                    $"Phase: {experiment.Phase}\n" +
+                    $"Workload: {workloadName}\n" +
+                    $"Created: {experiment.CreatedAt:yyyy-MM-dd HH:mm:ss}\n" +
+                    $"Updated: {experiment.UpdatedAt:yyyy-MM-dd HH:mm:ss}",
+                FontSize = 11,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "BENCHMARK RUNS",
+                $"Baseline: {baselineRuns}\nAfter reboot: {afterRuns}\n" +
+                $"Baseline complete: {(experiment.BaselineCompleted ? "YES" : "NO")}\n" +
+                $"After benchmark complete: {(experiment.AfterBenchmarkCompleted ? "YES" : "NO")}"));
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "ANALYSIS",
+                experiment.Analysis?.Summary ??
+                "No completed statistical analysis is available."));
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "PAIRED ANALYSIS",
+                frameTime));
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "EVIDENCE QUALITY",
+                evidence));
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "ENVIRONMENT",
+                environment));
+
+            root.Children.Add(CreateRebootDetailsSection(
+                "RECOVERY / VALIDATION",
+                $"Snapshot: {experiment.SnapshotId}\n" +
+                $"Reboot detected: {(experiment.RebootDetected ? "YES" : "NO")}\n" +
+                $"After-reboot validation: {(experiment.AfterRebootValidationPassed ? "PASSED" : "NOT PASSED")}\n" +
+                $"Expected process: {experiment.ExpectedTargetProcessPath}"));
+
+            var dialog = new ContentDialog
+            {
+                Title = "Reboot Experiment Details",
+                Content = new ScrollViewer
+                {
+                    Content = root,
+                    MaxHeight = 650,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                },
+                CloseButtonText = "CLOSE",
+                XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private Border CreateRebootDetailsSection(
+            string title,
+            string value)
+        {
+            var panel = new StackPanel { Spacing = 5 };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = title,
+                FontSize = 10,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gold)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = value,
+                FontSize = 11,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            return new Border
+            {
+                Padding = new Thickness(12),
+                CornerRadius = new CornerRadius(8),
                 BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
                     Microsoft.UI.Colors.DimGray),
                 BorderThickness = new Thickness(1),
