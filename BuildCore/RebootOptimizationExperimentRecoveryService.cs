@@ -79,6 +79,9 @@ namespace BuildCore
 
             try
             {
+                experiment.RecoveryFinalizationCheckedAtUtc = DateTime.UtcNow;
+                RebootOptimizationExperimentStorageService.Save(experiment);
+
                 DateTime bootTimeUtc = GetCurrentBootTimeUtc();
                 if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
                     return false;
@@ -146,6 +149,9 @@ namespace BuildCore
 
             try
             {
+                experiment.RecoveryFinalizationCheckedAtUtc = DateTime.UtcNow;
+                RebootOptimizationExperimentStorageService.Save(experiment);
+
                 DateTime bootTimeUtc = GetCurrentBootTimeUtc();
                 if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
                     return false;
