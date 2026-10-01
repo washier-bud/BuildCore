@@ -190,9 +190,22 @@ namespace BuildCore
 
                 string json = File.ReadAllText(backupPath);
 
-                return JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
-                    json,
-                    JsonOptions);
+                RebootOptimizationExperimentState? experiment =
+                    JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                        json,
+                        JsonOptions);
+
+                if (experiment == null ||
+                    !string.Equals(
+                        experiment.ExperimentId,
+                        experimentId,
+                        StringComparison.Ordinal) ||
+                    !ValidateLoadedExperiment(experiment))
+                {
+                    return null;
+                }
+
+                return experiment;
             }
             catch
             {
