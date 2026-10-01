@@ -2708,13 +2708,15 @@ namespace BuildCore
                             : "No benchmark completed";
 
             string recovery =
-                experiment.RecoveryAvailable
-                    ? experiment.RecoverySucceeded
-                        ? "✓ ORIGINAL HAGS STATE RESTORED"
-                        : experiment.RecoveryAttempted
-                            ? "✕ RECOVERY ATTEMPT FAILED"
-                            : "↻ ROLLBACK AVAILABLE"
-                    : "No rollback handler available";
+                experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Finalized
+                    ? "✓ RECOVERY FINALIZED"
+                    : experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.RebootRequired
+                        ? "↻ RECOVERY REBOOT REQUIRED"
+                        : experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Failed
+                            ? "✕ RECOVERY FAILED"
+                            : experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available
+                                ? "↻ ROLLBACK AVAILABLE"
+                                : "No rollback handler available";
 
             var panel = new StackPanel { Spacing = 7 };
 
@@ -2768,17 +2770,24 @@ namespace BuildCore
                 Text = recovery,
                 FontSize = 9,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-                Foreground = experiment.RecoverySucceeded
+                Foreground = experiment.RecoveryPhase ==
+                    RebootOptimizationExperimentRecoveryPhase.Finalized
                     ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
                         Microsoft.UI.Colors.LightGreen)
-                    : experiment.RecoveryAttempted
+                    : experiment.RecoveryPhase ==
+                        RebootOptimizationExperimentRecoveryPhase.Failed
                         ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
                             Microsoft.UI.Colors.IndianRed)
-                        : experiment.RecoveryAvailable
+                        : experiment.RecoveryPhase ==
+                            RebootOptimizationExperimentRecoveryPhase.RebootRequired
                             ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
                                 Microsoft.UI.Colors.Gold)
-                            : new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Colors.Gray)
+                            : experiment.RecoveryPhase ==
+                                RebootOptimizationExperimentRecoveryPhase.Available
+                                ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.Gold)
+                                : new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.Gray)
             });
 
             if (experiment.RecoveryRequiresReboot)
@@ -2950,6 +2959,7 @@ namespace BuildCore
                 $"Reboot detected: {(experiment.RebootDetected ? "YES" : "NO")}\n" +
                 $"After-reboot validation: {(experiment.AfterRebootValidationPassed ? "PASSED" : "NOT PASSED")}\n" +
                 $"Expected process: {experiment.ExpectedTargetProcessPath}\n" +
+                $"Recovery phase: {experiment.RecoveryPhaseDisplayName}\n" +
                 $"Recovery: {experiment.RecoveryStatus}\n" +
                 $"Recovery attempted: {(experiment.RecoveryAttemptedAtUtc.HasValue ? experiment.RecoveryAttemptedAtUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "NO")}\n" +
                 $"Recovery finalized: {(experiment.RecoveryFinalized ? "YES" : "NO")}"));
