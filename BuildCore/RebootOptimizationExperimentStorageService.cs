@@ -64,7 +64,31 @@ namespace BuildCore
                 // Keep the last known-good document as a recovery copy.
                 if (File.Exists(path))
                 {
-                    File.Copy(path, path + ".bak", overwrite: true);
+                    string backupPath = path + ".bak";
+                    string backupTempPath = backupPath + ".tmp";
+
+                    try
+                    {
+                        File.Copy(path, backupTempPath, overwrite: true);
+                        File.Move(
+                            backupTempPath,
+                            backupPath,
+                            overwrite: true);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            if (File.Exists(backupTempPath))
+                                File.Delete(backupTempPath);
+                        }
+                        catch
+                        {
+                            // Preserve the original backup failure.
+                        }
+
+                        throw;
+                    }
                 }
 
                 File.Move(tempPath, path, overwrite: true);
