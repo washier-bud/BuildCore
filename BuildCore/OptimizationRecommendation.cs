@@ -59,11 +59,23 @@
         public OptimizationImpact Impact { get; set; } =
             OptimizationImpact.Low;
 
+        // Capabilities are intentionally separate: an optimization can be
+        // analyzable without being safe for automatic application or testing.
+        public bool CanAnalyze { get; set; } =
+            true;
+
         public bool CanApply { get; set; } =
             false;
 
         public bool CanTest { get; set; } =
             false;
+
+        // Immediate controlled tests require both a test strategy and an
+        // automatic apply path. Reboot-based experiments use a future state
+        // machine and are not run by the immediate test service yet.
+        public bool CanRunImmediateControlledTest =>
+            CanTest && CanApply && !RequiresReboot &&
+            TestType == OptimizationTestType.SafeImmediate;
 
         public bool RequiresReboot { get; set; } =
             false;
