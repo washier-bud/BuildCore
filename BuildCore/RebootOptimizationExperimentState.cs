@@ -94,6 +94,16 @@ namespace BuildCore
             RecoveryRequiresReboot &&
             !RecoveryFinalized;
 
+        public string RecoveryPhaseDisplayName =>
+            RecoveryPhase switch
+            {
+                RebootOptimizationExperimentRecoveryPhase.Available => "ROLLBACK AVAILABLE",
+                RebootOptimizationExperimentRecoveryPhase.RebootRequired => "REBOOT REQUIRED",
+                RebootOptimizationExperimentRecoveryPhase.Finalized => "FINALIZED",
+                RebootOptimizationExperimentRecoveryPhase.Failed => "FAILED",
+                _ => "NONE"
+            };
+
         public bool IsTerminal =>
             !IsPendingReboot &&
             !IsRecoveryPendingReboot &&
