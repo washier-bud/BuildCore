@@ -481,6 +481,75 @@ namespace BuildCore
             }
         }
 
+        public static RebootOptimizationExperimentStorageHealth GetHealth(
+            string experimentId)
+        {
+            if (!IsSafeExperimentId(experimentId))
+            {
+                return new RebootOptimizationExperimentStorageHealth
+                {
+                    ExperimentId = experimentId,
+                    IsValidId = false
+                };
+            }
+
+            lock (StorageLock)
+            {
+                string primaryPath = GetPath(experimentId);
+                string backupPath = primaryPath + ".bak";
+
+                RebootOptimizationExperimentState? primary =
+                    TryLoadValidatedFile(primaryPath, experimentId);
+
+                RebootOptimizationExperimentState? backup =
+                    TryLoadValidatedFile(backupPath, experimentId);
+
+                return new RebootOptimizationExperimentStorageHealth
+                {
+                    ExperimentId = experimentId,
+                    IsValidId = true,
+                    PrimaryExists = File.Exists(primaryPath),
+                    PrimaryValid = primary != null,
+                    BackupExists = File.Exists(backupPath),
+                    BackupValid = backup != null,
+                    IsHealthy = primary != null,
+                    CanRecoverFromBackup = primary == null && backup != null
+                };
+            }
+        }
+
+        private static RebootOptimizationExperimentState? TryLoadValidatedFile(
+            string path,
+            string experimentId)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return null;
+
+                RebootOptimizationExperimentState? experiment =
+                    JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                        File.ReadAllText(path),
+                        JsonOptions);
+
+                if (experiment == null ||
+                    !string.Equals(
+                        experiment.ExperimentId,
+                        experimentId,
+                        StringComparison.Ordinal) ||
+                    !ValidateLoadedExperiment(experiment))
+                {
+                    return null;
+                }
+
+                return experiment;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static bool Validate(string experimentId)
         {
             try
