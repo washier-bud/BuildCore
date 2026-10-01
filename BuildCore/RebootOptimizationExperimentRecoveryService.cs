@@ -63,6 +63,54 @@ namespace BuildCore
                        StringComparison.Ordinal);
         }
 
+        public static bool FinalizeRecoveryAfterReboot(
+            RebootOptimizationExperimentState experiment)
+        {
+            if (experiment == null ||
+                !experiment.RecoverySucceeded ||
+                !experiment.RecoveryRequiresReboot ||
+                experiment.RecoveryFinalized ||
+                !experiment.RecoveryAttemptedAtUtc.HasValue)
+                return false;
+
+            try
+            {
+                DateTime bootTimeUtc = GetCurrentBootTimeUtc();
+                if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
+                    return false;
+
+                if (!VerifyHagsState(experiment))
+                    return false;
+
+                experiment.RecoveryFinalized = true;
+                experiment.RecoveryFinalizedAtUtc = DateTime.UtcNow;
+                experiment.RecoveryRequiresReboot = false;
+                experiment.RecoveryStatus =
+                    "Original HAGS state restored and verified after Windows restart.";
+                RebootOptimizationExperimentStorageService.Save(experiment);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static DateTime GetCurrentBootTimeUtc()
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher(
+                "SELECT LastBootUpTime FROM Win32_OperatingSystem");
+            foreach (System.Management.ManagementObject item in searcher.Get())
+            {
+                string? value = item["LastBootUpTime"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                    return System.Management.ManagementDateTimeConverter
+                        .ToDateTime(value).ToUniversalTime();
+            }
+
+            throw new InvalidOperationException("Could not determine Windows boot time.");
+        }
+
         public static bool VerifyRestoredHagsState(
             RebootOptimizationExperimentState experiment)
         {
