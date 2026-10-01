@@ -9,6 +9,7 @@ namespace BuildCore
         public bool HasRealFrameTimeData { get; set; }
         public bool ConfigurationLocked { get; set; }
         public bool ProcessIdentityVerified { get; set; }
+        public bool PerRunConditionsCaptured { get; set; }
         public bool EnvironmentComparable { get; set; }
         public bool FingerprintsMatch { get; set; }
         public bool AnalysisComplete { get; set; }
@@ -27,6 +28,7 @@ namespace BuildCore
             AnalysisComplete &&
             EnvironmentComparable &&
             FingerprintsMatch &&
+            PerRunConditionsCaptured &&
             BaselineRunCount >= 3 &&
             AfterRunCount >= 3 &&
             PairedRunCount >= 3 &&
@@ -71,6 +73,12 @@ namespace BuildCore
             quality.EnvironmentComparable =
                 result.WorkloadEnvironmentComparison?.IsComparable ?? false;
 
+            quality.PerRunConditionsCaptured =
+                baseline != null && after != null &&
+                baseline.Runs.Count > 0 && after.Runs.Count > 0 &&
+                baseline.Runs.All(r => r.Environment != null) &&
+                after.Runs.All(r => r.Environment != null);
+
             quality.AnalysisComplete =
                 result.WorkloadAnalysisCompleted &&
                 analysis != null &&
@@ -113,6 +121,12 @@ namespace BuildCore
             {
                 quality.Warnings.Add(
                     "No real frame-time evidence was captured.");
+            }
+
+            if (!quality.PerRunConditionsCaptured)
+            {
+                quality.Warnings.Add(
+                    "Per-run environment capture is incomplete.");
             }
 
             if (!quality.EnvironmentComparable)
@@ -188,7 +202,8 @@ namespace BuildCore
 
             if (quality.HasRealFrameTimeData) points += 25;
             if (quality.FingerprintsMatch) points += 15;
-            if (quality.EnvironmentComparable) points += 15;
+            if (quality.EnvironmentComparable) points += 10;
+            if (quality.PerRunConditionsCaptured) points += 5;
             if (quality.ProcessIdentityVerified) points += 10;
             if (quality.BaselineRunCount >= 3) points += 10;
             if (quality.AfterRunCount >= 3) points += 10;
