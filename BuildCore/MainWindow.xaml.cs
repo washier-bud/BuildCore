@@ -2888,6 +2888,9 @@ namespace BuildCore
                 $"After-reboot validation: {(experiment.AfterRebootValidationPassed ? "PASSED" : "NOT PASSED")}\n" +
                 $"Expected process: {experiment.ExpectedTargetProcessPath}"));
 
+            var canRollback =
+                RebootOptimizationExperimentRecoveryService.CanRollback(experiment);
+
             var dialog = new ContentDialog
             {
                 Title = "Reboot Experiment Details",
@@ -2897,11 +2900,28 @@ namespace BuildCore
                     MaxHeight = 650,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto
                 },
+                PrimaryButtonText = canRollback ? "ROLL BACK" : null,
                 CloseButtonText = "CLOSE",
                 XamlRoot = ((FrameworkElement)this.Content).XamlRoot
             };
 
-            await dialog.ShowAsync();
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary && canRollback)
+            {
+                OptimizationApplyResult rollback =
+                    RebootOptimizationExperimentRecoveryService.Rollback(experiment);
+
+                var resultDialog = new ContentDialog
+                {
+                    Title = rollback.Success ? "ROLLBACK COMPLETE" : "ROLLBACK FAILED",
+                    Content = rollback.Message,
+                    CloseButtonText = "CLOSE",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                await resultDialog.ShowAsync();
+            }
         }
 
         private static string FormatPairedMetric(
