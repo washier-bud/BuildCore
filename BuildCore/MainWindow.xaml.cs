@@ -180,6 +180,16 @@ namespace BuildCore
         {
             RebootOptimizationExperimentStorageService.CleanupTemporaryFiles();
 
+            IReadOnlyList<string> recoveryRegistryErrors =
+                RebootOptimizationRecoveryHandlerRegistry.ValidateRegistry();
+
+            if (recoveryRegistryErrors.Count > 0)
+            {
+                Debug.WriteLine(
+                    "BUILDCORE RECOVERY HANDLER REGISTRY INVALID: " +
+                    string.Join(" | ", recoveryRegistryErrors));
+            }
+
             List<string> recoveryFailures =
                 FinalizeCompletedRecoveryExperiments();
 
