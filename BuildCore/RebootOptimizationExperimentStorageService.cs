@@ -150,6 +150,12 @@ namespace BuildCore
         {
             try
             {
+                if (experiment.SchemaVersion <= 0 ||
+                    experiment.SchemaVersion > RebootOptimizationExperimentState.CurrentSchemaVersion)
+                {
+                    return false;
+                }
+
                 return !string.IsNullOrWhiteSpace(experiment.ExperimentId) &&
                        experiment.CreatedAt != default &&
                        experiment.UpdatedAt != default &&
