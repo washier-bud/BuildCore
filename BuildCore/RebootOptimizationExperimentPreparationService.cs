@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -139,6 +140,24 @@ namespace BuildCore
 
                 experiment.ExpectedTargetProcessStartTimeUtc =
                     workload.TargetProcessStartTimeUtc;
+            }
+
+            IReadOnlyList<string> recoveryRegistryErrors =
+                RebootOptimizationRecoveryHandlerRegistry.ValidateRegistry();
+
+            if (recoveryRegistryErrors.Count > 0)
+            {
+                experiment.Phase =
+                    RebootOptimizationExperimentPhase.Failed;
+
+                experiment.Status =
+                    "Recovery handler registry validation failed: " +
+                    string.Join(" | ", recoveryRegistryErrors);
+
+                RebootOptimizationExperimentStorageService.Save(experiment);
+
+                throw new InvalidOperationException(
+                    experiment.Status);
             }
 
             IRebootOptimizationRecoveryHandler? recoveryHandler =
