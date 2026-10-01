@@ -132,31 +132,26 @@ namespace BuildCore
                     experiment.ExperimentId))
                 {
                     Debug.WriteLine(
-                        "BUILDCORE REBOOT EXPERIMENT: " +
-                        "Pending experiment failed validation.");
-
+                        "BUILDCORE REBOOT EXPERIMENT: Pending experiment failed validation.");
                     return;
                 }
+
+                string validationMessage;
+
+                if (!RebootOptimizationExperimentValidationService.ValidateAfterReboot(
+                    experiment,
+                    out validationMessage))
+                {
+                    Debug.WriteLine(
+                        $"BUILDCORE REBOOT EXPERIMENT: {validationMessage}");
+                    return;
+                }
+
+                RebootOptimizationExperimentStorageService.Save(experiment);
 
                 string workloadName =
                     experiment.WorkloadDefinition?.Name ??
                     "Unknown workload";
-
-                string phase =
-                    experiment.Phase
-                        .ToString()
-                        .Replace(
-                            "OptimizationPendingReboot",
-                            "Optimization Pending Reboot")
-                        .Replace(
-                            "RebootRequired",
-                            "Reboot Required")
-                        .Replace(
-                            "AfterRebootValidation",
-                            "After Reboot Validation")
-                        .Replace(
-                            "AfterBenchmarkPending",
-                            "After Benchmark Pending");
 
                 var contentPanel =
                     new StackPanel
@@ -168,11 +163,10 @@ namespace BuildCore
                     new TextBlock
                     {
                         Text =
-                            "BuildCore found an unfinished reboot-based " +
-                            "optimization experiment.",
+                            "BuildCore detected that Windows restarted " +
+                            "after the saved optimization experiment.",
 
-                        TextWrapping =
-                            TextWrapping.Wrap
+                        TextWrapping = TextWrapping.Wrap
                     });
 
                 contentPanel.Children.Add(
@@ -181,51 +175,106 @@ namespace BuildCore
                         Text =
                             $"Optimization: {experiment.OptimizationTitle}\n" +
                             $"Workload: {workloadName}\n" +
-                            $"Phase: {phase}\n" +
-                            $"Snapshot: {experiment.SnapshotId}",
+                            $"Snapshot: {experiment.SnapshotId}\n" +
+                            $"Status: {validationMessage}",
 
-                        TextWrapping =
-                            TextWrapping.Wrap
+                        TextWrapping = TextWrapping.Wrap
                     });
 
                 contentPanel.Children.Add(
                     new TextBlock
                     {
                         Text =
-                            "No reboot or optimization change will be " +
-                            "performed automatically. The experiment is " +
-                            "paused until BuildCore adds the explicit resume " +
-                            "flow.",
+                            "BuildCore will now continue only if you choose " +
+                            "RESUME. For an interactive workload, make sure " +
+                            "the same application is running first.",
 
-                        TextWrapping =
-                            TextWrapping.Wrap
+                        TextWrapping = TextWrapping.Wrap
                     });
 
                 var dialog =
                     new ContentDialog
                     {
-                        Title =
-                            "REBOOT EXPERIMENT DETECTED",
-
-                        Content =
-                            contentPanel,
-
-                        CloseButtonText =
-                            "CLOSE",
-
-                        XamlRoot =
-                            Content.XamlRoot
+                        Title = "REBOOT EXPERIMENT READY",
+                        Content = contentPanel,
+                        PrimaryButtonText = "RESUME",
+                        CloseButtonText = "CLOSE",
+                        XamlRoot = Content.XamlRoot
                     };
 
-                await dialog.ShowAsync();
+                ContentDialogResult dialogResult =
+                    await dialog.ShowAsync();
+
+                if (dialogResult != ContentDialogResult.Primary)
+                    return;
+
+                OptimizationResultsBorder.Visibility =
+                    Visibility.Visible;
+
+                OptimizationResultsTitleText.Text =
+                    experiment.OptimizationTitle;
+
+                OptimizationResultsStatusText.Text =
+                    "RESUMING REBOOT EXPERIMENT...";
+
+                OptimizationResultsStatusText.Foreground =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold);
+
+                OptimizationResultsSummaryText.Text =
+                    "BuildCore is running the after-reboot workload benchmark.";
+
+                var resumeService =
+                    new RebootOptimizationExperimentResumeService(
+                        _benchmarkService);
+
+                RebootOptimizationExperimentState resumed =
+                    await resumeService.ResumeAsync(experiment);
+
+                if (resumed.Phase ==
+                    RebootOptimizationExperimentPhase.Completed)
+                {
+                    OptimizationResultsStatusText.Text =
+                        "EXPERIMENT COMPLETE";
+
+                    OptimizationResultsStatusText.Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGreen);
+
+                    OptimizationResultsSummaryText.Text =
+                        resumed.Analysis?.Summary ??
+                        resumed.Status;
+                }
+                else
+                {
+                    OptimizationResultsStatusText.Text =
+                        "EXPERIMENT INCONCLUSIVE";
+
+                    OptimizationResultsStatusText.Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.Gold);
+
+                    OptimizationResultsSummaryText.Text =
+                        resumed.Status;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine(
+                    "BUILDCORE REBOOT EXPERIMENT RESUME CANCELED");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(
-                    "BUILDCORE REBOOT EXPERIMENT DETECTION ERROR");
+                    "BUILDCORE REBOOT EXPERIMENT RESUME ERROR");
 
-                Debug.WriteLine(
-                    ex.ToString());
+                Debug.WriteLine(ex.ToString());
+
+                OptimizationResultsStatusText.Text =
+                    "REBOOT EXPERIMENT FAILED";
+
+                OptimizationResultsSummaryText.Text =
+                    ex.Message;
             }
         }
 
