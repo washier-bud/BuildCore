@@ -21,6 +21,38 @@ namespace BuildCore
             return titles.AsReadOnly();
         }
 
+        public static IReadOnlyList<string> ValidateRegistry()
+        {
+            var errors = new List<string>();
+            var seenTitles = new HashSet<string>(StringComparer.Ordinal);
+
+            for (int i = 0; i < Handlers.Count; i++)
+            {
+                IRebootOptimizationRecoveryHandler? handler = Handlers[i];
+
+                if (handler == null)
+                {
+                    errors.Add($"Recovery handler at index {i} is null.");
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(handler.OptimizationTitle))
+                {
+                    errors.Add(
+                        $"Recovery handler at index {i} has an empty optimization title.");
+                    continue;
+                }
+
+                if (!seenTitles.Add(handler.OptimizationTitle))
+                {
+                    errors.Add(
+                        $"Duplicate recovery handler title: '{handler.OptimizationTitle}'.");
+                }
+            }
+
+            return errors.AsReadOnly();
+        }
+
         public static IRebootOptimizationRecoveryHandler? Find(
             RebootOptimizationExperimentState experiment)
         {
