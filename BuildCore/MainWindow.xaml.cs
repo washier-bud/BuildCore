@@ -2690,11 +2690,13 @@ namespace BuildCore
                 "Unknown workload";
 
             string resultStatus =
-                experiment.IsTerminal
-                    ? experiment.Status
-                    : experiment.IsPendingReboot
-                        ? "WAITING FOR WINDOWS RESTART"
-                        : experiment.Status;
+                experiment.IsPendingReboot
+                    ? "WAITING FOR WINDOWS RESTART"
+                    : experiment.IsRecoveryPendingReboot
+                        ? "WAITING FOR WINDOWS RESTART TO FINALIZE RECOVERY"
+                        : experiment.IsTerminal
+                            ? experiment.Status
+                            : experiment.Status;
 
             string metrics =
                 experiment.Analysis != null
@@ -2740,7 +2742,8 @@ namespace BuildCore
                     $"{experiment.Phase.ToString().ToUpperInvariant()}  •  {resultStatus}",
                 FontSize = 9,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-                Foreground = experiment.IsPendingReboot
+                Foreground = experiment.IsPendingReboot ||
+                    experiment.IsRecoveryPendingReboot
                     ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
                         Microsoft.UI.Colors.Gold)
                     : experiment.Phase ==
@@ -3052,6 +3055,28 @@ namespace BuildCore
             if (sender is not Button button ||
                 button.Tag is not RebootOptimizationExperimentState experiment)
                 return;
+
+            if (experiment.IsPendingReboot ||
+                experiment.IsRecoveryPendingReboot ||
+                (experiment.RecoveryAvailable &&
+                 !experiment.RecoveryFinalized &&
+                 !experiment.RecoveryAttempted))
+            {
+                var blockedDialog = new ContentDialog
+                {
+                    Title = "EXPERIMENT ACTIVE",
+                    Content = new TextBlock
+                    {
+                        Text = "This experiment cannot be deleted while a Windows restart, recovery action, or rollback is still pending. Complete the lifecycle first.",
+                        TextWrapping = TextWrapping.Wrap
+                    },
+                    CloseButtonText = "OK",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                await blockedDialog.ShowAsync();
+                return;
+            }
 
             if (RebootOptimizationExperimentStorageService.Delete(
                 experiment.ExperimentId))
