@@ -3043,6 +3043,16 @@ namespace BuildCore
                 experiment.RecoverySucceeded &&
                 !experiment.RecoveryFinalized;
 
+            bool recoveryVerificationRetryAvailable =
+                experiment.RecoveryPhase ==
+                    RebootOptimizationExperimentRecoveryPhase.Failed &&
+                experiment.RecoverySucceeded &&
+                experiment.RecoveryAttemptedAtUtc.HasValue;
+
+            bool canRollback =
+                RebootOptimizationExperimentRecoveryService.CanRollback(
+                    experiment);
+
             var dialog = new ContentDialog
             {
                 Title = "Reboot Experiment Details",
@@ -3054,9 +3064,11 @@ namespace BuildCore
                 },
                 PrimaryButtonText = recoveryRequiresReboot
                     ? "RESTART WINDOWS"
-                    : canRollback
-                        ? "ROLL BACK"
-                        : null,
+                    : recoveryVerificationRetryAvailable
+                        ? "VERIFY RECOVERY"
+                        : canRollback
+                            ? "ROLL BACK"
+                            : null,
                 CloseButtonText = "CLOSE",
                 XamlRoot = ((FrameworkElement)this.Content).XamlRoot
             };
@@ -3088,6 +3100,28 @@ namespace BuildCore
                     UseShellExecute = true
                 });
 
+                return;
+            }
+
+            if (recoveryVerificationRetryAvailable)
+            {
+                bool verified =
+                    RebootOptimizationExperimentRecoveryService
+                        .RetryFinalizationAfterFailure(experiment);
+
+                var verificationDialog = new ContentDialog
+                {
+                    Title = verified
+                        ? "RECOVERY VERIFIED"
+                        : "RECOVERY STILL UNVERIFIED",
+                    Content = verified
+                        ? experiment.RecoveryStatus
+                        : "BuildCore could not verify the original HAGS state. The recovery remains unresolved.",
+                    CloseButtonText = "CLOSE",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                await verificationDialog.ShowAsync();
                 return;
             }
 
