@@ -247,7 +247,7 @@ namespace BuildCore
             {
                 HasRealFrameTimeData =
                     experiment.Baseline.Runs.Any(r => r.FrameTime?.HasData == true) ||
-                    experiment.AfterBenchmark.Runs.Any(r => r.FrameTime?.StatisticsHasData() == true),
+                    experiment.AfterBenchmark.Runs.Any(r => r.FrameTime?.HasData == true),
 
                 ConfigurationLocked =
                     string.Equals(
@@ -296,8 +296,41 @@ namespace BuildCore
                 experiment.Analysis.AfterConsistency?.Status ??
                 "Unknown";
 
+            quality.EvidenceGrade =
+                CalculateEvidenceGrade(
+                    quality,
+                    experiment.Analysis);
+
             quality.Summary =
-                "Evidence quality was evaluated after reboot validation and the after-workload benchmark.";
+                $"Evidence quality was evaluated after reboot validation and the after-workload benchmark. " +
+                $"Evidence grade: {quality.EvidenceGrade}.";
+
+            return quality;
+        }
+
+        private static string CalculateEvidenceGrade(
+            WorkloadEvidenceQuality quality,
+            WorkloadStatisticalAnalysis analysis)
+        {
+            int points = 0;
+
+            if (quality.HasRealFrameTimeData) points += 25;
+            if (quality.FingerprintsMatch) points += 15;
+            if (quality.EnvironmentComparable) points += 10;
+            if (quality.PerRunConditionsCaptured) points += 5;
+            if (quality.ProcessIdentityVerified) points += 10;
+            if (quality.BaselineRunCount >= 3) points += 10;
+            if (quality.AfterRunCount >= 3) points += 10;
+            if (quality.PairedRunCount >= 3) points += 10;
+            if (quality.AnalysisComplete) points += 5;
+
+            if (analysis.PairedDifferenceStandardDeviationPercent > 5)
+                points -= 10;
+
+            return points >= 90 ? "A" :
+                   points >= 80 ? "B" :
+                   points >= 70 ? "C" :
+                   points >= 60 ? "D" : "F";
 
             return quality;
         }
