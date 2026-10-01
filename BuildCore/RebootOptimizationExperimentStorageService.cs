@@ -209,7 +209,15 @@ namespace BuildCore
 
                     if (!ValidateLoadedExperiment(experiment))
                     {
-                        continue;
+                        RebootOptimizationExperimentState? backup =
+                            TryLoadBackup(
+                                experiment.ExperimentId);
+
+                        if (backup == null)
+                            continue;
+
+                        experiment = backup;
+                        RestorePrimaryFromBackup(experiment.ExperimentId);
                     }
 
                     experiments.Add(experiment);
@@ -223,6 +231,36 @@ namespace BuildCore
             return experiments
                 .OrderByDescending(e => e.UpdatedAt)
                 .ToList();
+        }
+
+        private static void RestorePrimaryFromBackup(
+            string experimentId)
+        {
+            try
+            {
+                string primaryPath = GetPath(experimentId);
+                string backupPath = primaryPath + ".bak";
+                string tempPath = primaryPath + ".recovery.tmp";
+
+                if (!File.Exists(backupPath))
+                    return;
+
+                File.Copy(backupPath, tempPath, overwrite: true);
+                File.Move(tempPath, primaryPath, overwrite: true);
+            }
+            catch
+            {
+                try
+                {
+                    string tempPath = GetPath(experimentId) + ".recovery.tmp";
+                    if (File.Exists(tempPath))
+                        File.Delete(tempPath);
+                }
+                catch
+                {
+                    // Recovery remains available through the backup file.
+                }
+            }
         }
 
         private static RebootOptimizationExperimentState? TryLoadBackup(
