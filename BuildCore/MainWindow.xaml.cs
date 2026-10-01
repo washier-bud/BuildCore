@@ -2285,6 +2285,61 @@ namespace BuildCore
                 // OPTIMIZATION TESTS
                 // ====================================================
 
+                // ====================================================
+                // REBOOT OPTIMIZATION EXPERIMENTS
+                // ====================================================
+
+                var rebootExperiments =
+                    RebootOptimizationExperimentStorageService.GetExperiments();
+
+                root.Children.Add(
+                    new TextBlock
+                    {
+                        Text = "REBOOT OPTIMIZATION EXPERIMENTS",
+                        FontSize = 11,
+                        FontWeight =
+                            Microsoft.UI.Text.FontWeights.SemiBold,
+                        Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gold),
+                        Margin = new Thickness(0, 18, 0, 0)
+                    });
+
+                root.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            $"{rebootExperiments.Count} reboot experiment(s) recorded",
+                        FontSize = 10,
+                        Foreground =
+                            new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gray)
+                    });
+
+                if (rebootExperiments.Count == 0)
+                {
+                    root.Children.Add(
+                        new TextBlock
+                        {
+                            Text =
+                                "No reboot optimization experiments have been recorded yet.",
+                            FontSize = 12,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.LightGray),
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                }
+                else
+                {
+                    foreach (RebootOptimizationExperimentState experiment
+                        in rebootExperiments)
+                    {
+                        root.Children.Add(
+                            CreateRebootExperimentHistoryCard(experiment));
+                    }
+                }
+
                 root.Children.Add(
                     new TextBlock
                     {
@@ -2605,6 +2660,126 @@ namespace BuildCore
                 Child =
                     panel
             };
+        }
+
+        private Border CreateRebootExperimentHistoryCard(
+            RebootOptimizationExperimentState experiment)
+        {
+            string workloadName =
+                experiment.WorkloadDefinition?.Name ??
+                "Unknown workload";
+
+            string resultStatus =
+                experiment.IsTerminal
+                    ? experiment.Status
+                    : experiment.IsPendingReboot
+                        ? "WAITING FOR WINDOWS RESTART"
+                        : experiment.Status;
+
+            string metrics =
+                experiment.Analysis != null
+                    ? $"Confidence {experiment.Analysis.ConfidenceScore:F0}%"
+                    : experiment.AfterBenchmarkCompleted
+                        ? "After benchmark recorded"
+                        : experiment.BaselineCompleted
+                            ? "Baseline recorded"
+                            : "No benchmark completed";
+
+            var panel = new StackPanel { Spacing = 7 };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "↻  " + experiment.OptimizationTitle,
+                FontSize = 14,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text =
+                    $"{experiment.CreatedAt:yyyy-MM-dd HH:mm:ss}  •  {workloadName}",
+                FontSize = 9,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text =
+                    $"{experiment.Phase.ToString().ToUpperInvariant()}  •  {resultStatus}",
+                FontSize = 9,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = experiment.IsPendingReboot
+                    ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold)
+                    : experiment.Phase ==
+                        RebootOptimizationExperimentPhase.Completed
+                        ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGreen)
+                        : new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGray)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = metrics,
+                FontSize = 10,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text =
+                    $"Snapshot: {experiment.SnapshotId}\n" +
+                    $"Experiment ID: {experiment.ExperimentId}",
+                FontSize = 8,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var deleteButton = new Button
+            {
+                Content = "DELETE",
+                Padding = new Thickness(12, 7, 12, 7),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Tag = experiment
+            };
+
+            deleteButton.Click += RebootExperimentDeleteButton_Click;
+            panel.Children.Add(deleteButton);
+
+            return new Border
+            {
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 10),
+                CornerRadius = new CornerRadius(10),
+                Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Transparent),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1),
+                Child = panel
+            };
+        }
+
+        private async void RebootExperimentDeleteButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not RebootOptimizationExperimentState experiment)
+                return;
+
+            if (RebootOptimizationExperimentStorageService.Delete(
+                experiment.ExperimentId))
+            {
+                await ShowHistoryDialog();
+            }
         }
 
         // ============================================================
