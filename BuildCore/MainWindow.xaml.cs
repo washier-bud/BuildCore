@@ -118,8 +118,28 @@ namespace BuildCore
             await DetectPendingRebootExperimentAsync();
         }
 
-        private async Task DetectPendingRebootExperimentAsync()
+        private void FinalizeCompletedRecoveryExperiments()
         {
+            try
+            {
+                foreach (RebootOptimizationExperimentState experiment in
+                    RebootOptimizationExperimentStorageService.GetExperiments())
+                {
+                    RebootOptimizationExperimentRecoveryService
+                        .FinalizeRecoveryAfterReboot(experiment);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE RECOVERY FINALIZATION ERROR: {ex}");
+            }
+        }
+
+        private async Task DetectPendingRebootExperimentAsync()
+        {            FinalizeCompletedRecoveryExperiments();
+
+
             try
             {
                 RebootOptimizationExperimentState? experiment =
