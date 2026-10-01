@@ -63,6 +63,15 @@ namespace BuildCore
                        StringComparison.Ordinal);
         }
 
+        public static bool VerifyRestoredHagsState(
+            RebootOptimizationExperimentState experiment)
+        {
+            if (experiment == null || !experiment.RecoveryAttempted)
+                return false;
+
+            return VerifyHagsState(experiment);
+        }
+
         public static OptimizationApplyResult Rollback(
             RebootOptimizationExperimentState experiment)
         {
