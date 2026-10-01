@@ -134,10 +134,13 @@ namespace BuildCore
             {
                 ValidateId(experimentId);
 
+                if (!IsSafeExperimentId(experimentId))
+                    return null;
+
                 string path = GetPath(experimentId);
 
                 if (!File.Exists(path))
-                    return null;
+                    return TryLoadBackup(experimentId);
 
                 string json = File.ReadAllText(path);
 
