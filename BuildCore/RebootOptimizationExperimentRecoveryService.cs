@@ -1,79 +1,24 @@
-using Microsoft.Win32;
 using System;
+using System.Management;
 
 namespace BuildCore
 {
     public static class RebootOptimizationExperimentRecoveryService
     {
-        private const string HagsTitle =
-            "Hardware-Accelerated GPU Scheduling";
-
-        private const string GraphicsDriversPath =
-            @"SYSTEM\CurrentControlSet\Control\GraphicsDrivers";
-
-        private const string HagsValueName = "HwSchMode";
-
-        public static void CaptureOriginalHagsState(
-            RebootOptimizationExperimentState experiment)
+        public static void CaptureOriginalHagsState(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null)
-                throw new ArgumentNullException(nameof(experiment));
-
-            using RegistryKey? key =
-                Registry.LocalMachine.OpenSubKey(
-                    GraphicsDriversPath,
-                    writable: false);
-
-            if (key == null)
-            {
-                experiment.OriginalHagsValueExists = false;
-                experiment.OriginalHagsMode = null;
-                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
-                return;
-            }
-
-            object? value =
-                key.GetValue(
-                    HagsValueName,
-                    null,
-                    RegistryValueOptions.DoNotExpandEnvironmentNames);
-
-            if (value is int mode)
-            {
-                experiment.OriginalHagsValueExists = true;
-                experiment.OriginalHagsMode = mode;
-                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
-            }
-            else
-            {
-                experiment.OriginalHagsValueExists = false;
-                experiment.OriginalHagsMode = null;
-                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
-            }
+            GetRequiredHagsHandler().CaptureOriginalState(experiment);
         }
 
-        public static bool CanRollback(
-            RebootOptimizationExperimentState experiment)
+        public static bool CanRollback(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null)
-                return false;
-
-            return experiment.RecoveryAvailable &&
-                   !experiment.RecoveryAttempted &&
-                   experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available &&
-                   string.Equals(
-                       experiment.OptimizationTitle,
-                       HagsTitle,
-                       StringComparison.Ordinal);
+            return RebootOptimizationRecoveryHandlerRegistry.Find(experiment)?.CanRollback(experiment) == true;
         }
 
-        public static bool FinalizeRecoveryAfterReboot(
-            RebootOptimizationExperimentState experiment)
+        public static bool FinalizeRecoveryAfterReboot(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null ||
-                !experiment.RecoverySucceeded ||
-                !experiment.RecoveryRequiresReboot ||
-                experiment.RecoveryFinalized ||
+            if (experiment == null || !experiment.RecoverySucceeded ||
+                !experiment.RecoveryRequiresReboot || experiment.RecoveryFinalized ||
                 !experiment.RecoveryAttemptedAtUtc.HasValue)
                 return false;
 
@@ -86,66 +31,47 @@ namespace BuildCore
                 if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
                     return false;
 
-                if (!VerifyHagsState(experiment))
+                IRebootOptimizationRecoveryHandler? handler =
+                    RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
+
+                if (handler == null || !handler.VerifyRestoredState(experiment))
                 {
                     RecordFinalizationFailure(
                         experiment,
-                        "Windows restarted, but BuildCore could not verify the original HAGS state after recovery.");
+                        "Windows restarted, but BuildCore could not verify the original recovery state after recovery.");
                     return false;
                 }
 
                 experiment.RecoveryFinalized = true;
                 experiment.RecoveryFinalizedAtUtc = DateTime.UtcNow;
                 experiment.RecoveryRequiresReboot = false;
-                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Finalized;
+                experiment.RecoveryPhase =
+                    RebootOptimizationExperimentRecoveryPhase.Finalized;
                 experiment.RecoveryStatus =
-                    "Original HAGS state restored and verified after Windows restart.";
+                    "Original recovery state restored and verified after Windows restart.";
                 RebootOptimizationExperimentStorageService.Save(experiment);
                 return true;
             }
             catch (Exception ex)
             {
-                RecordFinalizationFailure(
-                    experiment,
-                    $"Recovery finalization failed: {ex.Message}");
+                RecordFinalizationFailure(experiment, $"Recovery finalization failed: {ex.Message}");
                 return false;
             }
         }
 
-        private static DateTime GetCurrentBootTimeUtc()
+        public static bool VerifyRestoredHagsState(RebootOptimizationExperimentState experiment)
         {
-            using var searcher = new System.Management.ManagementObjectSearcher(
-                "SELECT LastBootUpTime FROM Win32_OperatingSystem");
-            foreach (System.Management.ManagementObject item in searcher.Get())
-            {
-                string? value = item["LastBootUpTime"]?.ToString();
-                if (!string.IsNullOrWhiteSpace(value))
-                    return System.Management.ManagementDateTimeConverter
-                        .ToDateTime(value).ToUniversalTime();
-            }
-
-            throw new InvalidOperationException("Could not determine Windows boot time.");
+            return RebootOptimizationRecoveryHandlerRegistry.Find(experiment)
+                ?.VerifyRestoredState(experiment) == true;
         }
 
-        public static bool VerifyRestoredHagsState(
-            RebootOptimizationExperimentState experiment)
-        {
-            if (experiment == null || !experiment.RecoveryAttempted)
-                return false;
-
-            return VerifyHagsState(experiment);
-        }
-
-        public static bool RetryFinalizationAfterFailure(
-            RebootOptimizationExperimentState experiment)
+        public static bool RetryFinalizationAfterFailure(RebootOptimizationExperimentState experiment)
         {
             if (experiment == null ||
                 experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.Failed ||
                 !experiment.RecoverySucceeded ||
                 !experiment.RecoveryAttemptedAtUtc.HasValue)
-            {
                 return false;
-            }
 
             try
             {
@@ -156,7 +82,10 @@ namespace BuildCore
                 if (bootTimeUtc <= experiment.RecoveryAttemptedAtUtc.Value)
                     return false;
 
-                if (!VerifyHagsState(experiment))
+                IRebootOptimizationRecoveryHandler? handler =
+                    RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
+
+                if (handler == null || !handler.VerifyRestoredState(experiment))
                     return false;
 
                 experiment.RecoveryFinalized = true;
@@ -165,7 +94,7 @@ namespace BuildCore
                 experiment.RecoveryPhase =
                     RebootOptimizationExperimentRecoveryPhase.Finalized;
                 experiment.RecoveryStatus =
-                    "Original HAGS state restored and verified after recovery re-verification.";
+                    "Original recovery state restored and verified after recovery re-verification.";
                 RebootOptimizationExperimentStorageService.Save(experiment);
                 return true;
             }
@@ -181,10 +110,10 @@ namespace BuildCore
         public static OptimizationApplyResult Rollback(
             RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null)
-                throw new ArgumentNullException(nameof(experiment));
+            IRebootOptimizationRecoveryHandler? handler =
+                RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
 
-            if (!CanRollback(experiment))
+            if (handler == null)
             {
                 return new OptimizationApplyResult
                 {
@@ -195,148 +124,53 @@ namespace BuildCore
                 };
             }
 
-            try
-            {
-                if (string.IsNullOrWhiteSpace(experiment.SnapshotId) ||
-                    !experiment.SnapshotCreated ||
-                    !SnapshotService.ValidateSnapshot(experiment.SnapshotId))
-                {
-                    RecordFailure(
-                        experiment,
-                        "Rollback blocked because the experiment snapshot is missing or invalid.");
-
-                    return new OptimizationApplyResult
-                    {
-                        Success = false,
-                        Verified = false,
-                        Message = experiment.RecoveryStatus,
-                        Error = "Invalid snapshot."
-                    };
-                }
-
-                using RegistryKey? key =
-                    Registry.LocalMachine.CreateSubKey(
-                        GraphicsDriversPath);
-
-                if (key == null)
-                {
-                    RecordFailure(
-                        experiment,
-                        "BuildCore could not access the HAGS registry setting.");
-                    return new OptimizationApplyResult
-                    {
-                        Success = false,
-                        Verified = false,
-                        Message = experiment.RecoveryStatus,
-                        Error = "Registry access failed."
-                    };
-                }
-
-                if (experiment.OriginalHagsValueExists &&
-                    experiment.OriginalHagsMode.HasValue)
-                {
-                    key.SetValue(
-                        HagsValueName,
-                        experiment.OriginalHagsMode.Value,
-                        RegistryValueKind.DWord);
-                }
-                else
-                {
-                    key.DeleteValue(
-                        HagsValueName,
-                        throwOnMissingValue: false);
-                }
-
-                key.Flush();
-
-                bool verified =
-                    VerifyHagsState(experiment);
-
-                experiment.RecoveryAttempted = true;
-                experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
-                experiment.RecoverySucceeded = verified;
-                experiment.RecoveryStatus =
-                    verified
-                        ? "Original HAGS state restored successfully. Windows restart may be required for the change to take effect."
-                        : "Rollback was attempted, but the restored HAGS state could not be verified.";
-
-                if (verified)
-                {
-                    experiment.OptimizationChangePending = false;
-                    experiment.RecoveryRequiresReboot = true;
-                    experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.RebootRequired;
-                }
-
-                RebootOptimizationExperimentStorageService.Save(experiment);
-
-                return new OptimizationApplyResult
-                {
-                    Success = verified,
-                    Verified = verified,
-                    Message = experiment.RecoveryStatus,
-                    Error = verified ? "" : "Rollback verification failed."
-                };
-            }
-            catch (Exception ex)
-            {
-                RecordFailure(
-                    experiment,
-                    $"Rollback failed: {ex.Message}");
-
-                return new OptimizationApplyResult
-                {
-                    Success = false,
-                    Verified = false,
-                    Message = experiment.RecoveryStatus,
-                    Error = ex.ToString()
-                };
-            }
+            return handler.Rollback(experiment);
         }
 
-        private static bool VerifyHagsState(
-            RebootOptimizationExperimentState experiment)
+        private static IRebootOptimizationRecoveryHandler GetRequiredHagsHandler()
         {
-            using RegistryKey? key =
-                Registry.LocalMachine.OpenSubKey(
-                    GraphicsDriversPath,
-                    writable: false);
+            IRebootOptimizationRecoveryHandler? handler =
+                RebootOptimizationRecoveryHandlerRegistry.Find(
+                    new RebootOptimizationExperimentState
+                    {
+                        OptimizationTitle = "Hardware-Accelerated GPU Scheduling"
+                    });
 
-            if (key == null)
-                return !experiment.OriginalHagsValueExists;
+            if (handler == null)
+                throw new InvalidOperationException(
+                    "No recovery handler is registered for HAGS.");
 
-            object? value =
-                key.GetValue(
-                    HagsValueName,
-                    null,
-                    RegistryValueOptions.DoNotExpandEnvironmentNames);
+            return handler;
+        }
 
-            if (!experiment.OriginalHagsValueExists)
-                return value == null;
+        private static DateTime GetCurrentBootTimeUtc()
+        {
+            using var searcher = new ManagementObjectSearcher(
+                "SELECT LastBootUpTime FROM Win32_OperatingSystem");
 
-            return value is int mode &&
-                   experiment.OriginalHagsMode.HasValue &&
-                   mode == experiment.OriginalHagsMode.Value;
+            foreach (ManagementObject item in searcher.Get())
+            {
+                string? value = item["LastBootUpTime"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    return ManagementDateTimeConverter
+                        .ToDateTime(value)
+                        .ToUniversalTime();
+                }
+            }
+
+            throw new InvalidOperationException(
+                "Could not determine Windows boot time.");
         }
 
         private static void RecordFinalizationFailure(
             RebootOptimizationExperimentState experiment,
             string message)
         {
-            experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Failed;
+            experiment.RecoveryPhase =
+                RebootOptimizationExperimentRecoveryPhase.Failed;
             experiment.RecoveryRequiresReboot = false;
             experiment.RecoveryFinalized = false;
-            experiment.RecoveryStatus = message;
-            RebootOptimizationExperimentStorageService.Save(experiment);
-        }
-
-        private static void RecordFailure(
-            RebootOptimizationExperimentState experiment,
-            string message)
-        {
-            experiment.RecoveryAttempted = true;
-            experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
-            experiment.RecoverySucceeded = false;
-            experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Failed;
             experiment.RecoveryStatus = message;
             RebootOptimizationExperimentStorageService.Save(experiment);
         }
