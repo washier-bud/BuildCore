@@ -76,7 +76,7 @@ namespace BuildCore
                 if (process == null)
                 {
                     experiment.Phase =
-                        RebootOptimizationExperimentPhase.Inconclusive;
+                        RebootOptimizationExperimentPhase.AfterBenchmarkPending;
 
                     experiment.Status =
                         "The target workload process is not running. " +
