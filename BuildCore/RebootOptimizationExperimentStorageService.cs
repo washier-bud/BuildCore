@@ -188,18 +188,28 @@ namespace BuildCore
                             json,
                             JsonOptions);
 
-                    if (experiment == null ||
-                        string.IsNullOrWhiteSpace(experiment.ExperimentId))
+                    string experimentId =
+                        Path.GetFileNameWithoutExtension(file);
+
+                    if (string.IsNullOrWhiteSpace(experimentId) ||
+                        !IsSafeExperimentId(experimentId))
                     {
                         continue;
                     }
 
-                    if (!string.Equals(
-                        Path.GetFileNameWithoutExtension(file),
-                        experiment.ExperimentId,
-                        StringComparison.Ordinal))
+                    if (experiment == null ||
+                        !string.Equals(
+                            experiment.ExperimentId,
+                            experimentId,
+                            StringComparison.Ordinal))
                     {
-                        continue;
+                        RebootOptimizationExperimentState? backup =
+                            TryLoadBackup(experimentId);
+
+                        if (backup == null)
+                            continue;
+
+                        experiment = backup;
                     }
 
                     if (MigrateLoadedExperiment(experiment))
@@ -210,14 +220,15 @@ namespace BuildCore
                     if (!ValidateLoadedExperiment(experiment))
                     {
                         RebootOptimizationExperimentState? backup =
-                            TryLoadBackup(
-                                experiment.ExperimentId);
+                            TryLoadBackup(experiment.ExperimentId);
 
-                        if (backup == null)
+                        if (backup == null ||
+                            !ValidateLoadedExperiment(backup))
+                        {
                             continue;
+                        }
 
                         experiment = backup;
-                        RestorePrimaryFromBackup(experiment.ExperimentId);
                     }
 
                     experiments.Add(experiment);
@@ -231,6 +242,28 @@ namespace BuildCore
             return experiments
                 .OrderByDescending(e => e.UpdatedAt)
                 .ToList();
+        }
+
+        private static bool IsSafeExperimentId(
+            string experimentId)
+        {
+            if (string.IsNullOrWhiteSpace(experimentId) ||
+                experimentId.Length > 128)
+            {
+                return false;
+            }
+
+            foreach (char character in experimentId)
+            {
+                if (!(char.IsLetterOrDigit(character) ||
+                      character == '-' ||
+                      character == '_'))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static void RestorePrimaryFromBackup(
