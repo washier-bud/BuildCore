@@ -68,6 +68,24 @@ namespace BuildCore
                 }
 
                 File.Move(tempPath, path, overwrite: true);
+
+                // Confirm the persisted document is readable and represents
+                // the same experiment before reporting a successful save.
+                RebootOptimizationExperimentState? persisted =
+                    JsonSerializer.Deserialize<RebootOptimizationExperimentState>(
+                        File.ReadAllText(path),
+                        JsonOptions);
+
+                if (persisted == null ||
+                    !string.Equals(
+                        persisted.ExperimentId,
+                        experiment.ExperimentId,
+                        StringComparison.Ordinal) ||
+                    !ValidateLoadedExperiment(persisted))
+                {
+                    throw new IOException(
+                        "Persisted reboot experiment failed post-write validation.");
+                }
             }
             catch
             {
@@ -104,7 +122,12 @@ namespace BuildCore
                         json,
                         JsonOptions);
 
-                if (experiment == null)
+                if (experiment == null ||
+                    !string.Equals(
+                        experiment.ExperimentId,
+                        experimentId,
+                        StringComparison.Ordinal) ||
+                    !ValidateLoadedExperiment(experiment))
                 {
                     experiment = TryLoadBackup(experimentId);
                 }
