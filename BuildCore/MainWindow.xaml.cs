@@ -2811,9 +2811,10 @@ namespace BuildCore
             string frameTime =
                 experiment.Analysis != null
                     ? $"Paired runs: {experiment.Analysis.PairedRunCount}\n" +
-                      $"Paired mean difference: {experiment.Analysis.PairedMeanDifference:F3}\n" +
-                      $"Paired SD: {experiment.Analysis.PairedDifferenceStandardDeviation:F3}\n" +
-                      $"Paired SD %: {experiment.Analysis.PairedDifferenceStandardDeviationPercent:F2}%"
+                      $"Average paired difference: {experiment.Analysis.AveragePairedDifferencePercent:F2}%\n" +
+                      $"Paired difference SD: {experiment.Analysis.PairedDifferenceStandardDeviationPercent:F2}%\n" +
+                      $"Paired Average FPS: {FormatPairedMetric(experiment.Analysis.PairedAverageFps)}\n" +
+                      $"Paired average frame time: {FormatPairedMetric(experiment.Analysis.PairedAverageFrameTime)}"
                     : "Statistical analysis not available.";
 
             string evidence =
@@ -2901,6 +2902,16 @@ namespace BuildCore
             };
 
             await dialog.ShowAsync();
+        }
+
+        private static string FormatPairedMetric(
+            WorkloadMetricAnalysis? metric)
+        {
+            if (metric == null)
+                return "Not available";
+
+            return $"{metric.Before:F2} → {metric.After:F2} " +
+                   $"({metric.RelativeChangePercent:+0.00;-0.00;0.00}%)";
         }
 
         private Border CreateRebootDetailsSection(
