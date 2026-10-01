@@ -57,6 +57,8 @@ namespace BuildCore
         public bool RecoverySucceeded { get; set; }
         public DateTime? RecoveryAttemptedAtUtc { get; set; }
         public bool RecoveryRequiresReboot { get; set; }
+        public bool RecoveryFinalized { get; set; }
+        public DateTime? RecoveryFinalizedAtUtc { get; set; }
         public string RecoveryStatus { get; set; } = "No recovery attempted.";
 
         // HAGS HwSchMode preservation. A missing value represents the
