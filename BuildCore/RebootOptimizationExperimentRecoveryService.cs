@@ -28,6 +28,7 @@ namespace BuildCore
             {
                 experiment.OriginalHagsValueExists = false;
                 experiment.OriginalHagsMode = null;
+                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
                 return;
             }
 
@@ -41,11 +42,13 @@ namespace BuildCore
             {
                 experiment.OriginalHagsValueExists = true;
                 experiment.OriginalHagsMode = mode;
+                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
             }
             else
             {
                 experiment.OriginalHagsValueExists = false;
                 experiment.OriginalHagsMode = null;
+                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
             }
         }
 
@@ -57,6 +60,7 @@ namespace BuildCore
 
             return experiment.RecoveryAvailable &&
                    !experiment.RecoveryAttempted &&
+                   experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available &&
                    string.Equals(
                        experiment.OptimizationTitle,
                        HagsTitle,
@@ -85,6 +89,7 @@ namespace BuildCore
                 experiment.RecoveryFinalized = true;
                 experiment.RecoveryFinalizedAtUtc = DateTime.UtcNow;
                 experiment.RecoveryRequiresReboot = false;
+                experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Finalized;
                 experiment.RecoveryStatus =
                     "Original HAGS state restored and verified after Windows restart.";
                 RebootOptimizationExperimentStorageService.Save(experiment);
@@ -206,6 +211,7 @@ namespace BuildCore
                 {
                     experiment.OptimizationChangePending = false;
                     experiment.RecoveryRequiresReboot = true;
+                    experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.RebootRequired;
                 }
 
                 RebootOptimizationExperimentStorageService.Save(experiment);
@@ -266,6 +272,7 @@ namespace BuildCore
             experiment.RecoveryAttempted = true;
             experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
             experiment.RecoverySucceeded = false;
+            experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Failed;
             experiment.RecoveryStatus = message;
             RebootOptimizationExperimentStorageService.Save(experiment);
         }
