@@ -67,6 +67,9 @@ namespace BuildCore
             if (string.IsNullOrWhiteSpace(optimizationTitle))
                 return null;
 
+            if (ValidateRegistry().Count > 0)
+                return null;
+
             foreach (IRebootOptimizationRecoveryHandler handler in Handlers)
             {
                 if (string.Equals(
