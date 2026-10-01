@@ -46,6 +46,12 @@ namespace BuildCore
         public WorkloadBenchmarkResult? Baseline { get; set; }
         public WorkloadEnvironmentSnapshot? BaselineEnvironment { get; set; }
 
+        public WorkloadBenchmarkResult? AfterBenchmark { get; set; }
+        public WorkloadEnvironmentSnapshot? AfterEnvironment { get; set; }
+        public WorkloadEnvironmentComparison? EnvironmentComparison { get; set; }
+        public WorkloadStatisticalAnalysis? Analysis { get; set; }
+        public WorkloadEvidenceQuality? EvidenceQuality { get; set; }
+
         public string ExpectedTargetProcessPath { get; set; } = "";
         public DateTime? ExpectedTargetProcessStartTimeUtc { get; set; }
 
@@ -53,6 +59,8 @@ namespace BuildCore
         public bool SnapshotCreated { get; set; }
         public bool OptimizationChangePending { get; set; }
         public bool RebootRequired { get; set; }
+        public bool AfterBenchmarkCompleted { get; set; }
+        public bool AnalysisCompleted { get; set; }
 
         public bool IsPendingReboot =>
             Phase == RebootOptimizationExperimentPhase.OptimizationPendingReboot ||
