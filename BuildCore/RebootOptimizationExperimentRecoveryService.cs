@@ -155,7 +155,10 @@ namespace BuildCore
                         : "Rollback was attempted, but the restored HAGS state could not be verified.";
 
                 if (verified)
+                {
                     experiment.OptimizationChangePending = false;
+                    experiment.RecoveryRequiresReboot = true;
+                }
 
                 RebootOptimizationExperimentStorageService.Save(experiment);
 
