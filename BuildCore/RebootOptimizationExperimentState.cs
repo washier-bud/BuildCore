@@ -61,6 +61,7 @@ namespace BuildCore
         public bool RebootRequired { get; set; }
         public bool AfterBenchmarkCompleted { get; set; }
         public bool AnalysisCompleted { get; set; }
+        public bool EvidenceGatePassed { get; set; }
 
         public bool IsPendingReboot =>
             Phase == RebootOptimizationExperimentPhase.OptimizationPendingReboot ||
