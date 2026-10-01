@@ -2798,14 +2798,14 @@ namespace BuildCore
 
             string baselineRuns =
                 experiment.Baseline != null
-                    ? $"${experiment.Baseline.CompletedRuns} / " +
-                      $"${experiment.Baseline.RequestedRuns}"
+                    ? $"{experiment.Baseline.CompletedRuns} / " +
+                      $"{experiment.Baseline.RequestedRuns}"
                     : "Not recorded";
 
             string afterRuns =
                 experiment.AfterBenchmark != null
-                    ? $"${experiment.AfterBenchmark.CompletedRuns} / " +
-                      $"${experiment.AfterBenchmark.RequestedRuns}"
+                    ? $"{experiment.AfterBenchmark.CompletedRuns} / " +
+                      $"{experiment.AfterBenchmark.RequestedRuns}"
                     : "Not recorded";
 
             string frameTime =
