@@ -33,6 +33,13 @@ namespace BuildCore
 
             experiment.UpdatedAt = DateTime.Now;
 
+            if (experiment.IsPendingReboot &&
+                !experiment.BaselineBootTimeUtc.HasValue)
+            {
+                experiment.BaselineBootTimeUtc =
+                    RebootOptimizationExperimentValidationService.GetCurrentBootTimeUtc();
+            }
+
             string path = GetPath(experiment.ExperimentId);
             string json = JsonSerializer.Serialize(experiment, JsonOptions);
 
