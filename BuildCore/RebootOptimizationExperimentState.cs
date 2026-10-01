@@ -2,6 +2,15 @@ using System;
 
 namespace BuildCore
 {
+    public enum RebootOptimizationExperimentRecoveryPhase
+    {
+        None,
+        Available,
+        RebootRequired,
+        Finalized,
+        Failed
+    }
+
     public enum RebootOptimizationExperimentPhase
     {
         NotStarted,
@@ -53,6 +62,8 @@ namespace BuildCore
 
         // Recovery metadata for optimizations with an explicit rollback handler.
         public bool RecoveryAvailable { get; set; }
+        public RebootOptimizationExperimentRecoveryPhase RecoveryPhase { get; set; } =
+            RebootOptimizationExperimentRecoveryPhase.None;
         public bool RecoveryAttempted { get; set; }
         public bool RecoverySucceeded { get; set; }
         public DateTime? RecoveryAttemptedAtUtc { get; set; }
@@ -78,10 +89,17 @@ namespace BuildCore
             Phase == RebootOptimizationExperimentPhase.OptimizationPendingReboot ||
             Phase == RebootOptimizationExperimentPhase.RebootRequired;
 
+        public bool IsRecoveryPendingReboot =>
+            RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.RebootRequired &&
+            RecoveryRequiresReboot &&
+            !RecoveryFinalized;
+
         public bool IsTerminal =>
-            Phase == RebootOptimizationExperimentPhase.Completed ||
-            Phase == RebootOptimizationExperimentPhase.Inconclusive ||
-            Phase == RebootOptimizationExperimentPhase.Failed ||
-            Phase == RebootOptimizationExperimentPhase.Canceled;
+            !IsPendingReboot &&
+            !IsRecoveryPendingReboot &&
+            (Phase == RebootOptimizationExperimentPhase.Completed ||
+             Phase == RebootOptimizationExperimentPhase.Inconclusive ||
+             Phase == RebootOptimizationExperimentPhase.Failed ||
+             Phase == RebootOptimizationExperimentPhase.Canceled);
     }
 }
