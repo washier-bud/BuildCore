@@ -2685,6 +2685,15 @@ namespace BuildCore
                             ? "Baseline recorded"
                             : "No benchmark completed";
 
+            string recovery =
+                experiment.RecoveryAvailable
+                    ? experiment.RecoverySucceeded
+                        ? "✓ ORIGINAL HAGS STATE RESTORED"
+                        : experiment.RecoveryAttempted
+                            ? "✕ RECOVERY ATTEMPT FAILED"
+                            : "↻ ROLLBACK AVAILABLE"
+                    : "No rollback handler available";
+
             var panel = new StackPanel { Spacing = 7 };
 
             panel.Children.Add(new TextBlock
@@ -2729,6 +2738,24 @@ namespace BuildCore
                 Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
                     Microsoft.UI.Colors.LightGray),
                 TextWrapping = TextWrapping.Wrap
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = recovery,
+                FontSize = 9,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                Foreground = experiment.RecoverySucceeded
+                    ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGreen)
+                    : experiment.RecoveryAttempted
+                        ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.IndianRed)
+                        : experiment.RecoveryAvailable
+                            ? new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gold)
+                            : new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                Microsoft.UI.Colors.Gray)
             });
 
             panel.Children.Add(new TextBlock
