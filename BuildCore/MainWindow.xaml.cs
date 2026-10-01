@@ -1130,7 +1130,7 @@ namespace BuildCore
 
                         statusText.Foreground =
                             new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                                Microsoft.UI.Xaml.MediaColors.Gold);
+                                Microsoft.UI.Colors.Gold);
                     }
                 }
                 catch (OperationCanceledException)
