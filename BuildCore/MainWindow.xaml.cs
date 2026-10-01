@@ -118,27 +118,101 @@ namespace BuildCore
             await DetectPendingRebootExperimentAsync();
         }
 
-        private void FinalizeCompletedRecoveryExperiments()
+        private List<string> FinalizeCompletedRecoveryExperiments()
         {
+            var failures = new List<string>();
+
             try
             {
                 foreach (RebootOptimizationExperimentState experiment in
                     RebootOptimizationExperimentStorageService.GetExperiments())
                 {
-                    RebootOptimizationExperimentRecoveryService
-                        .FinalizeRecoveryAfterReboot(experiment);
+                    bool wasPendingRecovery =
+                        experiment.IsRecoveryPendingReboot;
+
+                    if (!wasPendingRecovery)
+                        continue;
+
+                    bool finalized =
+                        RebootOptimizationExperimentRecoveryService
+                            .FinalizeRecoveryAfterReboot(experiment);
+
+                    if (!finalized &&
+                        experiment.RecoveryPhase ==
+                            RebootOptimizationExperimentRecoveryPhase.Failed)
+                    {
+                        failures.Add(
+                            $"{experiment.OptimizationTitle}: " +
+                            experiment.RecoveryStatus);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(
                     $"BUILDCORE RECOVERY FINALIZATION ERROR: {ex}");
+
+                failures.Add(
+                    "BuildCore could not complete recovery verification " +
+                    $"for one or more experiments: {ex.Message}");
             }
+
+            return failures;
         }
 
         private async Task DetectPendingRebootExperimentAsync()
-        {            FinalizeCompletedRecoveryExperiments();
+        {
+            List<string> recoveryFailures =
+                FinalizeCompletedRecoveryExperiments();
 
+            if (recoveryFailures.Count > 0)
+            {
+                var failurePanel =
+                    new StackPanel
+                    {
+                        Spacing = 8
+                    };
+
+                failurePanel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            "Windows restarted, but BuildCore could not " +
+                            "verify one or more recovery operations.",
+                        TextWrapping = TextWrapping.Wrap
+                    });
+
+                foreach (string failure in recoveryFailures)
+                {
+                    failurePanel.Children.Add(
+                        new TextBlock
+                        {
+                            Text = failure,
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                }
+
+                failurePanel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            "The recovery has NOT been reported as finalized. " +
+                            "Open the experiment details to review the saved " +
+                            "recovery state before taking further action.",
+                        TextWrapping = TextWrapping.Wrap
+                    });
+
+                var recoveryDialog =
+                    new ContentDialog
+                    {
+                        Title = "RECOVERY VERIFICATION FAILED",
+                        Content = failurePanel,
+                        CloseButtonText = "CLOSE",
+                        XamlRoot = Content.XamlRoot
+                    };
+
+                await recoveryDialog.ShowAsync();
+            }
 
             try
             {
