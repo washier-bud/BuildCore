@@ -3036,6 +3036,7 @@ namespace BuildCore
                 $"Recovery phase: {experiment.RecoveryPhaseDisplayName}\n" +
                 $"Recovery: {experiment.RecoveryStatus}\n" +
                 $"Recovery attempted: {(experiment.RecoveryAttemptedAtUtc.HasValue ? experiment.RecoveryAttemptedAtUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "NO")}\n" +
+                $"Verification checked: {(experiment.RecoveryFinalizationCheckedAtUtc.HasValue ? experiment.RecoveryFinalizationCheckedAtUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "NO")}\n" +
                 $"Recovery finalized: {(experiment.RecoveryFinalized ? "YES" : "NO")}"));
 
             bool recoveryRequiresReboot =
