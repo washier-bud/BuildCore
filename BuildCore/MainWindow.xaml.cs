@@ -54,6 +54,8 @@ namespace BuildCore
         {
             this.InitializeComponent();
 
+            this.Loaded += MainWindow_Loaded;
+
             _performanceService =
                 new PerformanceService();
 
@@ -101,6 +103,130 @@ namespace BuildCore
             ShowDashboard();
 
             LoadSnapshotInformation();
+        }
+
+        // ============================================================
+        // PHASE 1.14B - REBOOT EXPERIMENT RESUME DETECTION
+        // ============================================================
+
+        private async void MainWindow_Loaded(
+            object sender,
+            RoutedEventArgs e)
+        {
+            this.Loaded -= MainWindow_Loaded;
+
+            await DetectPendingRebootExperimentAsync();
+        }
+
+        private async Task DetectPendingRebootExperimentAsync()
+        {
+            try
+            {
+                RebootOptimizationExperimentState? experiment =
+                    RebootOptimizationExperimentStorageService.GetPending();
+
+                if (experiment == null)
+                    return;
+
+                if (!RebootOptimizationExperimentStorageService.Validate(
+                    experiment.ExperimentId))
+                {
+                    Debug.WriteLine(
+                        "BUILDCORE REBOOT EXPERIMENT: " +
+                        "Pending experiment failed validation.");
+
+                    return;
+                }
+
+                string workloadName =
+                    experiment.WorkloadDefinition?.Name ??
+                    "Unknown workload";
+
+                string phase =
+                    experiment.Phase
+                        .ToString()
+                        .Replace(
+                            "OptimizationPendingReboot",
+                            "Optimization Pending Reboot")
+                        .Replace(
+                            "RebootRequired",
+                            "Reboot Required")
+                        .Replace(
+                            "AfterRebootValidation",
+                            "After Reboot Validation")
+                        .Replace(
+                            "AfterBenchmarkPending",
+                            "After Benchmark Pending");
+
+                var contentPanel =
+                    new StackPanel
+                    {
+                        Spacing = 8
+                    };
+
+                contentPanel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            "BuildCore found an unfinished reboot-based " +
+                            "optimization experiment.",
+
+                        TextWrapping =
+                            TextWrapping.Wrap
+                    });
+
+                contentPanel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            $"Optimization: {experiment.OptimizationTitle}\n" +
+                            $"Workload: {workloadName}\n" +
+                            $"Phase: {phase}\n" +
+                            $"Snapshot: {experiment.SnapshotId}",
+
+                        TextWrapping =
+                            TextWrapping.Wrap
+                    });
+
+                contentPanel.Children.Add(
+                    new TextBlock
+                    {
+                        Text =
+                            "No reboot or optimization change will be " +
+                            "performed automatically. The experiment is " +
+                            "paused until BuildCore adds the explicit resume " +
+                            "flow.",
+
+                        TextWrapping =
+                            TextWrapping.Wrap
+                    });
+
+                var dialog =
+                    new ContentDialog
+                    {
+                        Title =
+                            "REBOOT EXPERIMENT DETECTED",
+
+                        Content =
+                            contentPanel,
+
+                        CloseButtonText =
+                            "CLOSE",
+
+                        XamlRoot =
+                            Content.XamlRoot
+                    };
+
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    "BUILDCORE REBOOT EXPERIMENT DETECTION ERROR");
+
+                Debug.WriteLine(
+                    ex.ToString());
+            }
         }
 
         // ============================================================
