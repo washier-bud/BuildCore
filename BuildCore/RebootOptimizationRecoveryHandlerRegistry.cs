@@ -11,12 +11,28 @@ namespace BuildCore
         public static IRebootOptimizationRecoveryHandler? Find(
             RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null) return null;
+            return experiment == null
+                ? null
+                : Find(experiment.OptimizationTitle);
+        }
+
+        public static IRebootOptimizationRecoveryHandler? Find(
+            string optimizationTitle)
+        {
+            if (string.IsNullOrWhiteSpace(optimizationTitle))
+                return null;
+
             foreach (IRebootOptimizationRecoveryHandler handler in Handlers)
             {
-                if (string.Equals(handler.OptimizationTitle, experiment.OptimizationTitle, StringComparison.Ordinal))
+                if (string.Equals(
+                    handler.OptimizationTitle,
+                    optimizationTitle,
+                    StringComparison.Ordinal))
+                {
                     return handler;
+                }
             }
+
             return null;
         }
     }
