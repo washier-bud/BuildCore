@@ -329,13 +329,10 @@ namespace BuildCore
 
             if (analysis.PairedDifferenceStandardDeviationPercent > 5)
                 points -= 10;
-
             return points >= 90 ? "A" :
                    points >= 80 ? "B" :
                    points >= 70 ? "C" :
                    points >= 60 ? "D" : "F";
-
-            return quality;
         }
     }
 }
