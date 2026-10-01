@@ -32,21 +32,24 @@ namespace BuildCore
                     "The saved reboot experiment failed validation.");
             }
 
-            string validationMessage;
-
-            if (!RebootOptimizationExperimentValidationService.ValidateAfterReboot(
-                experiment,
-                out validationMessage))
+            if (!experiment.AfterRebootValidationPassed)
             {
-                experiment.Phase =
-                    RebootOptimizationExperimentPhase.Inconclusive;
+                string validationMessage;
 
-                experiment.Status =
-                    validationMessage;
+                if (!RebootOptimizationExperimentValidationService.ValidateAfterReboot(
+                    experiment,
+                    out validationMessage))
+                {
+                    experiment.Phase =
+                        RebootOptimizationExperimentPhase.Inconclusive;
 
-                RebootOptimizationExperimentStorageService.Save(experiment);
+                    experiment.Status =
+                        validationMessage;
 
-                return experiment;
+                    RebootOptimizationExperimentStorageService.Save(experiment);
+
+                    return experiment;
+                }
             }
 
             experiment.Status =
