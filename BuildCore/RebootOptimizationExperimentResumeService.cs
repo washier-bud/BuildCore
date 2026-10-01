@@ -229,7 +229,7 @@ namespace BuildCore
             }
 
             return await new WorkloadBenchmarkService(provider)
-                .RunAsync(workload, cancellationToken);
+                .RunAsync(cancellationToken);
         }
 
         private static WorkloadEvidenceQuality BuildEvidenceQuality(
