@@ -46,6 +46,22 @@ namespace BuildCore
 
         private bool _optimizationTestRunning;
 
+        private static string GetRecoveryHandlerRegistryStatus()
+        {
+            IReadOnlyList<string> errors =
+                RebootOptimizationRecoveryHandlerRegistry.ValidateRegistry();
+
+            if (errors.Count > 0)
+                return "INVALID: " + string.Join(" | ", errors);
+
+            IReadOnlyList<string> titles =
+                RebootOptimizationRecoveryHandlerRegistry.GetRegisteredTitles();
+
+            return titles.Count == 0
+                ? "VALID: No recovery handlers registered."
+                : $"VALID: {titles.Count} recovery handler(s) registered.";
+        }
+
         // ============================================================
         // CONSTRUCTOR
         // ============================================================
