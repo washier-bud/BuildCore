@@ -180,53 +180,15 @@ namespace BuildCore
         {
             try
             {
-                OptimizationBenchmarkResult? test =
-                    LoadTest(testId);
+                OptimizationBenchmarkResult? test = LoadTest(testId);
 
-                if (test == null)
-                    return false;
-
-                if (string.IsNullOrWhiteSpace(
-                    test.TestId))
+                if (test == null ||
+                    string.IsNullOrWhiteSpace(test.TestId) ||
+                    test.StartedAt == default ||
+                    string.IsNullOrWhiteSpace(test.OptimizationTitle))
                 {
                     return false;
                 }
-
-                if (test.StartedAt == default)
-                    return false;
-
-                if (string.IsNullOrWhiteSpace(
-                    test.OptimizationTitle))
-                {
-                    return false;
-                }
-
-                if (!test.BaselineCompleted)
-                    return false;
-
-                if (!test.SnapshotCreated)
-                    return false;
-
-                if (!test.OptimizationApplied)
-                    return false;
-
-                if (!test.OptimizationVerified)
-                    return false;
-
-                if (!test.AfterBenchmarkCompleted)
-                    return false;
-
-                if (!test.ComparisonCompleted)
-                    return false;
-
-                if (test.Baseline == null)
-                    return false;
-
-                if (test.After == null)
-                    return false;
-
-                if (test.Comparison == null)
-                    return false;
 
                 if (test.CompletedAt != default &&
                     test.CompletedAt < test.StartedAt)
@@ -234,12 +196,102 @@ namespace BuildCore
                     return false;
                 }
 
-                return true;
+                if (IsWorkloadTest(test))
+                    return ValidateWorkloadTest(test);
+
+                return ValidateLegacyTest(test);
             }
             catch
             {
                 return false;
             }
+        }
+
+        private static bool IsWorkloadTest(
+            OptimizationBenchmarkResult test)
+        {
+            return test.WorkloadDefinition != null ||
+                   test.WorkloadBaseline != null ||
+                   test.WorkloadAfter != null ||
+                   test.WorkloadAnalysis != null;
+        }
+
+        private static bool ValidateLegacyTest(
+            OptimizationBenchmarkResult test)
+        {
+            return test.BaselineCompleted &&
+                   test.SnapshotCreated &&
+                   test.OptimizationApplied &&
+                   test.OptimizationVerified &&
+                   test.AfterBenchmarkCompleted &&
+                   test.ComparisonCompleted &&
+                   test.AnalysisCompleted &&
+                   test.Baseline != null &&
+                   test.After != null &&
+                   test.Comparison != null &&
+                   test.Analysis != null;
+        }
+
+        private static bool ValidateWorkloadTest(
+            OptimizationBenchmarkResult test)
+        {
+            BenchmarkWorkload? definition = test.WorkloadDefinition;
+            WorkloadBenchmarkResult? baseline = test.WorkloadBaseline;
+            WorkloadBenchmarkResult? after = test.WorkloadAfter;
+            WorkloadStatisticalAnalysis? analysis = test.WorkloadAnalysis;
+            WorkloadEvidenceQuality? evidence = test.WorkloadEvidenceQuality;
+
+            if (definition == null || !definition.IsValid ||
+                baseline == null || after == null || analysis == null ||
+                evidence == null)
+            {
+                return false;
+            }
+
+            if (!test.WorkloadBaselineCompleted ||
+                !test.WorkloadSnapshotCreated ||
+                !test.WorkloadOptimizationApplied ||
+                !test.WorkloadOptimizationVerified ||
+                !test.WorkloadAfterCompleted ||
+                !test.WorkloadAnalysisCompleted ||
+                !test.WorkloadEvidenceGatePassed)
+            {
+                return false;
+            }
+
+            if (test.TestState != ControlledWorkloadTestState.Completed ||
+                !string.Equals(test.Status, "Completed", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (!test.IsSuccessful || !analysis.IsComparable ||
+                !evidence.IsSufficient)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(test.WorkloadFingerprint) ||
+                !string.Equals(test.WorkloadFingerprint, baseline.WorkloadFingerprint, StringComparison.Ordinal) ||
+                !string.Equals(test.WorkloadFingerprint, after.WorkloadFingerprint, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            if (!baseline.IsComplete || !after.IsComplete ||
+                baseline.CompletedRuns < 3 || after.CompletedRuns < 3 ||
+                analysis.PairedRunCount < 3)
+            {
+                return false;
+            }
+
+            if (test.WorkloadEnvironmentComparison == null ||
+                !test.WorkloadEnvironmentComparison.IsComparable)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         // ============================================================
