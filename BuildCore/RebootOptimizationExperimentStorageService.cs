@@ -21,6 +21,8 @@ namespace BuildCore
                 WriteIndented = true
             };
 
+        private static readonly object StorageLock = new object();
+
         public static void Save(
             RebootOptimizationExperimentState experiment)
         {
@@ -29,6 +31,15 @@ namespace BuildCore
 
             ValidateId(experiment.ExperimentId);
 
+            lock (StorageLock)
+            {
+                SaveCore(experiment);
+            }
+        }
+
+        private static void SaveCore(
+            RebootOptimizationExperimentState experiment)
+        {
             Directory.CreateDirectory(ExperimentDirectory);
 
             experiment.UpdatedAt = DateTime.Now;
@@ -132,6 +143,15 @@ namespace BuildCore
         }
 
         public static RebootOptimizationExperimentState? Load(
+            string experimentId)
+        {
+            lock (StorageLock)
+            {
+                return LoadCore(experimentId);
+            }
+        }
+
+        private static RebootOptimizationExperimentState? LoadCore(
             string experimentId)
         {
             try
