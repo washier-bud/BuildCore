@@ -3050,6 +3050,10 @@ namespace BuildCore
                     experiment.ExperimentId);
 
             root.Children.Add(CreateRebootDetailsSection(
+                "RECOVERY HANDLER",
+                GetRecoveryHandlerRegistryStatus()));
+
+            root.Children.Add(CreateRebootDetailsSection(
                 "STORAGE / PERSISTENCE",
                 $"Primary state: {(storageHealth.PrimaryValid ? "VALID" : storageHealth.PrimaryExists ? "INVALID" : "MISSING")}\n" +
                 $"Backup state: {(storageHealth.BackupValid ? "VALID" : storageHealth.BackupExists ? "INVALID" : "MISSING")}\n" +
