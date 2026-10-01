@@ -2946,7 +2946,10 @@ namespace BuildCore
                 $"Snapshot: {experiment.SnapshotId}\n" +
                 $"Reboot detected: {(experiment.RebootDetected ? "YES" : "NO")}\n" +
                 $"After-reboot validation: {(experiment.AfterRebootValidationPassed ? "PASSED" : "NOT PASSED")}\n" +
-                $"Expected process: {experiment.ExpectedTargetProcessPath}"));
+                $"Expected process: {experiment.ExpectedTargetProcessPath}\n" +
+                $"Recovery: {experiment.RecoveryStatus}\n" +
+                $"Recovery attempted: {(experiment.RecoveryAttemptedAtUtc.HasValue ? experiment.RecoveryAttemptedAtUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "NO")}\n" +
+                $"Recovery finalized: {(experiment.RecoveryFinalized ? "YES" : "NO")}"));
 
             var canRollback =
                 RebootOptimizationExperimentRecoveryService.CanRollback(experiment);
@@ -2969,6 +2972,19 @@ namespace BuildCore
 
             if (result == ContentDialogResult.Primary && canRollback)
             {
+                var confirmDialog = new ContentDialog
+                {
+                    Title = "CONFIRM ROLLBACK",
+                    Content = "BuildCore will restore the exact HAGS state captured before this experiment. Windows restart will be required to finalize the restoration. Continue?",
+                    PrimaryButtonText = "RESTORE HAGS",
+                    CloseButtonText = "CANCEL",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                ContentDialogResult confirmResult = await confirmDialog.ShowAsync();
+                if (confirmResult != ContentDialogResult.Primary)
+                    return;
+
                 OptimizationApplyResult rollback =
                     RebootOptimizationExperimentRecoveryService.Rollback(experiment);
 
