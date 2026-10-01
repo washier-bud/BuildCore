@@ -173,7 +173,27 @@ namespace BuildCore
                 }
 
                 if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available &&
-                    (!experiment.RecoveryAvailable || experiment.RecoveryAttempted))
+                    (!experiment.RecoveryAvailable || experiment.RecoveryAttempted ||
+                     experiment.RecoverySucceeded || experiment.RecoveryRequiresReboot ||
+                     experiment.RecoveryFinalized))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Failed &&
+                    (!experiment.RecoveryAttempted ||
+                     !experiment.RecoveryAttemptedAtUtc.HasValue ||
+                     experiment.RecoveryRequiresReboot ||
+                     experiment.RecoveryFinalized ||
+                     experiment.RecoverySucceeded ||
+                     string.IsNullOrWhiteSpace(experiment.RecoveryStatus)))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryFinalizedAtUtc.HasValue &&
+                    experiment.RecoveryAttemptedAtUtc.HasValue &&
+                    experiment.RecoveryFinalizedAtUtc.Value < experiment.RecoveryAttemptedAtUtc.Value)
                 {
                     return false;
                 }
