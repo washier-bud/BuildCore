@@ -147,6 +147,7 @@ namespace BuildCore
                     VerifyHagsState(experiment);
 
                 experiment.RecoveryAttempted = true;
+                experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
                 experiment.RecoverySucceeded = verified;
                 experiment.RecoveryStatus =
                     verified
@@ -212,6 +213,7 @@ namespace BuildCore
             string message)
         {
             experiment.RecoveryAttempted = true;
+            experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
             experiment.RecoverySucceeded = false;
             experiment.RecoveryStatus = message;
             RebootOptimizationExperimentStorageService.Save(experiment);
