@@ -23,6 +23,16 @@ namespace BuildCore
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
+        // System boot time captured before the reboot.
+        public DateTime? BaselineBootTimeUtc { get; set; }
+
+        // Boot time observed when BuildCore resumes after restart.
+        public DateTime? AfterRebootBootTimeUtc { get; set; }
+
+        // Validation results recorded before the experiment continues.
+        public bool RebootDetected { get; set; }
+        public bool AfterRebootValidationPassed { get; set; }
+
         public RebootOptimizationExperimentPhase Phase { get; set; } =
             RebootOptimizationExperimentPhase.NotStarted;
 
