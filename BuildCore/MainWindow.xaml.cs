@@ -2954,8 +2954,10 @@ namespace BuildCore
                 $"Recovery attempted: {(experiment.RecoveryAttemptedAtUtc.HasValue ? experiment.RecoveryAttemptedAtUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "NO")}\n" +
                 $"Recovery finalized: {(experiment.RecoveryFinalized ? "YES" : "NO")}"));
 
-            var canRollback =
-                RebootOptimizationExperimentRecoveryService.CanRollback(experiment);
+            bool recoveryRequiresReboot =
+                experiment.RecoveryRequiresReboot &&
+                experiment.RecoverySucceeded &&
+                !experiment.RecoveryFinalized;
 
             var dialog = new ContentDialog
             {
@@ -2966,14 +2968,46 @@ namespace BuildCore
                     MaxHeight = 650,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto
                 },
-                PrimaryButtonText = canRollback ? "ROLL BACK" : null,
+                PrimaryButtonText = recoveryRequiresReboot
+                    ? "RESTART WINDOWS"
+                    : canRollback
+                        ? "ROLL BACK"
+                        : null,
                 CloseButtonText = "CLOSE",
                 XamlRoot = ((FrameworkElement)this.Content).XamlRoot
             };
 
             ContentDialogResult result = await dialog.ShowAsync();
 
-            if (result == ContentDialogResult.Primary && canRollback)
+            if (result != ContentDialogResult.Primary)
+                return;
+
+            if (recoveryRequiresReboot)
+            {
+                var restartDialog = new ContentDialog
+                {
+                    Title = "CONFIRM WINDOWS RESTART",
+                    Content = "BuildCore has restored the original HAGS registry state. Windows must restart before BuildCore can finalize and verify the restoration. Restart now?",
+                    PrimaryButtonText = "RESTART WINDOWS",
+                    CloseButtonText = "CANCEL",
+                    XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+                };
+
+                ContentDialogResult restartResult = await restartDialog.ShowAsync();
+                if (restartResult != ContentDialogResult.Primary)
+                    return;
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "shutdown.exe",
+                    Arguments = "/r /t 0",
+                    UseShellExecute = true
+                });
+
+                return;
+            }
+
+            if (canRollback)
             {
                 var confirmDialog = new ContentDialog
                 {
@@ -2994,7 +3028,9 @@ namespace BuildCore
                 var resultDialog = new ContentDialog
                 {
                     Title = rollback.Success ? "ROLLBACK COMPLETE" : "ROLLBACK FAILED",
-                    Content = rollback.Message,
+                    Content = rollback.Success
+                        ? rollback.Message + "\n\nUse VIEW DETAILS again to restart Windows and finalize recovery."
+                        : rollback.Message,
                     CloseButtonText = "CLOSE",
                     XamlRoot = ((FrameworkElement)this.Content).XamlRoot
                 };
