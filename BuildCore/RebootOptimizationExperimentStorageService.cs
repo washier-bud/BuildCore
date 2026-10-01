@@ -568,6 +568,13 @@ namespace BuildCore
                     return false;
                 }
 
+                if (experiment.RecoveryAvailable &&
+                    !RebootOptimizationExperimentRecoveryService.HasRecoveryHandler(
+                        experiment))
+                {
+                    return false;
+                }
+
                 if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.RebootRequired &&
                     (!experiment.RecoverySucceeded ||
                      !experiment.RecoveryRequiresReboot ||
