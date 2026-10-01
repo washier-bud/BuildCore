@@ -20,8 +20,6 @@ namespace BuildCore
                 workload.SampleIntervalMilliseconds,
                 workload.DelayBetweenRunsMilliseconds,
                 workload.RequiresInteractiveWorkload,
-                workload.TargetProcessId,
-                workload.TargetProcessStartTimeUtc?.ToUniversalTime().Ticks ?? 0,
                 NormalizePath(workload.TargetProcessPath));
 
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(canonical));
