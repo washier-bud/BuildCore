@@ -16,6 +16,14 @@ namespace BuildCore
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             using RegistryKey? key = Registry.LocalMachine.OpenSubKey(GraphicsDriversPath, false);
             object? value = key?.GetValue(HagsValueName, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
+
+            if (value != null && value is not int)
+            {
+                throw new InvalidOperationException(
+                    "The existing HAGS registry value is not a DWORD. " +
+                    "BuildCore will not overwrite or delete an unsupported registry value.");
+            }
+
             experiment.OriginalHagsValueExists = value is int;
             experiment.OriginalHagsMode = value is int mode ? mode : null;
             experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
