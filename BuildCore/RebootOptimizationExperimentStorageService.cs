@@ -568,6 +568,13 @@ namespace BuildCore
                     return false;
                 }
 
+                if (!experiment.RecoveryAvailable &&
+                    (!string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
+                     experiment.RecoveryHandlerVersion != 0))
+                {
+                    return false;
+                }
+
                 if (experiment.RecoveryAvailable &&
                     !RebootOptimizationExperimentRecoveryService.HasRecoveryHandler(
                         experiment))
@@ -579,14 +586,9 @@ namespace BuildCore
                 {
                     IRebootOptimizationRecoveryHandler? handler =
                         RebootOptimizationRecoveryHandlerRegistry.Find(
-                            experiment.OptimizationTitle);
+                            experiment);
 
-                    if (handler == null ||
-                        !string.Equals(
-                            experiment.RecoveryHandlerId,
-                            handler.HandlerId,
-                            StringComparison.Ordinal) ||
-                        experiment.RecoveryHandlerVersion != handler.HandlerVersion)
+                    if (handler == null)
                     {
                         return false;
                     }
