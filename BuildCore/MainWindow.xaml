@@ -12,7 +12,111 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid Background="#09090B">
+    <Grid Background="Transparent">
+        <!-- Subtle cinematic space layer. Kept behind all interactive UI. -->
+        <Canvas
+            Grid.ColumnSpan="2"
+            IsHitTestVisible="False"
+            Clip="True"
+            Opacity="0.72">
+
+            <Ellipse
+                x:Name="ParallaxGlowOne"
+                Width="620"
+                Height="620"
+                Canvas.Left="-180"
+                Canvas.Top="120"
+                Fill="#151519"
+                Opacity="0.9"/>
+
+            <Ellipse
+                x:Name="ParallaxGlowTwo"
+                Width="520"
+                Height="520"
+                Canvas.Left="760"
+                Canvas.Top="520"
+                Fill="#111116"
+                Opacity="0.85"/>
+
+            <Ellipse
+                x:Name="ParallaxRingOne"
+                Width="760"
+                Height="760"
+                Canvas.Left="980"
+                Canvas.Top="-160"
+                Stroke="#FFFFFF"
+                StrokeThickness="1"
+                Opacity="0.055"/>
+
+            <Ellipse
+                x:Name="ParallaxRingTwo"
+                Width="980"
+                Height="980"
+                Canvas.Left="220"
+                Canvas.Top="360"
+                Stroke="#FFFFFF"
+                StrokeThickness="1"
+                Opacity="0.035"/>
+
+            <Ellipse
+                Width="3"
+                Height="3"
+                Canvas.Left="18"
+                Canvas.Top="110"
+                Fill="White"
+                Opacity="0.45"/>
+
+            <Ellipse
+                Width="2"
+                Height="2"
+                Canvas.Left="88"
+                Canvas.Top="410"
+                Fill="White"
+                Opacity="0.35"/>
+
+            <Ellipse
+                Width="2"
+                Height="2"
+                Canvas.Left="340"
+                Canvas.Top="170"
+                Fill="White"
+                Opacity="0.3"/>
+
+            <Ellipse
+                Width="2"
+                Height="2"
+                Canvas.Left="610"
+                Canvas.Top="90"
+                Fill="White"
+                Opacity="0.3"/>
+
+            <Ellipse
+                Width="3"
+                Height="3"
+                Canvas.Left="820"
+                Canvas.Top="230"
+                Fill="White"
+                Opacity="0.4"/>
+
+            <Ellipse
+                Width="2"
+                Height="2"
+                Canvas.Left="1160"
+                Canvas.Top="150"
+                Fill="White"
+                Opacity="0.35"/>
+
+            <Ellipse
+                Width="2"
+                Height="2"
+                Canvas.Left="1320"
+                Canvas.Top="520"
+                Fill="White"
+                Opacity="0.3"/>
+
+        </Canvas>
+
+        <Grid x:Name="BuildCoreContentRoot">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="240"/>
@@ -1697,4 +1801,5 @@
 
     </Grid>
 
-</Window>
+        </Grid>
+    </Window>
