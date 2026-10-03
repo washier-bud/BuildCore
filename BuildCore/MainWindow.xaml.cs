@@ -92,6 +92,8 @@ namespace BuildCore
     new OptimizationBenchmarkService(
         new ReliableBenchmarkService(_benchmarkService));
 
+            LoadOptimizationLibrary();
+
             InitializeWorkloadProfiles();
 
             LoadSystemInformation();
@@ -2240,7 +2242,12 @@ namespace BuildCore
                 OptimizationCategory.Graphics => "🖥",
                 OptimizationCategory.Security => "🛡",
                 OptimizationCategory.Windows => "▣",
+                OptimizationCategory.Registry => "⌘",
                 OptimizationCategory.Network => "◉",
+                OptimizationCategory.Cleanup => "⌫",
+                OptimizationCategory.Audio => "♪",
+                OptimizationCategory.Timing => "◷",
+                OptimizationCategory.Boot => "↗",
                 OptimizationCategory.Background => "◆",
                 _ => "•"
             };
@@ -5425,14 +5432,189 @@ namespace BuildCore
             ApplyOptimizationCategoryFilter();
         }
 
+        private readonly HashSet<string> _selectedLibraryTweaks =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        private void LoadOptimizationLibrary()
+        {
+            OptimizationLibraryPanel.Children.Clear();
+
+            foreach (OptimizationGroupDefinition group in
+                OptimizationLibrary.Groups)
+            {
+                OptimizationLibraryPanel.Children.Add(
+                    CreateOptimizationGroupCard(group));
+            }
+
+            OptimizationLibraryCountText.Text =
+                $"{OptimizationLibrary.Groups.Count} GROUPS";
+
+            ApplyOptimizationCategoryFilter();
+        }
+
+        private Border CreateOptimizationGroupCard(
+            OptimizationGroupDefinition group)
+        {
+            var border = new Border
+            {
+                Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Transparent),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(12),
+                Padding = new Thickness(18),
+                Margin = new Thickness(0, 0, 0, 10),
+                Tag = group.Category
+            };
+
+            var panel = new StackPanel();
+
+            var header = new Grid();
+            header.ColumnDefinitions.Add(new ColumnDefinition());
+            header.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(130) });
+
+            var titlePanel = new StackPanel();
+
+            titlePanel.Children.Add(new TextBlock
+            {
+                Text = group.Title,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.White),
+                FontSize = 15,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+            });
+
+            titlePanel.Children.Add(new TextBlock
+            {
+                Text = group.Description,
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                FontSize = 10,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 5, 0, 0)
+            });
+
+            Grid.SetColumn(titlePanel, 0);
+            header.Children.Add(titlePanel);
+
+            header.Children.Add(new TextBlock
+            {
+                Text = $"{group.Tweaks.Count} TWEAKS",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                FontSize = 8,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top
+            });
+
+            Grid.SetColumn(header.Children[^1], 1);
+            panel.Children.Add(header);
+
+            foreach (OptimizationTweakDefinition tweak in group.Tweaks)
+            {
+                var row = new Grid
+                {
+                    Margin = new Thickness(0, 14, 0, 0)
+                };
+
+                row.ColumnDefinitions.Add(new ColumnDefinition());
+                row.ColumnDefinitions.Add(
+                    new ColumnDefinition { Width = new GridLength(90) });
+
+                var textPanel = new StackPanel();
+
+                textPanel.Children.Add(new TextBlock
+                {
+                    Text = tweak.Title,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.LightGray),
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+                });
+
+                textPanel.Children.Add(new TextBlock
+                {
+                    Text = tweak.Description,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    FontSize = 9,
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(0, 3, 0, 0)
+                });
+
+                Grid.SetColumn(textPanel, 0);
+                row.Children.Add(textPanel);
+
+                var toggle = new ToggleSwitch
+                {
+                    Header = "ENABLE",
+                    IsOn = _selectedLibraryTweaks.Contains(tweak.Id),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Tag = new OptimizationLibraryToggleContext
+                    {
+                        Tweak = tweak
+                    }
+                };
+
+                toggle.Toggled += OptimizationLibraryToggle_Toggled;
+
+                Grid.SetColumn(toggle, 1);
+                row.Children.Add(toggle);
+                panel.Children.Add(row);
+            }
+
+            var footer = new TextBlock
+            {
+                Text = "SELECTION ONLY • NO SYSTEM CHANGE",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                FontSize = 8,
+                Margin = new Thickness(0, 14, 0, 0)
+            };
+
+            panel.Children.Add(footer);
+            border.Child = panel;
+            return border;
+        }
+
+        private sealed class OptimizationLibraryToggleContext
+        {
+            public OptimizationTweakDefinition Tweak { get; init; } =
+                new OptimizationTweakDefinition();
+        }
+
+        private void OptimizationLibraryToggle_Toggled(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not ToggleSwitch toggle ||
+                toggle.Tag is not OptimizationLibraryToggleContext context)
+            {
+                return;
+            }
+
+            if (toggle.IsOn)
+            {
+                _selectedLibraryTweaks.Add(context.Tweak.Id);
+            }
+            else
+            {
+                _selectedLibraryTweaks.Remove(context.Tweak.Id);
+            }
+        }
+
         private void ApplyOptimizationCategoryFilter()
         {
-            int visibleCount = 0;
+            int visibleRecommendations = 0;
+            int visibleLibraryGroups = 0;
 
             foreach (UIElement child in RecommendationsPanel.Children)
             {
                 if (child is not FrameworkElement element ||
-                    element.Tag is not OptimizationCategory cardCategory)
+                    element.Tag is not OptimizationCategory)
                 {
                     continue;
                 }
@@ -5451,15 +5633,39 @@ namespace BuildCore
                         : Visibility.Collapsed;
 
                 if (visible)
-                    visibleCount++;
+                    visibleRecommendations++;
             }
 
+            foreach (UIElement child in OptimizationLibraryPanel.Children)
+            {
+                if (child is not FrameworkElement element ||
+                    element.Tag is not OptimizationCategory)
+                {
+                    continue;
+                }
+
+                bool visible =
+                    _selectedOptimizationCategory.Equals(
+                        "All",
+                        StringComparison.OrdinalIgnoreCase) ||
+                    element.Tag.ToString()!.Equals(
+                        _selectedOptimizationCategory,
+                        StringComparison.OrdinalIgnoreCase);
+
+                element.Visibility =
+                    visible
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+
+                if (visible)
+                    visibleLibraryGroups++;
+            }
+
+            int totalVisible =
+                visibleLibraryGroups + visibleRecommendations;
+
             OptimizationCategoryCountText.Text =
-                _selectedOptimizationCategory.Equals(
-                    "All",
-                    StringComparison.OrdinalIgnoreCase)
-                    ? $"{RecommendationsPanel.Children.Count} AVAILABLE"
-                    : $"{visibleCount} AVAILABLE";
+                $"{totalVisible} AVAILABLE";
         }
 
         // ============================================================
