@@ -7,7 +7,12 @@
         Graphics,
         Security,
         Windows,
+        Registry,
         Network,
+        Cleanup,
+        Audio,
+        Timing,
+        Boot,
         Background
     }
 
