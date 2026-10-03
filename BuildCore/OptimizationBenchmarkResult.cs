@@ -25,6 +25,10 @@ namespace BuildCore
         public WorkloadEnvironmentComparison? WorkloadEnvironmentComparison { get; set; }
         public WorkloadEvidenceQuality? WorkloadEvidenceQuality { get; set; }
 
+        // Phase 1.12Z: final evidence trust classification used by
+        // measured optimization decisions and AutoTune.
+        public BenchmarkEvidenceTrust? EvidenceTrust { get; set; }
+
         // Phase 1.12U: explicit gate indicating whether the workload result
         // meets BuildCore's minimum evidence requirements.
         public bool WorkloadEvidenceGatePassed { get; set; }
@@ -70,6 +74,18 @@ namespace BuildCore
 
                 return legacySuccessful || workloadSuccessful;
             }
+        }
+
+        public BenchmarkEvidenceTrust EvaluateEvidenceTrust()
+        {
+            if (WorkloadEvidenceQuality == null)
+            {
+                EvidenceTrust = BenchmarkEvidenceTrust.Evaluate(this);
+                return EvidenceTrust;
+            }
+
+            EvidenceTrust = BenchmarkEvidenceTrust.Evaluate(this);
+            return EvidenceTrust;
         }
 
         public TimeSpan Duration =>
