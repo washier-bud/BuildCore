@@ -5717,12 +5717,27 @@ namespace BuildCore
                     "Disables, removes, or reduces selected background features or components to reduce unnecessary background activity.",
 
                 _ when tweak.Title.Contains("BCDEdit", StringComparison.OrdinalIgnoreCase) ||
-                       tweak.Category == OptimizationCategory.Boot =>
+                       GetTweakCategory(tweak.Id) == OptimizationCategory.Boot =>
                     "Changes a Windows boot configuration setting that can affect how Windows initializes or schedules system components.",
 
                 _ =>
                     tweak.Description
             };
+        }
+
+        private static OptimizationCategory GetTweakCategory(string tweakId)
+        {
+            OptimizationTweakDefinition? definition =
+                OptimizationLibrary.Groups
+                    .SelectMany(group => group.Tweaks)
+                    .FirstOrDefault(tweak =>
+                        string.Equals(tweak.Id, tweakId, StringComparison.OrdinalIgnoreCase));
+
+            return definition == null
+                ? OptimizationCategory.Background
+                : OptimizationLibrary.Groups
+                    .First(group => group.Tweaks.Contains(definition))
+                    .Category;
         }
 
         private static string GetAutoTunePossibleDownside(
