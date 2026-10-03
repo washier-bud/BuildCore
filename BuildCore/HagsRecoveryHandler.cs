@@ -30,12 +30,16 @@ namespace BuildCore
 
             experiment.OriginalHagsValueExists = value is int;
             experiment.OriginalHagsMode = value is int mode ? mode : null;
+            experiment.RecoveryHandlerId = HandlerId;
+            experiment.RecoveryHandlerVersion = HandlerVersion;
             experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.Available;
         }
 
         public bool CanRollback(RebootOptimizationExperimentState experiment)
         {
             return experiment != null && experiment.RecoveryAvailable &&
+                string.Equals(experiment.RecoveryHandlerId, HandlerId, StringComparison.Ordinal) &&
+                experiment.RecoveryHandlerVersion == HandlerVersion &&
                 !experiment.RecoveryAttempted &&
                 experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available &&
                 string.Equals(experiment.OptimizationTitle, Title, StringComparison.Ordinal);
@@ -109,8 +113,13 @@ namespace BuildCore
 
         public bool VerifyRestoredState(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null || !experiment.RecoveryAttempted)
+            if (experiment == null ||
+                !experiment.RecoveryAttempted ||
+                !string.Equals(experiment.RecoveryHandlerId, HandlerId, StringComparison.Ordinal) ||
+                experiment.RecoveryHandlerVersion != HandlerVersion)
+            {
                 return false;
+            }
 
             return VerifyRegistryState(experiment);
         }
