@@ -77,21 +77,24 @@ namespace BuildCore
 
             store.Values[MaximizedKey] = maximized;
 
-            // AppWindow.Size and Position continue to expose the normal
-            // window bounds when the window is maximized, which lets us
-            // restore the user's previous windowed layout as well.
-            SizeInt32 size = appWindow.Size;
-            PointInt32 position = appWindow.Position;
-
-            if (size.Width >= MinimumWidth &&
-                size.Height >= MinimumHeight)
+            // Keep the last normal bounds intact while maximized. This
+            // means a later restore to windowed mode returns to the exact
+            // size and position the user had before maximizing.
+            if (!maximized)
             {
-                store.Values[WidthKey] = size.Width;
-                store.Values[HeightKey] = size.Height;
-            }
+                SizeInt32 size = appWindow.Size;
+                PointInt32 position = appWindow.Position;
 
-            store.Values[PositionXKey] = position.X;
-            store.Values[PositionYKey] = position.Y;
+                if (size.Width >= MinimumWidth &&
+                    size.Height >= MinimumHeight)
+                {
+                    store.Values[WidthKey] = size.Width;
+                    store.Values[HeightKey] = size.Height;
+                }
+
+                store.Values[PositionXKey] = position.X;
+                store.Values[PositionYKey] = position.Y;
+            }
         }
 
         private static AppWindow GetAppWindow(MainWindow window)
