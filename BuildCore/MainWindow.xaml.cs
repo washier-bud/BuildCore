@@ -3546,11 +3546,29 @@ namespace BuildCore
             if (choice != ContentDialogResult.Primary)
                 return;
 
-            if (WorkloadBenchmarkStorageService.DeleteResult(
-                result.ResultId))
+            try
             {
-                button.Content = "DELETED ✓";
-                button.IsEnabled = false;
+                bool deleted =
+                    WorkloadBenchmarkStorageService.DeleteResult(
+                        result.ResultId);
+
+                if (deleted)
+                {
+                    ShowHistoryPage();
+                }
+                else
+                {
+                    button.Content = "DELETE FAILED";
+                    button.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                button.Content = "DELETE FAILED";
+                button.IsEnabled = true;
+
+                Debug.WriteLine(
+                    $"BUILDCORE WORKLOAD BENCHMARK DELETE ERROR: {ex}");
             }
         }
 
@@ -4361,24 +4379,31 @@ namespace BuildCore
                 return;
             }
 
-            bool deleted =
-                OptimizationTestStorageService
-                    .DeleteTest(test.TestId);
-
-            if (deleted)
+            try
             {
-                button.Content =
-                    "DELETED ✓";
+                bool deleted =
+                    OptimizationTestStorageService
+                        .DeleteTest(test.TestId);
 
-                button.IsEnabled =
-                    false;
+                if (deleted)
+                {
+                    ShowHistoryPage();
 
-                Debug.WriteLine(
-                    $"BUILDCORE TEST DELETED: " +
-                    $"{test.TestId}");
+                    Debug.WriteLine(
+                        $"BUILDCORE TEST DELETED: " +
+                        $"{test.TestId}");
+                }
+                else
+                {
+                    await ShowRestoreFailureDialog(
+                        "BuildCore could not delete the saved optimization test.");
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Debug.WriteLine(
+                    $"BUILDCORE TEST DELETE ERROR: {ex}");
+
                 await ShowRestoreFailureDialog(
                     "BuildCore could not delete the saved optimization test.");
             }
