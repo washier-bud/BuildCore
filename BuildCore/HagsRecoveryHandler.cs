@@ -115,6 +115,11 @@ namespace BuildCore
         {
             if (experiment == null ||
                 !experiment.RecoveryAttempted ||
+                !experiment.RecoverySucceeded ||
+                (experiment.RecoveryPhase !=
+                    RebootOptimizationExperimentRecoveryPhase.RebootRequired &&
+                 experiment.RecoveryPhase !=
+                    RebootOptimizationExperimentRecoveryPhase.Failed) ||
                 !string.Equals(experiment.RecoveryHandlerId, HandlerId, StringComparison.Ordinal) ||
                 experiment.RecoveryHandlerVersion != HandlerVersion)
             {
