@@ -5435,6 +5435,9 @@ namespace BuildCore
         private readonly HashSet<string> _selectedLibraryTweaks =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        private readonly List<ToggleSwitch> _libraryToggleControls =
+            new List<ToggleSwitch>();
+
         private void LoadOptimizationLibrary()
         {
             OptimizationLibraryPanel.Children.Clear();
