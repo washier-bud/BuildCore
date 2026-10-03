@@ -17,7 +17,6 @@
         <Canvas
             Grid.ColumnSpan="2"
             IsHitTestVisible="False"
-            Clip="True"
             Opacity="0.72">
 
             <Ellipse
