@@ -179,11 +179,25 @@ namespace BuildCore
                     $"No recovery handler is registered for '{recommendation.Title}'.");
             }
 
-            recoveryHandler.CaptureOriginalState(experiment);
-            experiment.RecoveryAvailable = true;
-            experiment.RecoveryStatus =
-                $"Original state captured. Rollback is available through {recoveryHandler.GetType().Name}.";
-            RebootOptimizationExperimentStorageService.Save(experiment);
+            try
+            {
+                recoveryHandler.CaptureOriginalState(experiment);
+                experiment.RecoveryAvailable = true;
+                experiment.RecoveryStatus =
+                    $"Original state captured. Rollback is available through {recoveryHandler.GetType().Name}.";
+                RebootOptimizationExperimentStorageService.Save(experiment);
+            }
+            catch (Exception ex)
+            {
+                experiment.Phase =
+                    RebootOptimizationExperimentPhase.Failed;
+
+                experiment.Status =
+                    $"Recovery state capture failed. The optimization was not applied: {ex.Message}";
+
+                RebootOptimizationExperimentStorageService.Save(experiment);
+                throw;
+            }
 
             OptimizationApplyResult applyResult =
                 OperatingSystem.IsWindows()
