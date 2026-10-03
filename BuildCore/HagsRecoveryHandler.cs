@@ -68,15 +68,23 @@ namespace BuildCore
                 experiment.RecoveryAttempted = true;
                 experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
                 experiment.RecoverySucceeded = verified;
-                experiment.RecoveryStatus = verified
-                    ? "Original HAGS state restored successfully. Windows restart may be required for the change to take effect."
-                    : "Rollback was attempted, but the restored HAGS state could not be verified.";
 
                 if (verified)
                 {
+                    experiment.RecoveryStatus =
+                        "Original HAGS state restored successfully. Windows restart may be required for the change to take effect.";
                     experiment.OptimizationChangePending = false;
                     experiment.RecoveryRequiresReboot = true;
-                    experiment.RecoveryPhase = RebootOptimizationExperimentRecoveryPhase.RebootRequired;
+                    experiment.RecoveryPhase =
+                        RebootOptimizationExperimentRecoveryPhase.RebootRequired;
+                }
+                else
+                {
+                    experiment.RecoveryStatus =
+                        "Rollback was attempted, but the restored HAGS state could not be verified.";
+                    experiment.RecoveryRequiresReboot = false;
+                    experiment.RecoveryPhase =
+                        RebootOptimizationExperimentRecoveryPhase.Failed;
                 }
 
                 RebootOptimizationExperimentStorageService.Save(experiment);
