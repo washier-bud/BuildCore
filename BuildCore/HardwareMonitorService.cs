@@ -36,7 +36,9 @@ namespace BuildCore
                 IsCpuEnabled = true,
                 IsGpuEnabled = true,
                 IsMemoryEnabled = false,
-                IsStorageEnabled = false
+                IsStorageEnabled = false,
+                IsMotherboardEnabled = true,
+                IsControllerEnabled = true
             };
 
             _computer.Open();
@@ -90,7 +92,8 @@ namespace BuildCore
             HardwareMonitorData data)
         {
             // Primary source: LibreHardwareMonitor CPU sensors.
-            // Prefer AMD Tctl/Tdie / Tdie and Intel package readings.
+            // On some Ryzen systems the CPU temperature is exposed
+            // through the motherboard/embedded-controller path instead.
             try
             {
                 float? best = null;
@@ -99,10 +102,8 @@ namespace BuildCore
 
                 foreach (IHardware hardware in _computer.Hardware)
                 {
-                    if (hardware.HardwareType != HardwareType.Cpu)
-                        continue;
-
                     hardware.Update();
+
                     FindCpuTemperature(
                         hardware,
                         ref best,
@@ -136,10 +137,13 @@ namespace BuildCore
                     if (obj["CurrentTemperature"] == null)
                         continue;
 
-                    double raw = Convert.ToDouble(obj["CurrentTemperature"]);
-                    double celsius = (raw / 10.0) - 273.15;
+                    double raw =
+                        Convert.ToDouble(obj["CurrentTemperature"]);
 
-                    if (celsius >= 0 && celsius <= 120)
+                    double celsius =
+                        (raw / 10.0) - 273.15;
+
+                    if (celsius > 0 && celsius <= 120)
                     {
                         data.CpuTemperature = (float)celsius;
                         data.CpuTemperatureSource = "Windows ACPI";
@@ -163,41 +167,93 @@ namespace BuildCore
             ref string source,
             ref int priority)
         {
-            foreach (ISensor sensor in hardware.Sensors)
+            bool relevantHardware =
+                hardware.HardwareType == HardwareType.Cpu ||
+                hardware.HardwareType == HardwareType.Motherboard ||
+                hardware.HardwareType == HardwareType.SuperIO ||
+                hardware.HardwareType == HardwareType.EmbeddedController;
+
+            if (relevantHardware)
             {
-                if (sensor.SensorType != SensorType.Temperature ||
-                    !sensor.Value.HasValue)
-                    continue;
-
-                float value = sensor.Value.Value;
-                if (value < 1 || value > 120)
-                    continue;
-
-                string name = sensor.Name.Trim();
-                string lower = name.ToLowerInvariant();
-
-                int candidatePriority =
-                    lower.Contains("tctl/tdie") ? 0 :
-                    lower.Contains("cpu package") ? 1 :
-                    lower.Equals("package") ? 2 :
-                    lower.Contains("tdie") ? 3 :
-                    lower.Contains("tctl") ? 4 :
-                    lower.Contains("cpu") ? 5 :
-                    lower.Contains("core max") ? 6 :
-                    lower.Contains("core") ? 7 :
-                    20;
-
-                if (candidatePriority < priority)
+                foreach (ISensor sensor in hardware.Sensors)
                 {
-                    priority = candidatePriority;
-                    best = value;
-                    source = $"LibreHardwareMonitor • {name}";
+                    if (sensor.SensorType != SensorType.Temperature ||
+                        !sensor.Value.HasValue)
+                        continue;
+
+                    float value = sensor.Value.Value;
+
+                    // Zero/null readings are not valid CPU temperatures.
+                    if (value <= 0 || value > 120)
+                        continue;
+
+                    string name = sensor.Name.Trim();
+                    string lower = name.ToLowerInvariant();
+
+                    int candidatePriority;
+
+                    if (lower.Contains("tctl/tdie"))
+                    {
+                        candidatePriority = 0;
+                    }
+                    else if (lower.Contains("cpu package"))
+                    {
+                        candidatePriority = 1;
+                    }
+                    else if (lower.Contains("package") &&
+                             relevantHardware)
+                    {
+                        candidatePriority = 2;
+                    }
+                    else if (lower.Contains("tdie"))
+                    {
+                        candidatePriority = 3;
+                    }
+                    else if (lower.Contains("tctl"))
+                    {
+                        candidatePriority = 4;
+                    }
+                    else if (lower == "cpu" ||
+                             lower.Contains("cpu temperature") ||
+                             lower.Contains("cpu temp"))
+                    {
+                        candidatePriority = 5;
+                    }
+                    else if (lower.Contains("core max"))
+                    {
+                        candidatePriority = 6;
+                    }
+                    else if (lower.Contains("core") &&
+                             hardware.HardwareType == HardwareType.Cpu)
+                    {
+                        candidatePriority = 7;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    // Prefer the actual CPU hardware sensor over
+                    // motherboard/EC duplicates when priorities tie.
+                    if (hardware.HardwareType == HardwareType.Cpu)
+                    {
+                        candidatePriority -= 1;
+                    }
+
+                    if (candidatePriority < priority)
+                    {
+                        priority = candidatePriority;
+                        best = value;
+                        source =
+                            $"LibreHardwareMonitor • {hardware.Name} • {name}";
+                    }
                 }
             }
 
             foreach (IHardware child in hardware.SubHardware)
             {
                 child.Update();
+
                 FindCpuTemperature(
                     child,
                     ref best,
