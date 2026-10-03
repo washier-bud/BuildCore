@@ -8,6 +8,7 @@ namespace BuildCore
     public class HardwareMonitorData
     {
         public float? CpuTemperature { get; set; }
+        public string CpuTemperatureSource { get; set; } = "Unavailable";
         public float? CpuClock { get; set; }
 
         public float? GpuTemperature { get; set; }
@@ -32,7 +33,7 @@ namespace BuildCore
         {
             _computer = new Computer
             {
-                IsCpuEnabled = false,
+                IsCpuEnabled = true,
                 IsGpuEnabled = true,
                 IsMemoryEnabled = false,
                 IsStorageEnabled = false
