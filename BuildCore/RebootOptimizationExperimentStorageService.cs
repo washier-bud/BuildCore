@@ -439,6 +439,13 @@ namespace BuildCore
                     return false;
                 }
 
+                if (!Enum.IsDefined(
+                    typeof(RebootOptimizationExperimentRecoveryPhase),
+                    experiment.RecoveryPhase))
+                {
+                    return false;
+                }
+
                 if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None &&
                     (!experiment.RecoveryAvailable ||
                      string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
@@ -681,6 +688,13 @@ namespace BuildCore
                     {
                         return false;
                     }
+                }
+
+                if (!Enum.IsDefined(
+                    typeof(RebootOptimizationExperimentRecoveryPhase),
+                    experiment.RecoveryPhase))
+                {
+                    return false;
                 }
 
                 if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None && !experiment.RecoveryAvailable) return false;
