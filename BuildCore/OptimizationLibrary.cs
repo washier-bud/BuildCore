@@ -133,12 +133,6 @@ namespace BuildCore
                     T("discord-overlay", "Discord overlay", "Disable the overlay when it is not required for the selected game.", false, OptimizationRisk.Low),
                     T("discord-hardware", "Discord hardware acceleration", "Review hardware acceleration for the selected workload.", false, OptimizationRisk.Low)),
 
-                Group("epic", "Epic Games Debloat", OptimizationCategory.Cleanup,
-                    "Epic Games Launcher cleanup and startup controls.",
-                    T("epic-startup", "Epic Games startup", "Prevent unnecessary launcher startup.", true, OptimizationRisk.Low),
-                    T("epic-background", "Epic background activity", "Review background launcher activity.", true, OptimizationRisk.Low),
-                    T("epic-cache", "Epic cache cleanup", "Clean supported stale launcher cache data.", false, OptimizationRisk.Low)),
-
                 Group("latency-timing", "Best Latency Timing", OptimizationCategory.Timing,
                     "Timing controls are treated as experimental until measured against a baseline.",
                     T("system-timer", "System timer review", "Measure timer behavior before changing timer policies.", false, OptimizationRisk.Medium),
