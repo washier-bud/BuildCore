@@ -1,4 +1,7 @@
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
+using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -74,6 +77,9 @@ namespace BuildCore
         {
             this.InitializeComponent();
 
+            WindowStateService.Restore(this);
+            this.Closed += MainWindow_Closed;
+
             this.Loaded += MainWindow_Loaded;
 
             _performanceService =
@@ -125,6 +131,18 @@ namespace BuildCore
             ShowDashboard();
 
             LoadSnapshotInformation();
+        }
+
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            try
+            {
+                WindowStateService.Save(this);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BUILDCORE WINDOW STATE SAVE ERROR: {ex}");
+            }
         }
 
         // ============================================================
