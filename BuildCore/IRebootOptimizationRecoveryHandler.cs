@@ -6,6 +6,10 @@ namespace BuildCore
     {
         string OptimizationTitle { get; }
 
+        string HandlerId { get; }
+
+        int HandlerVersion { get; }
+
         void CaptureOriginalState(RebootOptimizationExperimentState experiment);
 
         bool CanRollback(RebootOptimizationExperimentState experiment);
