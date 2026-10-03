@@ -379,8 +379,25 @@ namespace BuildCore
         {
             if (experiment.SchemaVersion == 0)
             {
-                // Version 0 predates explicit schema versioning. The persisted
-                // object shape is the Version 1 contract, so safely adopt it.
+                // Version 0 predates explicit schema versioning. Only adopt the
+                // current contract when no recovery state is present. Recovery
+                // metadata cannot be safely interpreted without its schema.
+                if (experiment.RecoveryAvailable ||
+                    !string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
+                    experiment.RecoveryHandlerVersion != 0 ||
+                    experiment.RecoveryPhase !=
+                        RebootOptimizationExperimentRecoveryPhase.None ||
+                    experiment.RecoveryAttempted ||
+                    experiment.RecoverySucceeded ||
+                    experiment.RecoveryAttemptedAtUtc.HasValue ||
+                    experiment.RecoveryRequiresReboot ||
+                    experiment.RecoveryFinalized ||
+                    experiment.RecoveryFinalizedAtUtc.HasValue ||
+                    experiment.RecoveryFinalizationCheckedAtUtc.HasValue)
+                {
+                    return false;
+                }
+
                 experiment.SchemaVersion =
                     RebootOptimizationExperimentState.CurrentSchemaVersion;
                 return true;
