@@ -427,7 +427,8 @@
                             Margin="6,0,0,0"/>
 
                         <TextBlock
-                            Text="Performance Dashboard"
+                            x:Name="PageTitleText"
+                            Text="Dashboard"
                             Foreground="#55555C"
                             FontSize="9"
                             Margin="25,0,0,0"/>
