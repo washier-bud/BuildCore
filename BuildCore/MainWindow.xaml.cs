@@ -5528,14 +5528,36 @@ namespace BuildCore
 
                 var textPanel = new StackPanel();
 
-                textPanel.Children.Add(new TextBlock
+                var titleRow = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+
+                titleRow.Children.Add(new TextBlock
                 {
                     Text = tweak.Title,
                     Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
                         Microsoft.UI.Colors.LightGray),
                     FontSize = 11,
-                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    VerticalAlignment = VerticalAlignment.Center
                 });
+
+                var helpButton = new Button
+                {
+                    Content = "?",
+                    Width = 24,
+                    Height = 24,
+                    MinWidth = 24,
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(7, -2, 0, 0),
+                    FontSize = 11,
+                    Tag = tweak
+                };
+
+                helpButton.Click += OptimizationTweakHelpButton_Click;
+                titleRow.Children.Add(helpButton);
+                textPanel.Children.Add(titleRow);
 
                 textPanel.Children.Add(new TextBlock
                 {
@@ -5586,6 +5608,139 @@ namespace BuildCore
             panel.Children.Add(footer);
             border.Child = panel;
             return border;
+        }
+
+        private async void OptimizationTweakHelpButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not OptimizationTweakDefinition tweak)
+            {
+                return;
+            }
+
+            SystemInfo systemInfo;
+
+            try
+            {
+                systemInfo = SystemInfoService.GetSystemInfo();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE TWEAK HARDWARE INFO ERROR: {ex}");
+
+                systemInfo = new SystemInfo();
+            }
+
+            string cpu = systemInfo.Cpu;
+            string gpu = systemInfo.Gpu;
+
+            bool cpuRelevant =
+                IsCpuGuidanceRelevant(tweak, cpu);
+
+            bool gpuRelevant =
+                IsGpuGuidanceRelevant(tweak, gpu);
+
+            var content = new StackPanel
+            {
+                Spacing = 10
+            };
+
+            content.Children.Add(new TextBlock
+            {
+                Text = "HARDWARE IMPACT",
+                FontSize = 11,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+            });
+
+            content.Children.Add(new TextBlock
+            {
+                Text = tweak.HardwareEffect,
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            content.Children.Add(new TextBlock
+            {
+                Text = $"CPU • {(cpuRelevant ? "GOOD FIT" : "REVIEW")}\n{tweak.CpuGuidance}",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            content.Children.Add(new TextBlock
+            {
+                Text = $"GPU • {(gpuRelevant ? "GOOD FIT" : "REVIEW")}\n{tweak.GpuGuidance}",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            content.Children.Add(new TextBlock
+            {
+                Text = $"Detected CPU: {cpu}\nDetected GPU: {gpu}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            content.Children.Add(new TextBlock
+            {
+                Text =
+                    $"Risk: {tweak.Risk}   •   " +
+                    $"Reboot: {(tweak.RequiresReboot ? "YES" : "NO")}   •   " +
+                    $"Rollback: {(tweak.RollbackSupported ? "SUPPORTED" : "NOT SUPPORTED")}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var dialog = new ContentDialog
+            {
+                Title = tweak.Title,
+                Content = content,
+                CloseButtonText = "CLOSE",
+                XamlRoot = Content.XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private static bool IsCpuGuidanceRelevant(
+            OptimizationTweakDefinition tweak,
+            string cpu)
+        {
+            if (string.IsNullOrWhiteSpace(cpu) ||
+                cpu.Equals("Unknown CPU", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (tweak.Id is "processor-min" or "processor-boost" or "cpu-idle")
+                return cpu.Contains("Intel", StringComparison.OrdinalIgnoreCase) ||
+                       cpu.Contains("AMD", StringComparison.OrdinalIgnoreCase) ||
+                       cpu.Contains("Ryzen", StringComparison.OrdinalIgnoreCase) ||
+                       cpu.Contains("Core", StringComparison.OrdinalIgnoreCase);
+
+            return true;
+        }
+
+        private static bool IsGpuGuidanceRelevant(
+            OptimizationTweakDefinition tweak,
+            string gpu)
+        {
+            if (string.IsNullOrWhiteSpace(gpu) ||
+                gpu.Equals("Unknown GPU", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (tweak.Id is "nvidia-power" or "nvidia-reflex" or "nvidia-vrr" or "low-latency")
+                return gpu.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase) ||
+                       gpu.Contains("GeForce", StringComparison.OrdinalIgnoreCase);
+
+            if (tweak.Id is "radeon-power" or "radeon-anti-lag" or "radeon-chill")
+                return gpu.Contains("AMD", StringComparison.OrdinalIgnoreCase) ||
+                       gpu.Contains("Radeon", StringComparison.OrdinalIgnoreCase);
+
+            return true;
         }
 
         private sealed class OptimizationLibraryToggleContext
