@@ -8,6 +8,10 @@
     mc:Ignorable="d"
     Title="BuildCore">
 
+    <Window.Resources>
+        <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#7CFF8A"/>
+    </Window.Resources>
+
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
@@ -491,7 +495,7 @@
 
                             <TextBlock
                                 Text="SYSTEM READY"
-                                Foreground="#7CFF8A"
+                                Foreground="{StaticResource BuildCoreAccentBrush}"
                                 FontSize="10"
                                 FontWeight="SemiBold"/>
 
@@ -2507,6 +2511,224 @@
                         </StackPanel>
                     </Border>
 
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- SETTINGS -->
+            <ScrollViewer
+                x:Name="SettingsPage"
+                Margin="0,64,0,0"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="Collapsed">
+
+                <StackPanel Padding="34,28,34,44">
+                    <TextBlock Text="BUILDCORE / SETTINGS"
+                               Foreground="{StaticResource BuildCoreAccentBrush}"
+                               FontSize="9"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="Settings"
+                               Foreground="White"
+                               FontSize="32"
+                               FontWeight="SemiBold"
+                               Margin="0,5,0,0"/>
+
+                    <TextBlock Text="Control BuildCore's appearance, safety behavior, and interface preferences."
+                               Foreground="#77777E"
+                               FontSize="11"
+                               MaxWidth="680"
+                               TextWrapping="Wrap"
+                               Margin="0,7,0,0"/>
+
+                    <Border Margin="0,24,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="APPEARANCE"
+                                       Foreground="{StaticResource BuildCoreAccentBrush}"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Interface style"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="Choose the BuildCore accent color. The selection is saved and used throughout the interface."
+                                       Foreground="#77777E"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,5,0,14"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="ACCENT COLOR"
+                                               Foreground="#D8D8DD"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="This changes BuildCore's primary highlight color without changing Windows."
+                                               Foreground="#66666D"
+                                               FontSize="8"
+                                               TextWrapping="Wrap"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <ComboBox x:Name="AccentColorComboBox"
+                                          Grid.Column="1"
+                                          SelectedIndex="0"
+                                          SelectionChanged="AccentColorComboBox_SelectionChanged"
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBoxItem Content="Lime"/>
+                                    <ComboBoxItem Content="Blue"/>
+                                    <ComboBoxItem Content="Purple"/>
+                                    <ComboBoxItem Content="Orange"/>
+                                    <ComboBoxItem Content="Red"/>
+                                    <ComboBoxItem Content="White"/>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,14,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="SAFETY"
+                                       Foreground="{StaticResource BuildCoreAccentBrush}"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Optimization protection"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="These preferences affect how BuildCore handles potentially system-changing actions."
+                                       Foreground="#77777E"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,5,0,12"/>
+
+                            <ToggleSwitch x:Name="ConfirmOptimizationToggle"
+                                          Header="Confirm optimization changes"
+                                          IsOn="True"
+                                          OffContent="OFF"
+                                          OnContent="ON"
+                                          Toggled="ConfirmOptimizationToggle_Toggled"/>
+                            <TextBlock Text="Keep confirmation dialogs enabled for system changes."
+                                       Foreground="#66666D"
+                                       FontSize="8"
+                                       Margin="0,2,0,10"/>
+
+                            <ToggleSwitch x:Name="AutoSnapshotToggle"
+                                          Header="Create a safety snapshot before applying"
+                                          IsOn="True"
+                                          OffContent="OFF"
+                                          OnContent="ON"
+                                          Toggled="AutoSnapshotToggle_Toggled"/>
+                            <TextBlock Text="Recommended. BuildCore should have a recovery point before supported changes."
+                                       Foreground="#66666D"
+                                       FontSize="8"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,14,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="INTERFACE"
+                                       Foreground="{StaticResource BuildCoreAccentBrush}"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Application behavior"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+
+                            <ToggleSwitch x:Name="AnimationsToggle"
+                                          Header="Interface animations"
+                                          IsOn="True"
+                                          OffContent="OFF"
+                                          OnContent="ON"
+                                          Toggled="AnimationsToggle_Toggled"
+                                          Margin="0,12,0,0"/>
+                            <TextBlock Text="Keeps future UI motion effects enabled. This does not change system performance settings."
+                                       Foreground="#66666D"
+                                       FontSize="8"
+                                       Margin="0,2,0,10"/>
+
+                            <ToggleSwitch x:Name="RememberPageToggle"
+                                          Header="Remember last page"
+                                          IsOn="False"
+                                          OffContent="OFF"
+                                          OnContent="ON"
+                                          Toggled="RememberPageToggle_Toggled"/>
+                            <TextBlock Text="Open the last BuildCore page instead of always starting on Dashboard."
+                                       Foreground="#66666D"
+                                       FontSize="8"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,14,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="MAINTENANCE"
+                                       Foreground="{StaticResource BuildCoreAccentBrush}"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="BuildCore data"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="Reset appearance and interface preferences without deleting optimization snapshots or benchmark history."
+                                       Foreground="#77777E"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,5,0,12"/>
+                            <Button x:Name="ResetSettingsButton"
+                                    Content="RESET APP SETTINGS"
+                                    Click="ResetSettingsButton_Click"
+                                    HorizontalAlignment="Left"
+                                    Padding="16,10"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,14,0,20"
+                            Padding="18"
+                            CornerRadius="12"
+                            Background="#121216"
+                            BorderBrush="#25252B"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="BUILDCORE"
+                                       Foreground="White"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Safe by design. BuildCore uses controlled optimization handlers rather than giving an assistant arbitrary access to Windows commands."
+                                       Foreground="#77777E"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </ScrollViewer>
 
