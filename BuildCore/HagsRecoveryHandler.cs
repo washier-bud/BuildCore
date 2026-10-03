@@ -64,7 +64,7 @@ namespace BuildCore
                     key.DeleteValue(HagsValueName, false);
 
                 key.Flush();
-                bool verified = VerifyRestoredState(experiment);
+                bool verified = VerifyRegistryState(experiment);
                 experiment.RecoveryAttempted = true;
                 experiment.RecoveryAttemptedAtUtc = DateTime.UtcNow;
                 experiment.RecoverySucceeded = verified;
@@ -97,12 +97,35 @@ namespace BuildCore
 
         public bool VerifyRestoredState(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null || !experiment.RecoveryAttempted) return false;
-            using RegistryKey? key = Registry.LocalMachine.OpenSubKey(GraphicsDriversPath, false);
-            if (key == null) return !experiment.OriginalHagsValueExists;
-            object? value = key.GetValue(HagsValueName, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-            if (!experiment.OriginalHagsValueExists) return value == null;
-            return value is int mode && experiment.OriginalHagsMode.HasValue && mode == experiment.OriginalHagsMode.Value;
+            if (experiment == null || !experiment.RecoveryAttempted)
+                return false;
+
+            return VerifyRegistryState(experiment);
+        }
+
+        private static bool VerifyRegistryState(
+            RebootOptimizationExperimentState experiment)
+        {
+            using RegistryKey? key =
+                Registry.LocalMachine.OpenSubKey(
+                    GraphicsDriversPath,
+                    false);
+
+            if (key == null)
+                return !experiment.OriginalHagsValueExists;
+
+            object? value =
+                key.GetValue(
+                    HagsValueName,
+                    null,
+                    RegistryValueOptions.DoNotExpandEnvironmentNames);
+
+            if (!experiment.OriginalHagsValueExists)
+                return value == null;
+
+            return value is int mode &&
+                   experiment.OriginalHagsMode.HasValue &&
+                   mode == experiment.OriginalHagsMode.Value;
         }
 
         private static OptimizationApplyResult Failure(RebootOptimizationExperimentState experiment, string error)
