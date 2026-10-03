@@ -460,6 +460,22 @@ namespace BuildCore
                     return false;
                 }
 
+                if (experiment.RecoveryFinalizationCheckedAtUtc.HasValue &&
+                    (!experiment.RecoveryAttemptedAtUtc.HasValue ||
+                     experiment.RecoveryFinalizationCheckedAtUtc.Value <
+                        experiment.RecoveryAttemptedAtUtc.Value))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryFinalizedAtUtc.HasValue &&
+                    (!experiment.RecoveryFinalizationCheckedAtUtc.HasValue ||
+                     experiment.RecoveryFinalizedAtUtc.Value <
+                        experiment.RecoveryAttemptedAtUtc.GetValueOrDefault()))
+                {
+                    return false;
+                }
+
                 return true;
             }
             catch
