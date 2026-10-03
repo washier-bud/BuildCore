@@ -5979,7 +5979,8 @@ namespace BuildCore
 
         private void ApplyAccentColor()
         {
-            if (Resources["BuildCoreAccentBrush"]
+            if (Content is FrameworkElement root &&
+                root.Resources["BuildCoreAccentBrush"]
                 is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
             {
                 brush.Color = GetAccentColor();
