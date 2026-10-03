@@ -31,7 +31,7 @@ namespace BuildCore
             {
                 Group("windows-settings", "Best Windows Settings", OptimizationCategory.Windows,
                     "Core Windows settings commonly reviewed for performance and gaming.",
-                    T("game-mode", "Windows Game Mode", "Enable Game Mode for supported games.", true, OptimizationRisk.Low),
+                    T("windows-game-mode", "Windows Game Mode", "Enable Game Mode for supported games.", true, OptimizationRisk.Low),
                     T("visual-effects", "Reduce visual effects", "Reduce non-essential Windows visual effects.", true, OptimizationRisk.Low),
                     T("background-apps", "Limit background apps", "Review and limit unnecessary background activity.", true, OptimizationRisk.Low),
                     T("delivery-optimization", "Review Delivery Optimization", "Limit peer-to-peer update activity when it is not needed.", false, OptimizationRisk.Low)),
@@ -75,7 +75,7 @@ namespace BuildCore
 
                 Group("game-priority", "Best Game Priority", OptimizationCategory.Gaming,
                     "Game scheduling and process-priority controls with explicit scope.",
-                    T("game-mode", "Game Mode", "Enable Windows Game Mode.", true, OptimizationRisk.Low),
+                    T("gaming-game-mode", "Game Mode", "Enable Windows Game Mode.", true, OptimizationRisk.Low),
                     T("fullscreen", "Fullscreen optimization review", "Review fullscreen optimization behavior for the selected game.", false, OptimizationRisk.Low),
                     T("priority", "Game process priority", "Apply a controlled priority policy only to an explicitly selected game process.", false, OptimizationRisk.Medium)),
 
