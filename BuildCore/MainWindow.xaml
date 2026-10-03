@@ -1428,144 +1428,517 @@
                 VerticalScrollBarVisibility="Auto"
                 Visibility="Collapsed">
 
-                <StackPanel
-                    Padding="32">
+                <StackPanel Padding="34,28,34,44">
 
-                    <TextBlock
-                        Text="BUILDCORE"
-                        Foreground="#5E5E65"
-                        FontSize="10"
-                        FontWeight="SemiBold"/>
+                    <!-- HERO -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock
-                        Text="Optimization Center"
-                        Foreground="White"
-                        FontSize="28"
-                        FontWeight="SemiBold"
-                        Margin="0,4,0,0"/>
+                        <StackPanel>
+                            <TextBlock
+                                Text="BUILDCORE / OPTIMIZE"
+                                Foreground="#77777E"
+                                FontSize="9"
+                                FontWeight="SemiBold"/>
 
-                    <TextBlock
-                        Text="Analyze your system before making any changes."
-                        Foreground="#66666D"
-                        FontSize="11"
-                        Margin="0,6,0,0"/>
+                            <TextBlock
+                                Text="System Optimization"
+                                Foreground="White"
+                                FontSize="32"
+                                FontWeight="SemiBold"
+                                Margin="0,5,0,0"/>
 
-                    <!-- SNAPSHOT -->
+                            <TextBlock
+                                Text="Tune Windows for performance while keeping every change visible, verifiable, and recoverable."
+                                Foreground="#77777E"
+                                FontSize="11"
+                                MaxWidth="650"
+                                TextWrapping="Wrap"
+                                Margin="0,7,0,0"/>
+                        </StackPanel>
 
+                        <Border
+                            Grid.Column="1"
+                            Padding="14,10"
+                            CornerRadius="10"
+                            Background="#111116"
+                            BorderBrush="#29292F"
+                            BorderThickness="1"
+                            VerticalAlignment="Center">
+
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse
+                                    Width="7"
+                                    Height="7"
+                                    Fill="#7CFF8A"
+                                    VerticalAlignment="Center"/>
+
+                                <TextBlock
+                                    Text=" SYSTEM PROTECTED"
+                                    Foreground="#D8D8DD"
+                                    FontSize="8"
+                                    FontWeight="SemiBold"
+                                    Margin="6,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- QUICK STATUS -->
+                    <Grid Margin="0,24,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border
+                            Grid.Column="0"
+                            Margin="0,0,8,0"
+                            Padding="16"
+                            CornerRadius="12"
+                            Background="#101014"
+                            BorderBrush="#25252B"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="AVAILABLE OPTIMIZATIONS"
+                                           Foreground="#66666D"
+                                           FontSize="8"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="OptimizationCountText"
+                                           Text="0"
+                                           Foreground="White"
+                                           FontSize="24"
+                                           FontWeight="SemiBold"
+                                           Margin="0,3,0,0"/>
+                                <TextBlock Text="system checks"
+                                           Foreground="#55555C"
+                                           FontSize="8"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border
+                            Grid.Column="1"
+                            Margin="4,0"
+                            Padding="16"
+                            CornerRadius="12"
+                            Background="#101014"
+                            BorderBrush="#25252B"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="PROTECTION"
+                                           Foreground="#66666D"
+                                           FontSize="8"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="SNAPSHOTS"
+                                           Foreground="#7CFF8A"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Margin="0,7,0,0"/>
+                                <TextBlock x:Name="SnapshotCountText"
+                                           Text="0 SNAPSHOTS"
+                                           Foreground="#55555C"
+                                           FontSize="8"
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border
+                            Grid.Column="2"
+                            Margin="8,0,0,0"
+                            Padding="16"
+                            CornerRadius="12"
+                            Background="#101014"
+                            BorderBrush="#25252B"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="CURRENT STATUS"
+                                           Foreground="#66666D"
+                                           FontSize="8"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="OptimizationStatusText"
+                                           Text="READY"
+                                           Foreground="#7CFF8A"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Margin="0,7,0,0"/>
+                                <TextBlock x:Name="OptimizationSummaryText"
+                                           Text="Run a system scan to find opportunities."
+                                           Foreground="#55555C"
+                                           FontSize="8"
+                                           TextWrapping="Wrap"
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- SAFETY / SCAN -->
                     <Border
-                        Margin="0,25,0,0"
-                        Padding="22"
+                        Margin="0,18,0,0"
+                        Padding="20"
                         CornerRadius="14"
-                        Background="#101014"
-                        BorderBrush="#28282E"
+                        Background="#121216"
+                        BorderBrush="#303036"
                         BorderThickness="1">
 
                         <Grid>
-
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel>
-
-                                <StackPanel
-                                    Orientation="Horizontal">
-
-                                    <Ellipse
-                                        Width="8"
-                                        Height="8"
-                                        Fill="#7CFF8A"
-                                        VerticalAlignment="Center"/>
-
-                                    <TextBlock
-                                        Text=" SAFETY SYSTEM"
-                                        Foreground="White"
-                                        FontSize="11"
-                                        FontWeight="SemiBold"
-                                        Margin="7,0,0,0"/>
-
-                                </StackPanel>
-
                                 <TextBlock
-                                    Text="Create a system snapshot before applying optimizations."
-                                    Foreground="#B0B0B6"
-                                    FontSize="12"
-                                    Margin="0,10,0,0"/>
-
-                                <TextBlock
-                                    x:Name="SnapshotStatusText"
-                                    Text="No snapshot created yet."
-                                    Foreground="#66666D"
+                                    Text="SYSTEM ANALYSIS"
+                                    Foreground="#7CFF8A"
                                     FontSize="9"
-                                    Margin="0,7,0,0"/>
+                                    FontWeight="SemiBold"/>
 
                                 <TextBlock
-                                    x:Name="SnapshotLocationText"
-                                    Text="Snapshot storage: checking..."
-                                    Foreground="#55555C"
-                                    FontSize="8"
+                                    Text="Find what can be optimized"
+                                    Foreground="White"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Margin="0,4,0,0"/>
+
+                                <TextBlock
+                                    Text="BuildCore checks supported Windows settings and presents individual recommendations before anything is changed."
+                                    Foreground="#77777E"
+                                    FontSize="10"
+                                    MaxWidth="650"
                                     TextWrapping="Wrap"
                                     Margin="0,5,0,0"/>
-
                             </StackPanel>
 
-                            <StackPanel
+                            <Button
+                                x:Name="AnalyzeButton"
                                 Grid.Column="1"
-                                HorizontalAlignment="Right">
+                                Click="AnalyzeButton_Click"
+                                Content="SCAN &amp; ANALYZE"
+                                Padding="22,12"
+                                VerticalAlignment="Center"
+                                Margin="20,0,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- OPTIMIZATION CATEGORIES -->
+                    <TextBlock
+                        Text="OPTIMIZATION CATEGORIES"
+                        Foreground="#66666D"
+                        FontSize="9"
+                        FontWeight="SemiBold"
+                        Margin="2,28,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- WINDOWS -->
+                        <Border
+                            Grid.Column="0"
+                            Margin="0,0,7,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="01  WINDOWS"
+                                           Foreground="#7CFF8A"
+                                           FontSize="9"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Complete Windows Optimization"
+                                           Foreground="White"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Performance, privacy, power management, and background activity."
+                                           Foreground="#77777E"
+                                           FontSize="10"
+                                           TextWrapping="Wrap"
+                                           Margin="0,5,0,14"/>
+
+                                <Border
+                                    Padding="11"
+                                    CornerRadius="9"
+                                    Background="#0B0B0E"
+                                    BorderBrush="#222228"
+                                    BorderThickness="1">
+
+                                    <StackPanel>
+                                        <TextBlock Text="REGISTRY &amp; PRIVACY"
+                                                   Foreground="#D8D8DD"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="Review privacy-oriented Windows settings and safe registry changes."
+                                                   Foreground="#66666D"
+                                                   FontSize="8"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border
+                                    Margin="0,8,0,0"
+                                    Padding="11"
+                                    CornerRadius="9"
+                                    Background="#0B0B0E"
+                                    BorderBrush="#222228"
+                                    BorderThickness="1">
+
+                                    <StackPanel>
+                                        <TextBlock Text="STARTUP &amp; BACKGROUND"
+                                                   Foreground="#D8D8DD"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="Identify unnecessary startup and background activity."
+                                                   Foreground="#66666D"
+                                                   FontSize="8"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- PERFORMANCE -->
+                        <Border
+                            Grid.Column="1"
+                            Margin="7,0,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="02  PERFORMANCE"
+                                           Foreground="#7CFF8A"
+                                           FontSize="9"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Maximum Performance"
+                                           Foreground="White"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Power plans and Windows performance settings designed around your workload."
+                                           Foreground="#77777E"
+                                           FontSize="10"
+                                           TextWrapping="Wrap"
+                                           Margin="0,5,0,14"/>
+
+                                <Border
+                                    Padding="11"
+                                    CornerRadius="9"
+                                    Background="#0B0B0E"
+                                    BorderBrush="#222228"
+                                    BorderThickness="1">
+
+                                    <StackPanel>
+                                        <TextBlock Text="POWER &amp; CPU"
+                                                   Foreground="#D8D8DD"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="High performance power configuration and supported power-management tweaks."
+                                                   Foreground="#66666D"
+                                                   FontSize="8"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border
+                                    Margin="0,8,0,0"
+                                    Padding="11"
+                                    CornerRadius="9"
+                                    Background="#0B0B0E"
+                                    BorderBrush="#222228"
+                                    BorderThickness="1">
+
+                                    <StackPanel>
+                                        <TextBlock Text="GAMING"
+                                                   Foreground="#D8D8DD"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="Gaming-focused Windows settings and performance options."
+                                                   Foreground="#66666D"
+                                                   FontSize="8"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- RECOMMENDATIONS -->
+                    <Grid Margin="0,28,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock
+                                Text="RECOMMENDATIONS"
+                                Foreground="#66666D"
+                                FontSize="9"
+                                FontWeight="SemiBold"/>
+
+                            <TextBlock
+                                Text="Review each change before applying it."
+                                Foreground="#77777E"
+                                FontSize="10"
+                                Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="INDIVIDUAL CONTROL"
+                            Foreground="#55555C"
+                            FontSize="8"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel
+                        x:Name="RecommendationsPanel"
+                        Margin="0,12,0,0"/>
+
+                    <!-- SNAPSHOT / BENCHMARK TOOLS -->
+                    <Grid Margin="0,28,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border
+                            Grid.Column="0"
+                            Margin="0,0,7,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="SAFETY SYSTEM"
+                                               Foreground="#7CFF8A"
+                                               FontSize="9"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="System Snapshot"
+                                               Foreground="White"
+                                               FontSize="17"
+                                               FontWeight="SemiBold"
+                                               Margin="0,4,0,0"/>
+                                    <TextBlock x:Name="SnapshotStatusText"
+                                               Text="No snapshot created yet."
+                                               Foreground="#77777E"
+                                               FontSize="9"
+                                               TextWrapping="Wrap"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="SnapshotLocationText"
+                                               Text="Snapshot storage: checking..."
+                                               Foreground="#55555C"
+                                               FontSize="8"
+                                               TextWrapping="Wrap"
+                                               Margin="0,5,0,0"/>
+                                </StackPanel>
 
                                 <Button
                                     x:Name="CreateSnapshotButton"
+                                    Grid.Column="1"
                                     Click="CreateSnapshotButton_Click"
                                     Content="CREATE SNAPSHOT"
-                                    Padding="18,11"/>
+                                    Padding="16,10"
+                                    VerticalAlignment="Center"
+                                    Margin="14,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Grid.Column="1"
+                            Margin="7,0,0,0"
+                            Padding="20"
+                            CornerRadius="14"
+                            Background="#101014"
+                            BorderBrush="#28282E"
+                            BorderThickness="1">
+
+                            <StackPanel>
+                                <TextBlock Text="CONTROLLED TESTING"
+                                           Foreground="#7CFF8A"
+                                           FontSize="9"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Benchmark Before &amp; After"
+                                           Foreground="White"
+                                           FontSize="17"
+                                           FontWeight="SemiBold"
+                                           Margin="0,4,0,0"/>
 
                                 <TextBlock
-                                    x:Name="SnapshotCountText"
-                                    Text="0 SNAPSHOTS"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,9,0,0"/>
+                                    x:Name="BenchmarkSummaryText"
+                                    Text="Run a baseline benchmark before applying optimizations."
+                                    Foreground="#77777E"
+                                    FontSize="9"
+                                    TextWrapping="Wrap"
+                                    Margin="0,5,0,10"/>
 
+                                <Button
+                                    x:Name="RunBenchmarkButton"
+                                    Click="RunBenchmarkButton_Click"
+                                    Content="RUN BENCHMARK"
+                                    Padding="16,10"
+                                    HorizontalAlignment="Left"/>
                             </StackPanel>
+                        </Border>
+                    </Grid>
 
-                        </Grid>
-
-                    </Border>
-
-                    <!-- ================================================= -->
-                    <!-- WORKLOAD BENCHMARK -->
-                    <!-- ================================================= -->
-
+                    <!-- WORKLOAD LAB -->
                     <Border
-                        Margin="0,20,0,0"
-                        Padding="22"
+                        Margin="0,14,0,0"
+                        Padding="20"
                         CornerRadius="14"
                         Background="#101014"
                         BorderBrush="#28282E"
                         BorderThickness="1">
 
                         <StackPanel>
-                            <TextBlock
-                                Text="WORKLOAD LAB"
-                                Foreground="#7CFF8A"
-                                FontSize="10"
-                                FontWeight="SemiBold"/>
+                            <TextBlock Text="WORKLOAD LAB"
+                                       Foreground="#7CFF8A"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
+
+                            <TextBlock Text="Controlled workload testing"
+                                       Foreground="White"
+                                       FontSize="17"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
 
                             <TextBlock
-                                Text="Choose a generic workload profile"
-                                Foreground="White"
-                                FontSize="19"
-                                FontWeight="SemiBold"
-                                Margin="0,5,0,0"/>
-
-                            <TextBlock
-                                Text="Profiles define the test configuration. Gaming requires a real workload provider before frame-time metrics can be measured."
+                                Text="Use a workload profile and optional running application to measure controlled performance changes."
                                 Foreground="#77777E"
-                                FontSize="10"
+                                FontSize="9"
                                 TextWrapping="Wrap"
-                                Margin="0,6,0,12"/>
+                                Margin="0,5,0,12"/>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -1576,20 +1949,20 @@
                                 <ComboBox
                                     x:Name="WorkloadProfileComboBox"
                                     Grid.Column="0"
-                                    HorizontalAlignment="Stretch"
-                                    PlaceholderText="Select workload profile"/>
+                                    PlaceholderText="Select workload profile"
+                                    HorizontalAlignment="Stretch"/>
 
                                 <Button
                                     x:Name="RunWorkloadBenchmarkButton"
                                     Grid.Column="1"
                                     Content="RUN WORKLOAD"
-                                    HorizontalAlignment="Right"
-                                    Padding="18,10"
+                                    Padding="16,10"
                                     Margin="12,0,0,0"
+                                    HorizontalAlignment="Right"
                                     Click="RunWorkloadBenchmarkButton_Click"/>
                             </Grid>
 
-                            <Grid Margin="0,14,0,0">
+                            <Grid Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="150"/>
@@ -1615,108 +1988,69 @@
                                 x:Name="WorkloadProcessStatusText"
                                 Text="Process selection is used by real frame-time workloads."
                                 Foreground="#66666D"
-                                FontSize="9"
+                                FontSize="8"
                                 TextWrapping="Wrap"
-                                Margin="0,8,0,0"/>
+                                Margin="0,7,0,0"/>
 
                             <TextBlock
                                 x:Name="WorkloadProfileDescriptionText"
                                 Text="Select a profile to view its description."
                                 Foreground="#66666D"
-                                FontSize="9"
+                                FontSize="8"
                                 TextWrapping="Wrap"
-                                Margin="0,10,0,0"/>
+                                Margin="0,7,0,0"/>
 
                             <TextBlock
                                 x:Name="WorkloadBenchmarkStatusText"
                                 Text="READY"
                                 Foreground="#66666D"
-                                FontSize="9"
+                                FontSize="8"
                                 FontWeight="SemiBold"
-                                Margin="0,10,0,0"/>
+                                Margin="0,8,0,0"/>
                         </StackPanel>
                     </Border>
 
                     <!-- BENCHMARK -->
-
                     <Border
-                        Margin="0,20,0,0"
-                        Padding="22"
+                        Margin="0,14,0,0"
+                        Padding="20"
                         CornerRadius="14"
                         Background="#101014"
                         BorderBrush="#28282E"
                         BorderThickness="1">
 
                         <StackPanel>
-
                             <Grid>
-
                                 <StackPanel>
-
-                                    <TextBlock
-                                        Text="PERFORMANCE BENCHMARK"
-                                        Foreground="#7CFF8A"
-                                        FontSize="10"
-                                        FontWeight="SemiBold"/>
-
-                                    <TextBlock
-                                        Text="Measure your current system state"
-                                        Foreground="White"
-                                        FontSize="19"
-                                        FontWeight="SemiBold"
-                                        Margin="0,5,0,0"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkSummaryText"
-                                        Text="Run a baseline benchmark before applying optimizations."
-                                        Foreground="#77777E"
-                                        FontSize="10"
-                                        TextWrapping="Wrap"
-                                        Margin="0,6,0,0"/>
-
+                                    <TextBlock Text="PERFORMANCE BENCHMARK"
+                                               Foreground="#7CFF8A"
+                                               FontSize="9"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="Measure your current system state"
+                                               Foreground="White"
+                                               FontSize="17"
+                                               FontWeight="SemiBold"
+                                               Margin="0,4,0,0"/>
                                 </StackPanel>
-
-                                <Button
-                                    x:Name="RunBenchmarkButton"
-                                    Click="RunBenchmarkButton_Click"
-                                    Content="RUN BENCHMARK"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    Padding="20,12"/>
-
-                            </Grid>
-
-                            <Grid
-                                Margin="0,20,0,0">
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="100"/>
-                                </Grid.ColumnDefinitions>
-
-                                <ProgressBar
-                                    x:Name="BenchmarkProgressBar"
-                                    Grid.Column="0"
-                                    Minimum="0"
-                                    Maximum="100"
-                                    Value="0"
-                                    Height="5"
-                                    VerticalAlignment="Center"/>
 
                                 <TextBlock
                                     x:Name="BenchmarkProgressText"
-                                    Grid.Column="1"
                                     Text="READY"
                                     Foreground="#66666D"
-                                    FontSize="9"
+                                    FontSize="8"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"/>
-
                             </Grid>
 
-                            <Grid
-                                Margin="0,18,0,0">
+                            <ProgressBar
+                                x:Name="BenchmarkProgressBar"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="0"
+                                Height="5"
+                                Margin="0,16,0,0"/>
 
+                            <Grid Margin="0,16,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
@@ -1725,90 +2059,27 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock
-                                        Text="CPU"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkCpuText"
-                                        Text="--"
-                                        Foreground="White"
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Margin="0,4,0,0"/>
-
-                                    <TextBlock
-                                        Text="average usage"
-                                        Foreground="#55555C"
-                                        FontSize="8"/>
+                                    <TextBlock Text="CPU" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkCpuText" Text="--" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock
-                                        Text="RAM"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkRamText"
-                                        Text="--"
-                                        Foreground="White"
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Margin="0,4,0,0"/>
-
-                                    <TextBlock
-                                        Text="average usage"
-                                        Foreground="#55555C"
-                                        FontSize="8"/>
+                                    <TextBlock Text="RAM" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkRamText" Text="--" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock
-                                        Text="GPU"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkGpuText"
-                                        Text="--"
-                                        Foreground="White"
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Margin="0,4,0,0"/>
-
-                                    <TextBlock
-                                        Text="average usage"
-                                        Foreground="#55555C"
-                                        FontSize="8"/>
+                                    <TextBlock Text="GPU" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkGpuText" Text="--" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="3">
-                                    <TextBlock
-                                        Text="SCORE"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkScoreText"
-                                        Text="--"
-                                        Foreground="#7CFF8A"
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Margin="0,4,0,0"/>
-
-                                    <TextBlock
-                                        Text="system baseline"
-                                        Foreground="#55555C"
-                                        FontSize="8"/>
+                                    <TextBlock Text="SCORE" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkScoreText" Text="--" Foreground="#7CFF8A" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
                                 </StackPanel>
-
                             </Grid>
 
-                            <Grid
-                                Margin="0,20,0,0">
-
+                            <Grid Margin="0,14,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
@@ -1817,83 +2088,41 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock
-                                        Text="CPU PEAK"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkCpuPeakText"
-                                        Text="--"
-                                        Foreground="#A0A0A7"
-                                        FontSize="11"
-                                        Margin="0,4,0,0"/>
+                                    <TextBlock Text="CPU PEAK" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkCpuPeakText" Text="--" Foreground="#A0A0A7" FontSize="10" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock
-                                        Text="GPU PEAK"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkGpuPeakText"
-                                        Text="--"
-                                        Foreground="#A0A0A7"
-                                        FontSize="11"
-                                        Margin="0,4,0,0"/>
+                                    <TextBlock Text="GPU PEAK" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkGpuPeakText" Text="--" Foreground="#A0A0A7" FontSize="10" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock
-                                        Text="GPU TEMP"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkGpuTempText"
-                                        Text="--"
-                                        Foreground="#A0A0A7"
-                                        FontSize="11"
-                                        Margin="0,4,0,0"/>
+                                    <TextBlock Text="GPU TEMP" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkGpuTempText" Text="--" Foreground="#A0A0A7" FontSize="10" Margin="0,3,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="3">
-                                    <TextBlock
-                                        Text="VRAM"
-                                        Foreground="#66666D"
-                                        FontSize="8"/>
-
-                                    <TextBlock
-                                        x:Name="BenchmarkVramText"
-                                        Text="--"
-                                        Foreground="#A0A0A7"
-                                        FontSize="11"
-                                        Margin="0,4,0,0"/>
+                                    <TextBlock Text="VRAM" Foreground="#66666D" FontSize="8"/>
+                                    <TextBlock x:Name="BenchmarkVramText" Text="--" Foreground="#A0A0A7" FontSize="10" Margin="0,3,0,0"/>
                                 </StackPanel>
-
                             </Grid>
 
                             <TextBlock
                                 x:Name="BenchmarkStatusText"
                                 Text="READY"
                                 Foreground="#66666D"
-                                FontSize="9"
+                                FontSize="8"
                                 FontWeight="SemiBold"
-                                Margin="0,20,0,0"/>
-
+                                Margin="0,14,0,0"/>
                         </StackPanel>
-
                     </Border>
 
-                    <!-- ================================================= -->
-                    <!-- OPTIMIZATION TEST RESULTS -->
-                    <!-- ================================================= -->
-
+                    <!-- RESULTS -->
                     <Border
                         x:Name="OptimizationResultsBorder"
-                        Margin="0,20,0,0"
-                        Padding="22"
+                        Margin="0,14,0,0"
+                        Padding="20"
                         CornerRadius="14"
                         Background="#101014"
                         BorderBrush="#28282E"
@@ -1901,175 +2130,56 @@
                         Visibility="Collapsed">
 
                         <StackPanel>
-
-                            <TextBlock
-                                Text="OPTIMIZATION TEST RESULTS"
-                                Foreground="#7CFF8A"
-                                FontSize="10"
-                                FontWeight="SemiBold"/>
+                            <TextBlock Text="OPTIMIZATION TEST RESULTS"
+                                       Foreground="#7CFF8A"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"/>
 
                             <TextBlock
                                 x:Name="OptimizationResultsTitleText"
                                 Text="No controlled test completed"
                                 Foreground="White"
-                                FontSize="19"
+                                FontSize="17"
                                 FontWeight="SemiBold"
-                                Margin="0,5,0,0"/>
+                                Margin="0,4,0,0"/>
 
                             <TextBlock
                                 x:Name="OptimizationResultsStatusText"
                                 Text="READY"
                                 Foreground="#77777E"
-                                FontSize="10"
-                                Margin="0,6,0,0"/>
-
-                            <Border
-                                Margin="0,18,0,0"
-                                Padding="14"
-                                CornerRadius="10"
-                                Background="#0B0B0E">
-
-                                <Grid>
-
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Text="METRIC"
-                                        Foreground="#66666D"
-                                        FontSize="8"
-                                        FontWeight="SemiBold"/>
-
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Text="BEFORE"
-                                        Foreground="#66666D"
-                                        FontSize="8"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Right"/>
-
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        Text="AFTER"
-                                        Foreground="#66666D"
-                                        FontSize="8"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Right"/>
-
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        Text="CHANGE"
-                                        Foreground="#66666D"
-                                        FontSize="8"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Right"/>
-
-                                </Grid>
-
-                            </Border>
-
-                            <StackPanel
-                                x:Name="OptimizationResultsPanel"
-                                Margin="0,8,0,0"/>
-
-                            <Border
-                                Margin="0,18,0,0"
-                                Padding="14"
-                                CornerRadius="10"
-                                Background="#121216">
-
-                                <StackPanel>
-
-                                    <TextBlock
-                                        x:Name="OptimizationResultsSummaryText"
-                                        Text="Telemetry comparison results will appear here."
-                                        Foreground="#A0A0A7"
-                                        FontSize="10"
-                                        TextWrapping="Wrap"/>
-
-                                    <TextBlock
-                                        Text="These measurements compare system telemetry before and after the tested change. They do not by themselves prove an FPS, frame-time, or input-latency improvement."
-                                        Foreground="#55555C"
-                                        FontSize="8"
-                                        TextWrapping="Wrap"
-                                        Margin="0,8,0,0"/>
-
-                                </StackPanel>
-
-                            </Border>
-
-                        </StackPanel>
-
-                    </Border>
-
-                    <!-- ANALYSIS -->
-
-                    <Grid
-                        Margin="0,28,0,15">
-
-                        <StackPanel>
-
-                            <TextBlock
-                                Text="SYSTEM ANALYSIS"
-                                Foreground="#5E5E65"
-                                FontSize="10"
-                                FontWeight="SemiBold"/>
-
-                            <TextBlock
-                                x:Name="OptimizationSummaryText"
-                                Text="Run an analysis to find optimization opportunities."
-                                Foreground="#A0A0A7"
-                                FontSize="11"
+                                FontSize="9"
                                 Margin="0,5,0,0"/>
 
+                            <Border
+                                Margin="0,14,0,0"
+                                Padding="12"
+                                CornerRadius="9"
+                                Background="#0B0B0E">
+
+                                <StackPanel
+                                    x:Name="OptimizationResultsPanel"/>
+
+                            </Border>
+
+                            <Border
+                                Margin="0,12,0,0"
+                                Padding="12"
+                                CornerRadius="9"
+                                Background="#121216">
+
+                                <TextBlock
+                                    x:Name="OptimizationResultsSummaryText"
+                                    Text="Telemetry comparison results will appear here."
+                                    Foreground="#A0A0A7"
+                                    FontSize="9"
+                                    TextWrapping="Wrap"/>
+                            </Border>
                         </StackPanel>
+                    </Border>
 
-                        <StackPanel
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-
-                            <TextBlock
-                                x:Name="OptimizationCountText"
-                                Text="0"
-                                Foreground="White"
-                                FontSize="22"
-                                FontWeight="SemiBold"/>
-
-                            <TextBlock
-                                Text=" CHECKS"
-                                Foreground="#66666D"
-                                FontSize="8"
-                                VerticalAlignment="Center"
-                                Margin="4,0,20,0"/>
-
-                            <Button
-                                x:Name="AnalyzeButton"
-                                Click="AnalyzeButton_Click"
-                                Content="SCAN &amp; ANALYZE"
-                                Padding="18,10"/>
-
-                        </StackPanel>
-
-                    </Grid>
-
-                    <TextBlock
-                        x:Name="OptimizationStatusText"
-                        Text="READY"
-                        Foreground="#7CFF8A"
-                        FontSize="9"
-                        FontWeight="SemiBold"
-                        Margin="0,0,0,12"/>
-
-                    <StackPanel
-                        x:Name="RecommendationsPanel"/>
-
+                    <!-- SAFETY FOOTER -->
                     <Border
-                        Margin="0,20,0,40"
+                        Margin="0,18,0,20"
                         Padding="18"
                         CornerRadius="12"
                         Background="#121216"
@@ -2077,26 +2187,22 @@
                         BorderThickness="1">
 
                         <StackPanel>
-
                             <TextBlock
                                 Text="BUILDCORE SAFETY"
                                 Foreground="White"
-                                FontSize="10"
+                                FontSize="9"
                                 FontWeight="SemiBold"/>
 
                             <TextBlock
-                                Text="BuildCore will not blindly apply system changes. Controlled tests create a snapshot, apply one change, verify the result, and compare measured telemetry before and after."
+                                Text="BuildCore does not blindly apply system changes. Supported optimizations can be reviewed individually, protected with snapshots, verified after application, and restored when recovery is available."
                                 Foreground="#77777E"
-                                FontSize="10"
+                                FontSize="9"
                                 TextWrapping="Wrap"
-                                Margin="0,7,0,0"/>
-
+                                Margin="0,6,0,0"/>
                         </StackPanel>
-
                     </Border>
 
                 </StackPanel>
-
             </ScrollViewer>
 
         </Grid>
