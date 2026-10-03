@@ -5800,7 +5800,7 @@ namespace BuildCore
                     "Removing or disabling a component can break a feature you use. Background apps may also restore settings after updates.",
 
                 _ when tweak.Title.Contains("BCDEdit", StringComparison.OrdinalIgnoreCase) ||
-                       tweak.Category == OptimizationCategory.Boot =>
+                       GetTweakCategory(tweak.Id) == OptimizationCategory.Boot =>
                     "Boot configuration changes can affect Windows startup, recovery, drivers, and system behavior. Incorrect settings can make Windows harder to boot or troubleshoot.",
 
                 _ =>
