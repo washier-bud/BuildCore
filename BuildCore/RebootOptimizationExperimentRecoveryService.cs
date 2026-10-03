@@ -131,6 +131,17 @@ namespace BuildCore
         public static OptimizationApplyResult Rollback(
             RebootOptimizationExperimentState experiment)
         {
+            if (experiment == null)
+            {
+                return new OptimizationApplyResult
+                {
+                    Success = false,
+                    Verified = false,
+                    Message = "Rollback cannot start without an experiment.",
+                    Error = "Experiment state is missing."
+                };
+            }
+
             IRebootOptimizationRecoveryHandler? handler =
                 RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
 
