@@ -106,7 +106,7 @@ namespace BuildCore
                 Group("windows-cleaner", "Custom Windows Cleaner", OptimizationCategory.Cleanup,
                     "Targeted cleanup with explicit file locations and no blanket deletion.",
                     T("temp-files", "Temporary files", "Clean supported user and Windows temporary files.", true, OptimizationRisk.Low),
-                    T("shader-cache", "Stale shader caches", "Remove only supported stale shader-cache data after verification.", false, OptimizationRisk.Low),
+                    T("cleanup-shader-cache", "Stale shader caches", "Remove only supported stale shader-cache data after verification.", false, OptimizationRisk.Low),
                     T("update-cache", "Windows Update cache review", "Review stale update-cache data before cleanup.", false, OptimizationRisk.Medium)),
 
                 Group("directx", "DirectX Optimization", OptimizationCategory.Graphics,
