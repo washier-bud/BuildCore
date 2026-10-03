@@ -8,7 +8,8 @@ namespace BuildCore
         public static bool HasRecoveryHandler(
             RebootOptimizationExperimentState experiment)
         {
-            return RebootOptimizationRecoveryHandlerRegistry.Find(experiment) != null;
+            return experiment != null &&
+                RebootOptimizationRecoveryHandlerRegistry.Find(experiment) != null;
         }
 
         public static void CaptureOriginalState(
@@ -16,6 +17,16 @@ namespace BuildCore
         {
             if (experiment == null)
                 throw new ArgumentNullException(nameof(experiment));
+
+            if (experiment.RecoveryAvailable ||
+                experiment.RecoveryPhase !=
+                    RebootOptimizationExperimentRecoveryPhase.None ||
+                experiment.RecoveryAttempted ||
+                experiment.RecoveryFinalized)
+            {
+                throw new InvalidOperationException(
+                    "Original recovery state can only be captured for a new experiment.");
+            }
 
             IRebootOptimizationRecoveryHandler? handler =
                 RebootOptimizationRecoveryHandlerRegistry.Find(experiment);
@@ -29,6 +40,9 @@ namespace BuildCore
 
         public static bool CanRollback(RebootOptimizationExperimentState experiment)
         {
+            if (experiment == null)
+                return false;
+
             return RebootOptimizationRecoveryHandlerRegistry.Find(experiment)?.CanRollback(experiment) == true;
         }
 
