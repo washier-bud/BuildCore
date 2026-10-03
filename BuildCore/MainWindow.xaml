@@ -1457,7 +1457,9 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="AutoTuneAnalyzeButton" Content="ANALYZE MY PC" Click="AutoTuneAnalyzeButton_Click" Padding="18,10" Margin="0,0,8,0"/>
                                 <Button x:Name="AutoTuneSafeButton" Content="SAFE MODE" Click="AutoTuneSafeButton_Click" Padding="18,10" Margin="0,0,8,0"/>
-                                <Button x:Name="AutoTunePerformanceButton" Content="PERFORMANCE MODE" Click="AutoTunePerformanceButton_Click" Padding="18,10"/>
+                                <Button x:Name="AutoTunePerformanceButton" Content="PERFORMANCE MODE" Click="AutoTunePerformanceButton_Click" Padding="18,10" Margin="0,0,8,0"/>
+                                <Button x:Name="AutoTuneApplyButton" Content="APPLY TWEAKS" Click="AutoTuneApplyButton_Click" Padding="18,10" Margin="0,0,8,0" IsEnabled="False"/>
+                                <Button x:Name="AutoTuneUnapplyButton" Content="UNAPPLY TWEAKS" Click="AutoTuneUnapplyButton_Click" Padding="18,10" IsEnabled="False"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
