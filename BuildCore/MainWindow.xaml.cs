@@ -4904,6 +4904,88 @@ namespace BuildCore
             }
         }
 
+        private async void CpuSensorDiagnosticButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            CpuSensorDiagnosticButton.IsEnabled = false;
+
+            try
+            {
+                HardwareMonitorData data =
+                    _hardwareMonitorService.GetHardwareData();
+
+                var content = new StackPanel
+                {
+                    Spacing = 8
+                };
+
+                content.Children.Add(new TextBlock
+                {
+                    Text = "BuildCore will not guess a CPU temperature. This diagnostic shows the actual temperature sensors exposed by the monitoring library.",
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray),
+                    FontSize = 12,
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                content.Children.Add(new TextBlock
+                {
+                    Text = data.CpuTemperature.HasValue
+                        ? $"SELECTED SENSOR: {data.CpuTemperature.Value:F1}°C • {data.CpuTemperatureSource}"
+                        : $"SELECTED SENSOR: N/A • {data.CpuSensorStatus}",
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White),
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Margin = new Thickness(0, 4, 0, 0),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                var diagnosticText = new TextBox
+                {
+                    Text = data.CpuSensorDiagnostics,
+                    IsReadOnly = true,
+                    TextWrapping = TextWrapping.Wrap,
+                    AcceptsReturn = true,
+                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas"),
+                    FontSize = 11,
+                    MinHeight = 260,
+                    MaxHeight = 420,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent)
+                };
+
+                content.Children.Add(diagnosticText);
+
+                var dialog = new ContentDialog
+                {
+                    Title = "CPU SENSOR DIAGNOSTIC",
+                    Content = content,
+                    CloseButtonText = "CLOSE",
+                    XamlRoot = Content.XamlRoot
+                };
+
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BUILDCORE CPU SENSOR DIAGNOSTIC ERROR: {ex}");
+
+                var dialog = new ContentDialog
+                {
+                    Title = "CPU SENSOR DIAGNOSTIC FAILED",
+                    Content = ex.Message,
+                    CloseButtonText = "CLOSE",
+                    XamlRoot = Content.XamlRoot
+                };
+
+                await dialog.ShowAsync();
+            }
+            finally
+            {
+                CpuSensorDiagnosticButton.IsEnabled = true;
+            }
+        }
+
         private void UpdateGpuTelemetry(
             HardwareMonitorData data)
         {
