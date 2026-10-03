@@ -5585,26 +5585,41 @@ namespace BuildCore
                 Padding = new Thickness(14),
                 Margin = new Thickness(0, 0, 0, 8),
                 CornerRadius = new CornerRadius(10),
-                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DimGray),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.DimGray),
                 BorderThickness = new Thickness(1)
             };
 
             var panel = new StackPanel();
+
             panel.Children.Add(new TextBlock
             {
                 Text = $"{(hardwareMatch ? "✓ COMPATIBLE" : "△ REVIEW")} • {tweak.Title}",
                 Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    hardwareMatch ? Microsoft.UI.Colors.LightGreen : Microsoft.UI.Colors.Gold),
+                    hardwareMatch
+                        ? Microsoft.UI.Colors.LightGreen
+                        : Microsoft.UI.Colors.Gold),
                 FontSize = 12,
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
             });
 
             panel.Children.Add(new TextBlock
             {
-                Text = $"{tweak.Description}\n\nCPU: {tweak.CpuGuidance}\nGPU: {tweak.GpuGuidance}\nEffect: {tweak.HardwareEffect}\nRisk: {tweak.Risk} • Reboot: {(tweak.RequiresReboot ? "YES" : "NO")} • Rollback: {(tweak.RollbackSupported ? "YES" : "NO")}",
-                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
+                Text = $"WHAT IT DOES\n{GetAutoTuneWhatItDoes(tweak)}\n\nPOSSIBLE DOWNSIDE\n{GetAutoTunePossibleDownside(tweak)}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.LightGray),
                 FontSize = 9,
-                Margin = new Thickness(0, 5, 0, 0),
+                Margin = new Thickness(0, 7, 0, 0),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"CPU FIT: {tweak.CpuGuidance}\nGPU FIT: {tweak.GpuGuidance}\nHARDWARE EFFECT: {tweak.HardwareEffect}\nRISK: {tweak.Risk} • REBOOT: {(tweak.RequiresReboot ? "YES" : "NO")} • ROLLBACK: {(tweak.RollbackSupported ? "YES" : "NO")}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
+                FontSize = 9,
+                Margin = new Thickness(0, 7, 0, 0),
                 TextWrapping = TextWrapping.Wrap
             });
 
@@ -5616,19 +5631,166 @@ namespace BuildCore
                 Margin = new Thickness(0, 10, 0, 0),
                 Tag = tweak.Id
             };
+
             toggle.Toggled += AutoTuneTweakToggle_Toggled;
             panel.Children.Add(toggle);
 
             panel.Children.Add(new TextBlock
             {
                 Text = "SELECTION ONLY • NO SYSTEM CHANGE",
-                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.Colors.Gray),
                 FontSize = 8,
                 Margin = new Thickness(0, 6, 0, 0)
             });
 
             card.Child = panel;
             return card;
+        }
+
+        private static string GetAutoTuneWhatItDoes(
+            OptimizationTweakDefinition tweak)
+        {
+            return tweak.Id switch
+            {
+                "high-performance" =>
+                    "Switches Windows to the High Performance power plan so the system is less aggressive about reducing CPU and device power when performance is needed.",
+
+                "windows-game-mode" or "gaming-game-mode" =>
+                    "Enables Windows Game Mode, which prioritizes resources for games and reduces some background activity while a game is running.",
+
+                "sleep" =>
+                    "Prevents Windows from automatically entering sleep during a controlled workload so a benchmark or long-running task is not interrupted.",
+
+                "display-timeout" =>
+                    "Prevents the display from automatically turning off during a controlled workload.",
+
+                "processor-min" =>
+                    "Changes the minimum processor performance policy. This can keep the CPU at a higher performance state instead of allowing it to scale down as aggressively.",
+
+                "processor-boost" =>
+                    "Changes Windows processor boost behavior, affecting when the CPU is allowed to use higher boost frequencies.",
+
+                "cpu-idle" =>
+                    "Changes CPU idle-state behavior, which controls how deeply processor cores can enter low-power idle states.",
+
+                "nvidia-power" =>
+                    "Changes the NVIDIA driver power-management preference so the GPU can stay at higher performance states more consistently.",
+
+                "nvidia-reflex" =>
+                    "Enables NVIDIA Reflex where supported, coordinating CPU and GPU work to reduce render queueing and input-to-display latency in supported games.",
+
+                "nvidia-vrr" =>
+                    "Configures variable refresh behavior for supported NVIDIA displays so refresh timing can follow the rendered frame rate.",
+
+                "radeon-power" =>
+                    "Changes AMD Radeon power behavior to favor performance instead of allowing the GPU to reduce clocks as aggressively.",
+
+                "radeon-anti-lag" =>
+                    "Enables AMD Radeon Anti-Lag where supported to reduce the amount of CPU work queued ahead of the GPU.",
+
+                "radeon-chill" =>
+                    "Configures AMD Radeon Chill, which dynamically limits frame rate based on movement and activity to reduce power and heat.",
+
+                "hags" =>
+                    "Changes Hardware-Accelerated GPU Scheduling, allowing supported Windows GPU scheduling work to be handled differently between the operating system and GPU driver.",
+
+                "shader-cache" or "cleanup-shader-cache" =>
+                    "Removes or rebuilds graphics shader cache data so Windows and applications can regenerate cached shaders.",
+
+                "directx-cache" =>
+                    "Cleans DirectX-related cached graphics data that applications can regenerate.",
+
+                _ when tweak.Title.Contains("Network", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("TCP", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("NIC", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("DNS", StringComparison.OrdinalIgnoreCase) =>
+                    "Changes a Windows networking or adapter setting intended to alter packet handling, connection behavior, or network power/performance characteristics.",
+
+                _ when tweak.Title.Contains("Audio", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Sound", StringComparison.OrdinalIgnoreCase) =>
+                    "Changes Windows audio processing or device behavior to prioritize a particular latency, quality, or processing path.",
+
+                _ when tweak.Title.Contains("Chrome", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Discord", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Windows Debloat", StringComparison.OrdinalIgnoreCase) =>
+                    "Disables, removes, or reduces selected background features or components to reduce unnecessary background activity.",
+
+                _ when tweak.Title.Contains("BCDEdit", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Category == OptimizationCategory.Boot =>
+                    "Changes a Windows boot configuration setting that can affect how Windows initializes or schedules system components.",
+
+                _ =>
+                    tweak.Description
+            };
+        }
+
+        private static string GetAutoTunePossibleDownside(
+            OptimizationTweakDefinition tweak)
+        {
+            return tweak.Id switch
+            {
+                "high-performance" =>
+                    "Higher idle power use, more heat, more fan activity, and potentially higher electricity use. On laptops it can reduce battery life.",
+
+                "windows-game-mode" or "gaming-game-mode" =>
+                    "Usually low risk, but the benefit varies by game and Windows version. In unusual workloads it can change background scheduling behavior without improving performance.",
+
+                "sleep" =>
+                    "The PC can stay awake longer than expected and consume more power if the workload is left running. This is not intended as a permanent power-saving change.",
+
+                "display-timeout" =>
+                    "The display can remain on longer than expected, increasing display power use and potentially causing unnecessary screen-on time.",
+
+                "processor-min" =>
+                    "Higher minimum performance can increase idle power, temperature, fan noise, and battery drain. It is not automatically faster in every workload.",
+
+                "processor-boost" =>
+                    "Aggressive boost behavior can increase temperature, power consumption, and fan noise. Some CPUs or workloads may become less efficient or less stable if other tuning is involved.",
+
+                "cpu-idle" =>
+                    "Reducing CPU idle behavior can increase idle temperature and power use. It can also interfere with normal power-management behavior and is not universally lower latency.",
+
+                "nvidia-power" or "radeon-power" =>
+                    "Higher GPU performance states can increase power draw, heat, fan speed, and potentially noise. The extra performance may be small when the workload is already GPU-bound.",
+
+                "nvidia-reflex" or "radeon-anti-lag" =>
+                    "The effect depends on the game, driver, frame rate, and CPU/GPU balance. It can change frame pacing or performance behavior rather than guaranteeing lower latency.",
+
+                "nvidia-vrr" =>
+                    "Requires compatible display/driver settings. Incorrect VRR configuration can cause flicker, frame-pacing differences, or unexpected synchronization behavior.",
+
+                "radeon-chill" =>
+                    "Can reduce maximum FPS during movement or activity. That may be undesirable for competitive gaming where an unrestricted frame rate is preferred.",
+
+                "hags" =>
+                    "Performance and latency can vary by GPU, driver, Windows build, and workload. Some systems may see no benefit or worse frame-time behavior.",
+
+                "shader-cache" or "cleanup-shader-cache" or "directx-cache" =>
+                    "The next launch can temporarily stutter while shaders are compiled again. Repeatedly clearing caches can make performance worse rather than better.",
+
+                _ when tweak.Title.Contains("Network", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("TCP", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("NIC", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("DNS", StringComparison.OrdinalIgnoreCase) =>
+                    "Networking changes are adapter-, driver-, ISP-, and workload-dependent. An aggressive setting can reduce throughput, increase CPU usage, increase power use, or make connectivity less reliable.",
+
+                _ when tweak.Title.Contains("Audio", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Sound", StringComparison.OrdinalIgnoreCase) =>
+                    "Some audio changes can cause compatibility problems, missing enhancements, higher CPU use, or worse sound quality on particular drivers/devices.",
+
+                _ when tweak.Title.Contains("Chrome", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Discord", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Title.Contains("Windows Debloat", StringComparison.OrdinalIgnoreCase) =>
+                    "Removing or disabling a component can break a feature you use. Background apps may also restore settings after updates.",
+
+                _ when tweak.Title.Contains("BCDEdit", StringComparison.OrdinalIgnoreCase) ||
+                       tweak.Category == OptimizationCategory.Boot =>
+                    "Boot configuration changes can affect Windows startup, recovery, drivers, and system behavior. Incorrect settings can make Windows harder to boot or troubleshoot.",
+
+                _ =>
+                    "The result depends on the hardware, drivers, Windows build, and workload. A setting that helps one PC can do nothing—or make another PC less stable or less efficient."
+            };
         }
 
         private void AutoTuneTweakToggle_Toggled(object sender, RoutedEventArgs e)
