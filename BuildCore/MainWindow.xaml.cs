@@ -2315,10 +2315,10 @@ namespace BuildCore
             object sender,
             RoutedEventArgs e)
         {
-            await ShowHistoryDialog();
+            ShowHistoryPage();
         }
 
-        private async Task ShowHistoryDialog()
+        private void ShowHistoryPage()
         {
             try
             {
@@ -2601,46 +2601,9 @@ namespace BuildCore
                     }
                 }
 
-                // ====================================================
-                // DIALOG
-                // ====================================================
+                HistoryPanel.Children.Clear();
+                HistoryPanel.Children.Add(root);
 
-                var dialog =
-                    new ContentDialog
-                    {
-                        Title =
-                            "BuildCore History",
-
-                        Content =
-                            new ScrollViewer
-                            {
-                                Content = root,
-
-                                MaxHeight = 650,
-
-                                VerticalScrollBarVisibility =
-                                    ScrollBarVisibility.Auto
-                            },
-
-                        CloseButtonText =
-                            "CLOSE",
-
-                        XamlRoot =
-                            ((FrameworkElement)
-                                this.Content).XamlRoot
-                    };
-
-                // Attach the dialog to test buttons after creation.
-                foreach (
-                    UIElement child
-                    in root.Children)
-                {
-                    AttachHistoryDialogToTestButtons(
-                        child,
-                        dialog);
-                }
-
-                await dialog.ShowAsync();
             }
             catch (Exception ex)
             {
@@ -3354,7 +3317,7 @@ namespace BuildCore
             if (RebootOptimizationExperimentStorageService.Delete(
                 experiment.ExperimentId))
             {
-                await ShowHistoryDialog();
+                ShowHistoryPage();
             }
         }
 
