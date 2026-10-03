@@ -31,6 +31,16 @@ namespace BuildCore
                     "Enable Windows Game Mode" =>
                         RestoreGameMode(transaction),
 
+                    "Prevent sleep during workload" =>
+                        PowerOptimizationHandler.RestoreAcTimeout(
+                            "standby-timeout-ac",
+                            transaction.BeforeValue),
+
+                    "Workload display timeout" =>
+                        PowerOptimizationHandler.RestoreAcTimeout(
+                            "monitor-timeout-ac",
+                            transaction.BeforeValue),
+
                     _ =>
                         Failure(
                             "No restore handler exists for this optimization.")
