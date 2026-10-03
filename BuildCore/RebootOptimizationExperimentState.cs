@@ -70,6 +70,8 @@ namespace BuildCore
 
         // Recovery metadata for optimizations with an explicit rollback handler.
         public bool RecoveryAvailable { get; set; }
+        public string RecoveryHandlerId { get; set; } = "";
+        public int RecoveryHandlerVersion { get; set; }
         public RebootOptimizationExperimentRecoveryPhase RecoveryPhase { get; set; } =
             RebootOptimizationExperimentRecoveryPhase.None;
         public bool RecoveryAttempted { get; set; }
