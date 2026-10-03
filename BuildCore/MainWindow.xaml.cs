@@ -960,7 +960,14 @@ namespace BuildCore
                 new ColumnDefinition
                 {
                     Width =
-                        new GridLength(300)
+                        new GridLength(110)
+                });
+
+            actionRow.ColumnDefinitions.Add(
+                new ColumnDefinition
+                {
+                    Width =
+                        new GridLength(190)
                 });
 
             var status =
@@ -991,6 +998,43 @@ namespace BuildCore
 
             actionRow.Children.Add(
                 status);
+
+            // ========================================================
+            // INDIVIDUAL OPTIMIZATION TOGGLE
+            // ========================================================
+
+            var toggle =
+                new ToggleSwitch
+                {
+                    Header = "ENABLE",
+                    IsOn = false,
+                    HorizontalAlignment =
+                        HorizontalAlignment.Right,
+                    VerticalAlignment =
+                        VerticalAlignment.Center,
+                    Tag =
+                        new OptimizationToggleContext
+                        {
+                            Recommendation =
+                                recommendation,
+
+                            StatusText =
+                                status
+                        }
+                };
+
+            toggle.Toggled +=
+                OptimizationToggle_Toggled;
+
+            Grid.SetColumn(
+                toggle,
+                1);
+
+            actionRow.Children.Add(
+                toggle);
+
+            // Existing APPLY / TEST controls remain available below the
+            // toggle until the selected-tweaks apply workflow is connected.
 
             // ========================================================
             // TEST BUTTON
@@ -1073,7 +1117,7 @@ namespace BuildCore
 
                 Grid.SetColumn(
                     buttonPanel,
-                    1);
+                    2);
 
                 actionRow.Children.Add(
                     buttonPanel);
@@ -1120,7 +1164,7 @@ namespace BuildCore
 
                 Grid.SetColumn(
                     buttonPanel,
-                    1);
+                    2);
 
                 actionRow.Children.Add(
                     buttonPanel);
@@ -1171,6 +1215,33 @@ namespace BuildCore
                 border);
 
             ApplyOptimizationCategoryFilter();
+        }
+
+        private class OptimizationToggleContext
+        {
+            public OptimizationRecommendation
+                Recommendation
+            { get; set; } =
+                new OptimizationRecommendation();
+
+            public TextBlock StatusText { get; set; } =
+                new TextBlock();
+        }
+
+        private void OptimizationToggle_Toggled(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not ToggleSwitch toggle ||
+                toggle.Tag is not OptimizationToggleContext context)
+            {
+                return;
+            }
+
+            context.StatusText.Text =
+                toggle.IsOn
+                    ? "SELECTED • READY TO APPLY"
+                    : context.Recommendation.ActionStatus;
         }
 
         private class ApplyButtonContext
