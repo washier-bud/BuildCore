@@ -1,4 +1,5 @@
 ﻿using LibreHardwareMonitor.Hardware;
+using LibreHardwareMonitor.PawnIo;
 using System;
 using System.Diagnostics;
 using System.Management;
@@ -9,6 +10,8 @@ namespace BuildCore
     {
         public float? CpuTemperature { get; set; }
         public string CpuTemperatureSource { get; set; } = "Unavailable";
+        public bool CpuLowLevelAccessAvailable { get; set; }
+        public string CpuSensorStatus { get; set; } = "Unknown";
         public float? CpuClock { get; set; }
 
         public float? GpuTemperature { get; set; }
@@ -54,6 +57,11 @@ namespace BuildCore
         public HardwareMonitorData GetHardwareData()
         {
             var data = new HardwareMonitorData();
+
+            data.CpuLowLevelAccessAvailable = PawnIo.IsInstalled;
+            data.CpuSensorStatus = PawnIo.IsInstalled
+                ? "Low-level sensor access available"
+                : "PawnIO driver not installed";
 
             ReadCpuClock(data);
             ReadCpuTemperature(data);
@@ -159,6 +167,17 @@ namespace BuildCore
 
             data.CpuTemperature = null;
             data.CpuTemperatureSource = "Unavailable";
+
+            if (!data.CpuLowLevelAccessAvailable)
+            {
+                data.CpuSensorStatus =
+                    "PawnIO driver required for CPU temperature";
+            }
+            else
+            {
+                data.CpuSensorStatus =
+                    "CPU temperature sensor unavailable";
+            }
         }
 
         private static void FindCpuTemperature(
