@@ -575,6 +575,23 @@ namespace BuildCore
                     return false;
                 }
 
+                if (experiment.RecoveryAvailable)
+                {
+                    IRebootOptimizationRecoveryHandler? handler =
+                        RebootOptimizationRecoveryHandlerRegistry.Find(
+                            experiment.OptimizationTitle);
+
+                    if (handler == null ||
+                        !string.Equals(
+                            experiment.RecoveryHandlerId,
+                            handler.HandlerId,
+                            StringComparison.Ordinal) ||
+                        experiment.RecoveryHandlerVersion != handler.HandlerVersion)
+                    {
+                        return false;
+                    }
+                }
+
                 if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.RebootRequired &&
                     (!experiment.RecoverySucceeded ||
                      !experiment.RecoveryRequiresReboot ||
