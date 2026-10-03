@@ -5344,6 +5344,112 @@ namespace BuildCore
         // PAGE NAVIGATION
         // ============================================================
 
+        private readonly List<string> _autoTuneSelectedTweaks = new List<string>();
+        private readonly List<OptimizationTransaction> _autoTuneAppliedTransactions = new List<OptimizationTransaction>();
+
+        private async void AutoTuneApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_autoTuneSelectedTweaks.Count == 0)
+                return;
+
+            var result = await new ContentDialog
+            {
+                Title = "APPLY AUTOTUNE TWEAKS?",
+                Content = $"BuildCore will create a snapshot and attempt to apply {_autoTuneSelectedTweaks.Count} selected verified tweaks. Continue?",
+                PrimaryButtonText = "APPLY",
+                CloseButtonText = "CANCEL",
+                XamlRoot = AutoTunePage.XamlRoot
+            }.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+                return;
+
+            AutoTuneApplyButton.IsEnabled = false;
+            AutoTuneUnapplyButton.IsEnabled = false;
+
+            try
+            {
+                SelectedOptimizationApplyResult applyResult =
+                    SelectedOptimizationApplyService.Apply(_autoTuneSelectedTweaks);
+
+                _autoTuneAppliedTransactions.Clear();
+                _autoTuneAppliedTransactions.AddRange(
+                    applyResult.Items
+                        .Where(item => item.Transaction != null && item.Transaction.IsSuccessful)
+                        .Select(item => item.Transaction!));
+
+                AutoTuneStatusText.Text =
+                    $"{_autoTuneAppliedTransactions.Count} TWEAKS APPLIED";
+
+                AutoTuneSummaryText.Text =
+                    $"Snapshot: {applyResult.Snapshot.Id}. Successful changes were verified before being recorded.";
+
+                AutoTuneAssistantText.Text =
+                    applyResult.Failed
+                        ? "One or more tweaks could not be applied. Review the results before making further changes."
+                        : "All selected tweaks were applied and verified.";
+
+                AutoTuneUnapplyButton.IsEnabled = _autoTuneAppliedTransactions.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                AutoTuneStatusText.Text = "APPLY FAILED";
+                AutoTuneAssistantText.Text = ex.Message;
+                Debug.WriteLine($"BUILDCORE AUTOTUNE APPLY ERROR: {ex}");
+            }
+            finally
+            {
+                AutoTuneApplyButton.IsEnabled = _autoTuneSelectedTweaks.Count > 0;
+            }
+        }
+
+        private async void AutoTuneUnapplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_autoTuneAppliedTransactions.Count == 0)
+                return;
+
+            var result = await new ContentDialog
+            {
+                Title = "UNAPPLY AUTOTUNE TWEAKS?",
+                Content = $"BuildCore will restore {_autoTuneAppliedTransactions.Count} verified changes to their captured values.",
+                PrimaryButtonText = "UNAPPLY",
+                CloseButtonText = "CANCEL",
+                XamlRoot = AutoTunePage.XamlRoot
+            }.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+                return;
+
+            AutoTuneUnapplyButton.IsEnabled = false;
+
+            int restored = 0;
+            foreach (OptimizationTransaction transaction in _autoTuneAppliedTransactions.AsEnumerable().Reverse())
+            {
+                try
+                {
+                    if (OptimizationRestoreService.Restore(transaction))
+                    {
+                        restored++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BUILDCORE AUTOTUNE RESTORE ERROR: {ex}");
+                }
+            }
+
+            AutoTuneStatusText.Text = $"{restored}/{_autoTuneAppliedTransactions.Count} TWEAKS UNAPPLIED";
+            AutoTuneAssistantText.Text =
+                restored == _autoTuneAppliedTransactions.Count
+                    ? "All recorded AutoTune changes were restored and verified."
+                    : "Some changes could not be restored. Check History before retrying.";
+
+            if (restored == _autoTuneAppliedTransactions.Count)
+                _autoTuneAppliedTransactions.Clear();
+
+            AutoTuneUnapplyButton.IsEnabled = _autoTuneAppliedTransactions.Count > 0;
+        }
+
         private void AutoTuneButton_Click(object sender, RoutedEventArgs e)
         {
             ShowAutoTune();
@@ -5397,7 +5503,12 @@ namespace BuildCore
                     }
                 }
 
-                AutoTuneStatusText.Text = $"{count} CANDIDATES FOUND";
+                _autoTuneSelectedTweaks.Clear();
+            _autoTuneAppliedTransactions.Clear();
+            AutoTuneApplyButton.IsEnabled = false;
+            AutoTuneUnapplyButton.IsEnabled = false;
+
+            AutoTuneStatusText.Text = $"{count} CANDIDATES FOUND";
                 AutoTuneSummaryText.Text =
                     $"Mode: {mode}. These are recommendations only; nothing was applied.";
                 AutoTuneAssistantText.Text =
