@@ -400,11 +400,37 @@ namespace BuildCore
                     return false;
                 }
 
-                return !string.IsNullOrWhiteSpace(experiment.ExperimentId) &&
-                       experiment.CreatedAt != default &&
-                       experiment.UpdatedAt != default &&
-                       experiment.UpdatedAt >= experiment.CreatedAt &&
-                       !string.IsNullOrWhiteSpace(experiment.OptimizationTitle);
+                if (string.IsNullOrWhiteSpace(experiment.ExperimentId) ||
+                    experiment.CreatedAt == default ||
+                    experiment.UpdatedAt == default ||
+                    experiment.UpdatedAt < experiment.CreatedAt ||
+                    string.IsNullOrWhiteSpace(experiment.OptimizationTitle))
+                {
+                    return false;
+                }
+
+                if (!experiment.RecoveryAvailable &&
+                    (!string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
+                     experiment.RecoveryHandlerVersion != 0))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryAvailable &&
+                    RebootOptimizationRecoveryHandlerRegistry.Find(experiment) == null)
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None &&
+                    (!experiment.RecoveryAvailable ||
+                     string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
+                     experiment.RecoveryHandlerVersion <= 0))
+                {
+                    return false;
+                }
+
+                return true;
             }
             catch
             {
