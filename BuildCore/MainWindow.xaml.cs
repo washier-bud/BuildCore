@@ -5382,7 +5382,7 @@ namespace BuildCore
                     $"{_autoTuneAppliedTransactions.Count} TWEAKS APPLIED";
 
                 AutoTuneSummaryText.Text =
-                    $"Snapshot: {applyResult.Snapshot.Id}. Successful changes were verified before being recorded.";
+                    $"Snapshot: {applyResult.SnapshotId}. Successful changes were verified before being recorded.";
 
                 bool anyFailed = applyResult.Items.Any(item =>
                     item.Status.StartsWith("FAILED", StringComparison.OrdinalIgnoreCase));
@@ -5430,7 +5430,11 @@ namespace BuildCore
             {
                 try
                 {
-                    if (OptimizationRestoreService.Restore(transaction))
+                    OptimizationRestoreResult restoreResult =
+                        OptimizationRestoreService.Restore(transaction);
+
+                    if (restoreResult.Success &&
+                        restoreResult.Verified)
                     {
                         restored++;
                     }
@@ -5572,7 +5576,7 @@ namespace BuildCore
             return card;
         }
 
-        private static Border CreateAutoTuneRecommendationCard(
+        private Border CreateAutoTuneRecommendationCard(
             OptimizationTweakDefinition tweak,
             bool hardwareMatch)
         {
@@ -5625,6 +5629,28 @@ namespace BuildCore
 
             card.Child = panel;
             return card;
+        }
+
+        private void AutoTuneTweakToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is not ToggleSwitch toggle ||
+                toggle.Tag is not string tweakId)
+            {
+                return;
+            }
+
+            if (toggle.IsOn)
+            {
+                if (!_autoTuneSelectedTweaks.Contains(tweakId))
+                    _autoTuneSelectedTweaks.Add(tweakId);
+            }
+            else
+            {
+                _autoTuneSelectedTweaks.Remove(tweakId);
+            }
+
+            AutoTuneApplyButton.IsEnabled =
+                _autoTuneSelectedTweaks.Count > 0;
         }
 
         private void HideAllPages()
