@@ -122,6 +122,25 @@ namespace BuildCore
                         StringComparison.Ordinal) ||
                     !ValidateLoadedExperiment(persisted))
                 {
+                    string backupPath = path + ".bak";
+
+                    try
+                    {
+                        if (File.Exists(backupPath))
+                        {
+                            File.Copy(backupPath, path, overwrite: true);
+                        }
+                        else if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                    }
+                    catch
+                    {
+                        // Preserve the validation failure below. The backup remains
+                        // available for the next load attempt when present.
+                    }
+
                     throw new IOException(
                         "Persisted reboot experiment failed post-write validation.");
                 }
