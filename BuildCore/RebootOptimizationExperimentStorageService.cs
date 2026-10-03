@@ -594,6 +594,10 @@ namespace BuildCore
                     }
                 }
 
+                if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None && !experiment.RecoveryAvailable) return false;
+
+                if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None && (string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) || experiment.RecoveryHandlerVersion <= 0)) return false;
+
                 if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.RebootRequired &&
                     (!experiment.RecoverySucceeded ||
                      !experiment.RecoveryRequiresReboot ||
