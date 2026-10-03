@@ -5344,8 +5344,169 @@ namespace BuildCore
         // PAGE NAVIGATION
         // ============================================================
 
+        private void AutoTuneButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowAutoTune();
+        }
+
+        private void AutoTuneAnalyzeButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunAutoTuneAnalysis("SAFE");
+        }
+
+        private void AutoTuneSafeButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunAutoTuneAnalysis("SAFE");
+        }
+
+        private void AutoTunePerformanceButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunAutoTuneAnalysis("PERFORMANCE");
+        }
+
+        private void RunAutoTuneAnalysis(string mode)
+        {
+            AutoTuneAnalyzeButton.IsEnabled = false;
+            AutoTuneSafeButton.IsEnabled = false;
+            AutoTunePerformanceButton.IsEnabled = false;
+            AutoTuneRecommendationsPanel.Children.Clear();
+            AutoTuneStatusText.Text = "ANALYZING YOUR PC...";
+            AutoTuneSummaryText.Text = "Checking detected hardware and BuildCore optimization metadata.";
+            AutoTuneAssistantText.Text = "No system changes are being made.";
+
+            try
+            {
+                SystemInfo info = SystemInfoService.GetSystemInfo();
+                AutoTuneRecommendationsPanel.Children.Add(CreateAutoTuneSystemCard(info));
+
+                int count = 0;
+                foreach (OptimizationGroupDefinition group in OptimizationLibrary.Groups)
+                {
+                    foreach (OptimizationTweakDefinition tweak in group.Tweaks)
+                    {
+                        if (!IsAutoTuneCandidate(tweak, mode, info))
+                            continue;
+
+                        bool match =
+                            IsCpuGuidanceRelevant(tweak, info.Cpu) &&
+                            IsGpuGuidanceRelevant(tweak, info.Gpu);
+
+                        AutoTuneRecommendationsPanel.Children.Add(
+                            CreateAutoTuneRecommendationCard(tweak, match));
+                        count++;
+                    }
+                }
+
+                AutoTuneStatusText.Text = $"{count} CANDIDATES FOUND";
+                AutoTuneSummaryText.Text =
+                    $"Mode: {mode}. These are recommendations only; nothing was applied.";
+                AutoTuneAssistantText.Text =
+                    "Review the compatibility, risk, hardware effect, and rollback information before applying any change.";
+            }
+            catch (Exception ex)
+            {
+                AutoTuneStatusText.Text = "ANALYSIS FAILED";
+                AutoTuneSummaryText.Text = "BuildCore could not safely complete the analysis.";
+                AutoTuneAssistantText.Text = ex.Message;
+                Debug.WriteLine($"BUILDCORE AUTOTUNE ERROR: {ex}");
+            }
+            finally
+            {
+                AutoTuneAnalyzeButton.IsEnabled = true;
+                AutoTuneSafeButton.IsEnabled = true;
+                AutoTunePerformanceButton.IsEnabled = true;
+            }
+        }
+
+        private static bool IsAutoTuneCandidate(OptimizationTweakDefinition tweak, string mode, SystemInfo info)
+        {
+            if (!tweak.RollbackSupported)
+                return false;
+
+            if (mode.Equals("SAFE", StringComparison.OrdinalIgnoreCase) &&
+                (tweak.Risk == OptimizationRisk.High || tweak.RequiresReboot))
+                return false;
+
+            if (tweak.Id is "nvidia-power" or "nvidia-reflex" or "nvidia-vrr")
+                return info.Gpu.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase);
+
+            if (tweak.Id is "radeon-power" or "radeon-anti-lag" or "radeon-chill")
+                return info.Gpu.Contains("AMD", StringComparison.OrdinalIgnoreCase) ||
+                       info.Gpu.Contains("Radeon", StringComparison.OrdinalIgnoreCase);
+
+            return true;
+        }
+
+        private static Border CreateAutoTuneSystemCard(SystemInfo info)
+        {
+            var card = new Border
+            {
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 10),
+                CornerRadius = new CornerRadius(10),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1)
+            };
+
+            card.Child = new TextBlock
+            {
+                Text = $"DETECTED SYSTEM\nCPU: {info.Cpu}\nGPU: {info.Gpu}\nRAM: {info.Ram}\nWINDOWS: {info.Windows}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray),
+                FontSize = 10,
+                TextWrapping = TextWrapping.Wrap
+            };
+            return card;
+        }
+
+        private static Border CreateAutoTuneRecommendationCard(
+            OptimizationTweakDefinition tweak,
+            bool hardwareMatch)
+        {
+            var card = new Border
+            {
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 8),
+                CornerRadius = new CornerRadius(10),
+                BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DimGray),
+                BorderThickness = new Thickness(1)
+            };
+
+            var panel = new StackPanel();
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"{(hardwareMatch ? "✓ COMPATIBLE" : "△ REVIEW")} • {tweak.Title}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    hardwareMatch ? Microsoft.UI.Colors.LightGreen : Microsoft.UI.Colors.Gold),
+                FontSize = 12,
+                FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"{tweak.Description}\n\nCPU: {tweak.CpuGuidance}\nGPU: {tweak.GpuGuidance}\nEffect: {tweak.HardwareEffect}\nRisk: {tweak.Risk} • Reboot: {(tweak.RequiresReboot ? "YES" : "NO")} • Rollback: {(tweak.RollbackSupported ? "YES" : "NO")}",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
+                FontSize = 9,
+                Margin = new Thickness(0, 5, 0, 0),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "REVIEW ONLY • NO SYSTEM CHANGE",
+                Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
+                FontSize = 8,
+                Margin = new Thickness(0, 8, 0, 0)
+            });
+
+            card.Child = panel;
+            return card;
+        }
+
         private void HideAllPages()
         {
+            AutoTunePage.Visibility =
+                Visibility.Collapsed;
+
             DashboardPage.Visibility =
                 Visibility.Collapsed;
 
@@ -5360,6 +5521,13 @@ namespace BuildCore
 
             OptimizePage.Visibility =
                 Visibility.Collapsed;
+        }
+
+        private void ShowAutoTune()
+        {
+            HideAllPages();
+            AutoTunePage.Visibility = Visibility.Visible;
+            PageTitleText.Text = "AutoTune";
         }
 
         private void ShowDashboard()
