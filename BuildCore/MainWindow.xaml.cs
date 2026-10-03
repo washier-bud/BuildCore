@@ -2320,6 +2320,14 @@ namespace BuildCore
 
         private void ShowHistoryPage()
         {
+            HideAllPages();
+
+            HistoryPage.Visibility =
+                Visibility.Visible;
+
+            PageTitleText.Text =
+                "History";
+
             try
             {
                 var transactions =
@@ -5167,6 +5175,9 @@ namespace BuildCore
                 Visibility.Collapsed;
 
             PerformancePage.Visibility =
+                Visibility.Collapsed;
+
+            HistoryPage.Visibility =
                 Visibility.Collapsed;
 
             OptimizePage.Visibility =
