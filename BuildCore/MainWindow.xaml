@@ -1359,6 +1359,66 @@
             </ScrollViewer>
 
             <!-- ================================================== -->
+            <!-- HISTORY PAGE -->
+            <!-- ================================================== -->
+
+            <ScrollViewer
+                x:Name="HistoryPage"
+                Margin="0,64,0,0"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="Collapsed">
+
+                <StackPanel Padding="32">
+
+                    <TextBlock
+                        Text="BUILDCORE"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"/>
+
+                    <TextBlock
+                        Text="History"
+                        Foreground="White"
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        Margin="0,4,0,0"/>
+
+                    <TextBlock
+                        Text="Review optimization changes, benchmark runs, tests, and reboot experiments saved by BuildCore."
+                        Foreground="#77777E"
+                        FontSize="11"
+                        TextWrapping="Wrap"
+                        Margin="0,6,0,0"/>
+
+                    <Border
+                        Margin="0,24,0,0"
+                        Padding="20"
+                        CornerRadius="14"
+                        Background="#111116"
+                        BorderBrush="#24242A"
+                        BorderThickness="1">
+
+                        <StackPanel>
+
+                            <TextBlock
+                                Text="ACTIVITY HISTORY"
+                                Foreground="#7CFF8A"
+                                FontSize="10"
+                                FontWeight="SemiBold"/>
+
+                            <StackPanel
+                                x:Name="HistoryPanel"
+                                Margin="0,16,0,0"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+            </ScrollViewer>
+
+            <!-- ================================================== -->
             <!-- OPTIMIZE PAGE -->
             <!-- ================================================== -->
 
