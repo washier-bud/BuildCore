@@ -72,7 +72,7 @@ namespace BuildCore
                 Real("sleep", "workload-sleep-v1", "Disables AC sleep timeout for an active workload and verifies the power policy.", CreatePreventSleepRecommendation),
                 Real("display-timeout", "workload-display-timeout-v1", "Disables AC display timeout for an active workload and verifies the power policy.", CreateDisplayTimeoutRecommendation),
 
-                Real("gaming-game-mode", "windows-game-mode-v2", "Verified Windows Game Mode handler shared with the Windows Game Mode tweak.", CreateGameModeRecommendation),
+                Real("gaming-game-mode", "gaming-game-mode-v2", "Verified Windows Game Mode handler shared with the Windows Game Mode implementation.", CreateGameModeRecommendation),
                 Review("fullscreen", "fullscreen-optimization-review-v1", "Review-only fullscreen optimization analysis.", false),
                 Review("priority", "game-process-priority-v1", "Review-only until an explicitly selected game process and reversible priority policy are supplied.", false),
 
