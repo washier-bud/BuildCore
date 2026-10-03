@@ -240,7 +240,7 @@ namespace BuildCore
                         Title = "RECOVERY VERIFICATION FAILED",
                         Content = failurePanel,
                         CloseButtonText = "CLOSE",
-                        XamlRoot = Content.XamlRoot
+                        XamlRoot = OptimizePage.XamlRoot
                     };
 
                 await recoveryDialog.ShowAsync();
