@@ -4878,7 +4878,7 @@ namespace BuildCore
                     "N/A";
 
                 CpuTemperatureText.Text =
-                    "CPU temperature sensor unavailable";
+                    data.CpuSensorStatus;
             }
 
             if (data.CpuClock.HasValue &&
