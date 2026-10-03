@@ -86,7 +86,12 @@ namespace BuildCore
             if (experiment == null ||
                 experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.Failed ||
                 !experiment.RecoverySucceeded ||
-                !experiment.RecoveryAttemptedAtUtc.HasValue)
+                !experiment.RecoveryAttempted ||
+                experiment.RecoveryRequiresReboot ||
+                experiment.RecoveryFinalized ||
+                !experiment.RecoveryAttemptedAtUtc.HasValue ||
+                string.IsNullOrWhiteSpace(experiment.RecoveryHandlerId) ||
+                experiment.RecoveryHandlerVersion <= 0)
                 return false;
 
             try
