@@ -12,6 +12,7 @@ namespace BuildCore
         public string CpuTemperatureSource { get; set; } = "Unavailable";
         public bool CpuLowLevelAccessAvailable { get; set; }
         public string CpuSensorStatus { get; set; } = "Unknown";
+        public string CpuSensorDiagnostics { get; set; } = "Not scanned";
         public float? CpuClock { get; set; }
 
         public float? GpuTemperature { get; set; }
@@ -65,6 +66,7 @@ namespace BuildCore
 
             ReadCpuClock(data);
             ReadCpuTemperature(data);
+            data.CpuSensorDiagnostics = BuildCpuSensorDiagnostics();
             ReadGpuSensors(data);
 
             return data;
@@ -93,6 +95,79 @@ namespace BuildCore
             catch
             {
                 data.CpuClock = null;
+            }
+        }
+
+        public string GetCpuSensorDiagnostics()
+        {
+            return BuildCpuSensorDiagnostics();
+        }
+
+        private string BuildCpuSensorDiagnostics()
+        {
+            var lines = new System.Collections.Generic.List<string>();
+            lines.Add("PawnIO: " + (PawnIo.IsInstalled ? "INSTALLED" : "NOT INSTALLED"));
+            lines.Add("LibreHardwareMonitor: OPEN");
+            lines.Add("");
+            lines.Add("TEMPERATURE SENSORS FOUND");
+
+            bool foundTemperature = false;
+            try
+            {
+                foreach (IHardware hardware in _computer.Hardware)
+                {
+                    hardware.Update();
+                    AppendCpuDiagnosticHardware(hardware, lines, ref foundTemperature);
+                }
+            }
+            catch (Exception ex)
+            {
+                lines.Add("SCAN ERROR: " + ex.Message);
+            }
+
+            if (!foundTemperature)
+            {
+                lines.Add("No temperature sensors were exposed by LibreHardwareMonitor.");
+                lines.Add("");
+                lines.Add(PawnIo.IsInstalled
+                    ? "PawnIO is installed, so the next step is identifying the CPU sensor/access issue."
+                    : "PawnIO is not installed. Install the current PawnIO driver, restart Windows, then run this diagnostic again.");
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static void AppendCpuDiagnosticHardware(
+            IHardware hardware,
+            System.Collections.Generic.List<string> lines,
+            ref bool foundTemperature)
+        {
+            bool relevantHardware =
+                hardware.HardwareType == HardwareType.Cpu ||
+                hardware.HardwareType == HardwareType.Motherboard ||
+                hardware.HardwareType == HardwareType.SuperIO ||
+                hardware.HardwareType == HardwareType.EmbeddedController;
+
+            if (relevantHardware)
+            {
+                foreach (ISensor sensor in hardware.Sensors)
+                {
+                    if (sensor.SensorType != SensorType.Temperature)
+                        continue;
+
+                    foundTemperature = true;
+                    string value = sensor.Value.HasValue
+                        ? sensor.Value.Value.ToString("F1") + " °C"
+                        : "NO VALUE";
+
+                    lines.Add($"{hardware.HardwareType} • {hardware.Name} • {sensor.Name} = {value}");
+                }
+            }
+
+            foreach (IHardware child in hardware.SubHardware)
+            {
+                child.Update();
+                AppendCpuDiagnosticHardware(child, lines, ref foundTemperature);
             }
         }
 
