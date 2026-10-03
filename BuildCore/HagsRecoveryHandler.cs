@@ -6,10 +6,14 @@ namespace BuildCore
     public sealed class HagsRecoveryHandler : IRebootOptimizationRecoveryHandler
     {
         public const string Title = "Hardware-Accelerated GPU Scheduling";
+        public const string HandlerIdValue = "hags";
+        public const int HandlerVersionValue = 1;
         private const string GraphicsDriversPath = @"SYSTEM\CurrentControlSet\Control\GraphicsDrivers";
         private const string HagsValueName = "HwSchMode";
 
         public string OptimizationTitle => Title;
+        public string HandlerId => HandlerIdValue;
+        public int HandlerVersion => HandlerVersionValue;
 
         public void CaptureOriginalState(RebootOptimizationExperimentState experiment)
         {
