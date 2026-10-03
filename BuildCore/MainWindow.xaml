@@ -1935,6 +1935,48 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- OPTIMIZATION LIBRARY CARDS -->
+                    <Grid Margin="0,22,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock
+                                Text="TWEAK LIBRARY"
+                                Foreground="#66666D"
+                                FontSize="9"
+                                FontWeight="SemiBold"/>
+
+                            <TextBlock
+                                Text="Individual controls"
+                                Foreground="White"
+                                FontSize="17"
+                                FontWeight="SemiBold"
+                                Margin="0,4,0,0"/>
+
+                            <TextBlock
+                                Text="Select the changes you want BuildCore to prepare. Applying them will remain protected by snapshots, verification, and rollback."
+                                Foreground="#77777E"
+                                FontSize="10"
+                                TextWrapping="Wrap"
+                                Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <TextBlock
+                            x:Name="OptimizationLibraryCountText"
+                            Grid.Column="1"
+                            Text="0 GROUPS"
+                            Foreground="#55555C"
+                            FontSize="8"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel
+                        x:Name="OptimizationLibraryPanel"
+                        Margin="0,12,0,0"/>
+
                     <!-- RECOMMENDATIONS -->
                     <Grid Margin="0,28,0,0">
                         <Grid.ColumnDefinitions>
