@@ -741,6 +741,15 @@
                                     FontSize="8"
                                     Margin="0,2,0,0"/>
 
+                                <Button
+                                    x:Name="CpuSensorDiagnosticButton"
+                                    Content="CPU SENSOR DIAGNOSTIC"
+                                    Click="CpuSensorDiagnosticButton_Click"
+                                    HorizontalAlignment="Left"
+                                    Padding="10,5"
+                                    Margin="0,8,0,0"
+                                    FontSize="8"/>
+
                                 <TextBlock
                                     x:Name="CpuClockLarge"
                                     Text="-- GHz"
