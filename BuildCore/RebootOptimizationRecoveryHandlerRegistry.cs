@@ -6,7 +6,11 @@ namespace BuildCore
     public static class RebootOptimizationRecoveryHandlerRegistry
     {
         private static readonly IReadOnlyList<IRebootOptimizationRecoveryHandler> Handlers =
-            new IRebootOptimizationRecoveryHandler[] { new HagsRecoveryHandler() };
+            Array.AsReadOnly(
+                new IRebootOptimizationRecoveryHandler[]
+                {
+                    new HagsRecoveryHandler()
+                });
 
         public static IReadOnlyList<string> GetRegisteredTitles()
         {
