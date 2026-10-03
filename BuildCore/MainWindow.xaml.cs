@@ -3524,16 +3524,58 @@ namespace BuildCore
                 button.Tag is not WorkloadBenchmarkResult result)
                 return;
 
+            var confirmationContent =
+                new StackPanel
+                {
+                    Spacing = 12,
+                    Padding = new Thickness(4)
+                };
+
+            confirmationContent.Children.Add(
+                new TextBlock
+                {
+                    Text = "DELETE BENCHMARK",
+                    FontSize = 10,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold)
+                });
+
+            confirmationContent.Children.Add(
+                new Border
+                {
+                    Padding = new Thickness(14),
+                    CornerRadius = new CornerRadius(10),
+                    Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Transparent),
+                    BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.DimGray),
+                    BorderThickness = new Thickness(1),
+                    Child = new TextBlock
+                    {
+                        Text =
+                            $"Permanently delete the saved benchmark '{result.WorkloadName}'?",
+                        FontSize = 11,
+                        Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGray),
+                        TextWrapping = TextWrapping.Wrap
+                    }
+                });
+
+            confirmationContent.Children.Add(
+                new TextBlock
+                {
+                    Text = "This action only removes the saved benchmark record.",
+                    FontSize = 9,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
             var confirmation = new ContentDialog
             {
-                Title = "Delete Workload Benchmark?",
-                Content = new TextBlock
-                {
-                    Text =
-                        $"This will permanently delete the saved benchmark " +
-                        $"'{result.WorkloadName}'.",
-                    TextWrapping = TextWrapping.Wrap
-                },
+                Title = "CONFIRM DELETION",
+                Content = confirmationContent,
                 PrimaryButtonText = "DELETE",
                 CloseButtonText = "CANCEL",
                 DefaultButton = ContentDialogButton.Close,
@@ -4337,38 +4379,64 @@ namespace BuildCore
                 OptimizationBenchmarkResult test)
                 return;
 
-            var confirmation =
-                new ContentDialog
+            var confirmationContent =
+                new StackPanel
                 {
-                    Title =
-                        "Delete Optimization Test?",
-
-                    Content =
-                        new TextBlock
-                        {
-                            Text =
-                                $"This will permanently delete the " +
-                                $"saved test for '{test.OptimizationTitle}'.\n\n" +
-                                "The associated snapshot and optimization " +
-                                "transaction will not be deleted.",
-
-                            TextWrapping =
-                                TextWrapping.Wrap
-                        },
-
-                    PrimaryButtonText =
-                        "DELETE",
-
-                    CloseButtonText =
-                        "CANCEL",
-
-                    DefaultButton =
-                        ContentDialogButton.Close,
-
-                    XamlRoot =
-                        ((FrameworkElement)
-                            this.Content).XamlRoot
+                    Spacing = 12,
+                    Padding = new Thickness(4)
                 };
+
+            confirmationContent.Children.Add(
+                new TextBlock
+                {
+                    Text = "DELETE BENCHMARK",
+                    FontSize = 10,
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gold)
+                });
+
+            confirmationContent.Children.Add(
+                new Border
+                {
+                    Padding = new Thickness(14),
+                    CornerRadius = new CornerRadius(10),
+                    Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Transparent),
+                    BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.DimGray),
+                    BorderThickness = new Thickness(1),
+                    Child = new TextBlock
+                    {
+                        Text =
+                            $"Permanently delete the saved test for '{test.OptimizationTitle}'?\n\n" +
+                            "The associated snapshot and optimization transaction will not be deleted.",
+                        FontSize = 11,
+                        Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            Microsoft.UI.Colors.LightGray),
+                        TextWrapping = TextWrapping.Wrap
+                    }
+                });
+
+            confirmationContent.Children.Add(
+                new TextBlock
+                {
+                    Text = "This action only removes the saved benchmark record.",
+                    FontSize = 9,
+                    Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Gray),
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+            var confirmation = new ContentDialog
+            {
+                Title = "CONFIRM DELETION",
+                Content = confirmationContent,
+                PrimaryButtonText = "DELETE",
+                CloseButtonText = "CANCEL",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = ((FrameworkElement)this.Content).XamlRoot
+            };
 
             ContentDialogResult result =
                 await confirmation.ShowAsync();
