@@ -494,8 +494,57 @@ namespace BuildCore
 
                 if (experiment.RecoveryFinalizedAtUtc.HasValue &&
                     (!experiment.RecoveryFinalizationCheckedAtUtc.HasValue ||
+                     !experiment.RecoveryAttemptedAtUtc.HasValue ||
                      experiment.RecoveryFinalizedAtUtc.Value <
-                        experiment.RecoveryAttemptedAtUtc.GetValueOrDefault()))
+                        experiment.RecoveryAttemptedAtUtc.Value))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.None &&
+                    string.IsNullOrWhiteSpace(experiment.RecoveryStatus))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Available &&
+                    (!experiment.RecoveryAvailable ||
+                     experiment.RecoveryAttempted ||
+                     experiment.RecoverySucceeded ||
+                     experiment.RecoveryRequiresReboot ||
+                     experiment.RecoveryFinalized))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryPhase == RebootOptimizationExperimentRecoveryPhase.Failed &&
+                    (!experiment.RecoveryAttempted ||
+                     !experiment.RecoveryAttemptedAtUtc.HasValue ||
+                     experiment.RecoveryRequiresReboot ||
+                     experiment.RecoveryFinalized))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryAttempted &&
+                    !experiment.RecoveryAttemptedAtUtc.HasValue)
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryRequiresReboot &&
+                    (!experiment.RecoverySucceeded ||
+                     !experiment.RecoveryAttempted ||
+                     experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.RebootRequired))
+                {
+                    return false;
+                }
+
+                if (experiment.RecoveryFinalized &&
+                    (!experiment.RecoverySucceeded ||
+                     experiment.RecoveryPhase != RebootOptimizationExperimentRecoveryPhase.Finalized ||
+                     !experiment.RecoveryFinalizedAtUtc.HasValue ||
+                     experiment.RecoveryRequiresReboot))
                 {
                     return false;
                 }
