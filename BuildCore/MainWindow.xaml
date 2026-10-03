@@ -8,15 +8,14 @@
     mc:Ignorable="d"
     Title="BuildCore">
 
-    <Window.Resources>
-        <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#7CFF8A"/>
-    </Window.Resources>
-
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
     <Grid Background="Transparent">
+        <Grid.Resources>
+            <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#7CFF8A"/>
+        </Grid.Resources>
         <!-- Subtle cinematic space layer. Kept behind all interactive UI. -->
         <Canvas
             Grid.ColumnSpan="2"
