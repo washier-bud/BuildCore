@@ -43,6 +43,12 @@ namespace BuildCore
                     "Enable Windows Game Mode" =>
                         ApplyGameMode(),
 
+                    "Prevent sleep during workload" =>
+                        ApplyPreventSleep(recommendation),
+
+                    "Workload display timeout" =>
+                        ApplyDisplayTimeout(recommendation),
+
                     _ =>
                         Failure(
                             "No apply handler exists for this optimization.")
@@ -156,6 +162,26 @@ namespace BuildCore
                 Message =
                     "The setting was changed, but BuildCore could not verify Game Mode."
             };
+        }
+
+        // ============================================================
+        // WORKLOAD POWER SETTINGS
+        // ============================================================
+
+        private static OptimizationApplyResult ApplyPreventSleep(
+            OptimizationRecommendation recommendation)
+        {
+            return PowerOptimizationHandler.ApplyAcTimeout(
+                "standby-timeout-ac",
+                0);
+        }
+
+        private static OptimizationApplyResult ApplyDisplayTimeout(
+            OptimizationRecommendation recommendation)
+        {
+            return PowerOptimizationHandler.ApplyAcTimeout(
+                "monitor-timeout-ac",
+                0);
         }
 
         // ============================================================
