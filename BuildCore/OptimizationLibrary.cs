@@ -12,6 +12,10 @@ namespace BuildCore
         public OptimizationRisk Risk { get; init; } = OptimizationRisk.Low;
         public bool RequiresReboot { get; init; }
         public bool RollbackSupported { get; init; } = true;
+        public string CpuGuidance { get; init; } = "Not CPU-specific";
+        public string GpuGuidance { get; init; } = "Not GPU-specific";
+        public string HardwareEffect { get; init; } =
+            "No hardware-specific effect is expected. BuildCore still verifies the setting before applying it.";
     }
 
     public sealed class OptimizationGroupDefinition
@@ -173,6 +177,55 @@ namespace BuildCore
                 Tweaks = tweaks
             };
 
+        private static string CpuGuidanceFor(string id) =>
+            id switch
+            {
+                "processor-min" or "processor-boost" or "cpu-idle" =>
+                    "Modern x64 desktop/laptop CPU. Keep the CPU vendor's normal boost/idle behavior unless measured testing shows a benefit.",
+                "hags" =>
+                    "Any supported modern x64 CPU. HAGS is primarily a Windows/GPU-driver feature, not a CPU tuning requirement.",
+                _ => "Not CPU-specific. BuildCore should use the setting only when Windows and the detected hardware support it."
+            };
+
+        private static string GpuGuidanceFor(string id) =>
+            id switch
+            {
+                "nvidia-power" or "nvidia-reflex" or "nvidia-vrr" or "low-latency" =>
+                    "Compatible NVIDIA GPU/driver for the selected feature. Exact behavior depends on the installed NVIDIA driver and application.",
+                "radeon-power" or "radeon-anti-lag" or "radeon-chill" =>
+                    "Compatible AMD Radeon GPU/driver for the selected feature. Exact behavior depends on the installed AMD driver and application.",
+                "hags" or "gpu-scheduling" =>
+                    "Supported GPU with a compatible WDDM driver. BuildCore must verify driver support before changing this setting.",
+                "shader-cache" or "cleanup-shader-cache" or "dx-cache" =>
+                    "Any supported GPU; cache behavior is driver/application dependent.",
+                "driver-profile" =>
+                    "Compatible GPU driver with per-application profile support.",
+                "network-power" or "network-rss" or "network-offloads" or "network-dns" =>
+                    "No specific GPU requirement.",
+                _ => "Not GPU-specific. BuildCore should use the setting only when Windows and the detected hardware support it."
+            };
+
+        private static string HardwareEffectFor(string id) =>
+            id switch
+            {
+                "high-performance" =>
+                    "Can increase CPU/GPU power use, heat, fan activity, and idle power. It does not make unsupported hardware faster.",
+                "custom-plan" or "processor-min" or "processor-boost" or "cpu-idle" =>
+                    "Can change CPU power, temperature, fan behavior, and battery life. Vendor/OEM defaults are preferred unless testing justifies a change.",
+                "network-power" or "network-rss" or "network-offloads" =>
+                    "Can change network-adapter power use, throughput, CPU utilization, or latency. Adapter-driver support must be checked first.",
+                "hags" =>
+                    "Can change GPU scheduling behavior and frame-time/latency characteristics. Results are workload and driver dependent; it is not universally faster.",
+                "nvidia-power" =>
+                    "May keep a compatible NVIDIA GPU at higher performance states, increasing power and heat. It should be scoped to the selected application when possible.",
+                "radeon-power" =>
+                    "May increase AMD GPU performance-state behavior, which can increase power and heat. Exact behavior is driver dependent.",
+                "cleanup-shader-cache" or "shader-cache" or "dx-cache" =>
+                    "Removing/rebuilding caches can temporarily increase shader compilation or stutter until caches are rebuilt. Active cache data must never be deleted blindly.",
+                _ =>
+                    "The effect depends on the detected Windows version, drivers, hardware, and workload. BuildCore should verify compatibility before applying it."
+            };
+
         private static OptimizationTweakDefinition T(
             string id,
             string title,
@@ -188,7 +241,10 @@ namespace BuildCore
                 DefaultEnabled = defaultEnabled,
                 Risk = risk,
                 RequiresReboot = requiresReboot,
-                RollbackSupported = true
+                RollbackSupported = true,
+                CpuGuidance = CpuGuidanceFor(id),
+                GpuGuidance = GpuGuidanceFor(id),
+                HardwareEffect = HardwareEffectFor(id)
             };
     }
 }
