@@ -170,7 +170,7 @@ namespace BuildCore
                     continue;
 
                 float value = sensor.Value.Value;
-                if (value < 0 || value > 120)
+                if (value < 1 || value > 120)
                     continue;
 
                 string name = sensor.Name.Trim();
