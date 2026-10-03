@@ -443,44 +443,34 @@ namespace BuildCore
             // VRAM
             // -----------------------------
 
-            if (sensor.SensorType ==
-                SensorType.SmallData)
+            // -----------------------------
+            // VRAM
+            // -----------------------------
+            // LibreHardwareMonitor versions expose
+            // memory sensors differently. Avoid relying
+            // on the removed SmallData enum and use
+            // sensor names/type combinations that are
+            // actually present in the current library.
+            if (sensor.SensorType == SensorType.Data)
             {
                 if (name.Equals(
                     "GPU Memory Used",
                     StringComparison.OrdinalIgnoreCase))
                 {
-                    data.GpuMemoryUsed =
-                        value;
+                    data.GpuMemoryUsed = value;
                 }
 
                 if (name.Equals(
                     "GPU Memory Total",
                     StringComparison.OrdinalIgnoreCase))
                 {
-                    data.GpuMemoryTotal =
-                        value;
+                    data.GpuMemoryTotal = value;
                 }
-            }
 
-            // -----------------------------
-            // FALLBACK VRAM SENSOR NAMES
-            // -----------------------------
-
-            if (sensor.SensorType ==
-                SensorType.SmallData)
-            {
-                if (lowerName.Contains(
-                    "dedicated memory used"))
+                if (lowerName.Contains("dedicated memory used") &&
+                    !data.GpuMemoryUsed.HasValue)
                 {
-                    // D3D dedicated memory is useful
-                    // as a fallback, but don't overwrite
-                    // the direct NVIDIA VRAM sensor.
-                    if (!data.GpuMemoryUsed.HasValue)
-                    {
-                        data.GpuMemoryUsed =
-                            value;
-                    }
+                    data.GpuMemoryUsed = value;
                 }
             }
         }
