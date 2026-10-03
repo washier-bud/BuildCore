@@ -34,8 +34,13 @@ namespace BuildCore
 
         public static bool FinalizeRecoveryAfterReboot(RebootOptimizationExperimentState experiment)
         {
-            if (experiment == null || !experiment.RecoverySucceeded ||
-                !experiment.RecoveryRequiresReboot || experiment.RecoveryFinalized ||
+            if (experiment == null ||
+                experiment.RecoveryPhase !=
+                    RebootOptimizationExperimentRecoveryPhase.RebootRequired ||
+                !experiment.RecoverySucceeded ||
+                !experiment.RecoveryRequiresReboot ||
+                experiment.RecoveryFinalized ||
+                !experiment.RecoveryAttempted ||
                 !experiment.RecoveryAttemptedAtUtc.HasValue)
                 return false;
 
