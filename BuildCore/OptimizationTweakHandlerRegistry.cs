@@ -93,7 +93,7 @@ namespace BuildCore
                 Review("radeon-chill", "radeon-chill-v1", "Review-only Radeon Chill discovery.", false),
 
                 Review("temp-files", "temp-files-cleanup-v1", "Review-only until cleanup manifests and rollback-safe quarantine are implemented.", false),
-                Review("shader-cache", "shader-cache-cleanup-v1", "Review-only stale-cache discovery; active caches are never blindly deleted.", false),
+                Review("cleanup-shader-cache", "shader-cache-cleanup-v1", "Review-only stale-cache discovery; active caches are never blindly deleted.", false),
                 Review("update-cache", "update-cache-review-v1", "Review-only Windows Update cache analysis.", false),
 
                 Review("dx-cache", "directx-cache-v1", "Review-only DirectX shader-cache maintenance.", false),
