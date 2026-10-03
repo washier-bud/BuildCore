@@ -1116,6 +1116,248 @@
             </ScrollViewer>
 
             <!-- ================================================== -->
+            <!-- SYSTEM PAGE -->
+            <!-- ================================================== -->
+
+            <ScrollViewer
+                x:Name="SystemPage"
+                Margin="0,64,0,0"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="Collapsed">
+
+                <StackPanel Padding="32">
+
+                    <TextBlock
+                        Text="BUILDCORE"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"/>
+
+                    <TextBlock
+                        Text="System Information"
+                        Foreground="White"
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        Margin="0,4,0,0"/>
+
+                    <TextBlock
+                        Text="Detailed hardware and Windows configuration."
+                        Foreground="#66666D"
+                        FontSize="11"
+                        Margin="0,6,0,0"/>
+
+                    <TextBlock
+                        Text="HARDWARE"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Margin="0,30,0,12"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Column="0" Margin="0,0,7,7" Padding="18" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="CPU" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemCpuText" Text="Unknown" Foreground="White" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Margin="7,0,0,7" Padding="18" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="GPU" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemGpuText" Text="Unknown" Foreground="White" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="0" Margin="0,7,7,0" Padding="18" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="MEMORY" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemRamText" Text="Unknown" Foreground="White" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1" Margin="7,7,0,0" Padding="18" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="STORAGE" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemStorageText" Text="Unknown" Foreground="White" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <TextBlock
+                        Text="WINDOWS CONFIGURATION"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Margin="0,30,0,12"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Column="0" Margin="0,0,7,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="WINDOWS" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemWindowsText" Text="Unknown" Foreground="White" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="SystemWindowsBuildText" Text="Build Unknown" Foreground="#66666D" FontSize="9" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Margin="7,0,0,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="POWER PLAN" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemPowerPlanText" Text="Unknown" Foreground="White" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="0" Margin="0,7,7,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="GAME MODE" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemGameModeText" Text="Unknown" Foreground="White" FontSize="12" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1" Margin="7,7,0,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="HAGS" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemHagsText" Text="Unknown" Foreground="White" FontSize="12" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="2" Grid.Column="0" Margin="0,7,7,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="MEMORY INTEGRITY" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemMemoryIntegrityText" Text="Unknown" Foreground="White" FontSize="12" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="2" Grid.Column="1" Margin="7,7,0,7" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="DEFENDER" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemDefenderText" Text="Unknown" Foreground="White" FontSize="12" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="3" Grid.Column="0" Margin="0,7,7,0" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="GAME BAR" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemGameBarText" Text="Unknown" Foreground="White" FontSize="12" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="3" Grid.Column="1" Margin="7,7,0,0" Padding="16" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="WINDOWS UPDATE" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="SystemWindowsUpdateText" Text="Unknown" Foreground="White" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ================================================== -->
+            <!-- PERFORMANCE PAGE -->
+            <!-- ================================================== -->
+
+            <ScrollViewer
+                x:Name="PerformancePage"
+                Margin="0,64,0,0"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="Collapsed">
+
+                <StackPanel Padding="32">
+
+                    <TextBlock
+                        Text="BUILDCORE"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"/>
+
+                    <TextBlock
+                        Text="Performance Monitor"
+                        Foreground="White"
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        Margin="0,4,0,0"/>
+
+                    <TextBlock
+                        Text="Live telemetry from the active system monitoring services."
+                        Foreground="#66666D"
+                        FontSize="11"
+                        Margin="0,6,0,0"/>
+
+                    <TextBlock
+                        Text="LIVE PERFORMANCE"
+                        Foreground="#5E5E65"
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Margin="0,30,0,12"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Margin="0,0,7,0" Padding="20" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="CPU" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="PerformanceCpuText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="PerformanceCpuTempText" Text="N/A" Foreground="#7CFF8A" FontSize="11" Margin="0,6,0,0"/>
+                                <TextBlock x:Name="PerformanceCpuClockText" Text="-- GHz" Foreground="#A0A0A7" FontSize="11" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Margin="7,0" Padding="20" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="GPU" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="PerformanceGpuText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="PerformanceGpuTempText" Text="N/A" Foreground="#7CFF8A" FontSize="11" Margin="0,6,0,0"/>
+                                <TextBlock x:Name="PerformanceGpuClockText" Text="-- MHz" Foreground="#A0A0A7" FontSize="11" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="PerformanceGpuVramText" Text="-- GB" Foreground="#66666D" FontSize="10" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Margin="7,0,0,0" Padding="20" CornerRadius="12" Background="#111116">
+                            <StackPanel>
+                                <TextBlock Text="MEMORY / STORAGE" Foreground="#66666D" FontSize="9"/>
+                                <TextBlock x:Name="PerformanceRamText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="PerformanceDiskText" Text="0%" Foreground="#7CFF8A" FontSize="22" FontWeight="SemiBold" Margin="0,14,0,0"/>
+                                <TextBlock Text="Disk activity" Foreground="#66666D" FontSize="9" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Margin="0,18,0,0" Padding="20" CornerRadius="12" Background="#111116" BorderBrush="#24242A" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="MONITORING" Foreground="#66666D" FontSize="9"/>
+                            <TextBlock Text="BuildCore refreshes performance telemetry every second." Foreground="#A7A7AE" FontSize="12" Margin="0,8,0,0"/>
+                            <TextBlock Text="Use the Benchmark controls on Dashboard for repeatable performance measurements." Foreground="#66666D" FontSize="10" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ================================================== -->
             <!-- OPTIMIZE PAGE -->
             <!-- ================================================== -->
 
