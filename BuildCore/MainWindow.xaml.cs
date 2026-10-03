@@ -46,6 +46,8 @@ namespace BuildCore
 
         private bool _optimizationTestRunning;
 
+        private string _selectedOptimizationCategory = "All";
+
         private static string GetRecoveryHandlerRegistryStatus()
         {
             IReadOnlyList<string> errors =
@@ -1162,8 +1164,13 @@ namespace BuildCore
             border.Child =
                 panel;
 
+            border.Tag =
+                recommendation.Category;
+
             RecommendationsPanel.Children.Add(
                 border);
+
+            ApplyOptimizationCategoryFilter();
         }
 
         private class ApplyButtonContext
@@ -5319,6 +5326,69 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Optimize";
+        }
+
+        // ============================================================
+        // OPTIMIZATION CATEGORY FILTER
+        // ============================================================
+
+        private void OptimizationCategoryButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Tag is not string category)
+            {
+                return;
+            }
+
+            _selectedOptimizationCategory = category;
+
+            OptimizationCategoryText.Text =
+                category.Equals(
+                    "All",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? "ALL OPTIMIZATIONS"
+                    : category.ToUpperInvariant();
+
+            ApplyOptimizationCategoryFilter();
+        }
+
+        private void ApplyOptimizationCategoryFilter()
+        {
+            int visibleCount = 0;
+
+            foreach (UIElement child in RecommendationsPanel.Children)
+            {
+                if (child is not FrameworkElement element ||
+                    element.Tag is not OptimizationCategory cardCategory)
+                {
+                    continue;
+                }
+
+                bool visible =
+                    _selectedOptimizationCategory.Equals(
+                        "All",
+                        StringComparison.OrdinalIgnoreCase) ||
+                    element.Tag.ToString()!.Equals(
+                        _selectedOptimizationCategory,
+                        StringComparison.OrdinalIgnoreCase);
+
+                element.Visibility =
+                    visible
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+
+                if (visible)
+                    visibleCount++;
+            }
+
+            OptimizationCategoryCountText.Text =
+                _selectedOptimizationCategory.Equals(
+                    "All",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? $"{RecommendationsPanel.Children.Count} AVAILABLE"
+                    : $"{visibleCount} AVAILABLE";
         }
 
         // ============================================================
