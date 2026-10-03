@@ -29,6 +29,7 @@ namespace BuildCore
         {
             var errors = new List<string>();
             var seenTitles = new HashSet<string>(StringComparer.Ordinal);
+            var seenHandlerIds = new HashSet<string>(StringComparer.Ordinal);
 
             for (int i = 0; i < Handlers.Count; i++)
             {
@@ -51,6 +52,23 @@ namespace BuildCore
                 {
                     errors.Add(
                         $"Duplicate recovery handler title: '{handler.OptimizationTitle}'.");
+                }
+
+                if (string.IsNullOrWhiteSpace(handler.HandlerId))
+                {
+                    errors.Add(
+                        $"Recovery handler '{handler.OptimizationTitle}' has an empty handler ID.");
+                }
+                else if (!seenHandlerIds.Add(handler.HandlerId))
+                {
+                    errors.Add(
+                        $"Duplicate recovery handler ID: '{handler.HandlerId}'.");
+                }
+
+                if (handler.HandlerVersion <= 0)
+                {
+                    errors.Add(
+                        $"Recovery handler '{handler.OptimizationTitle}' has an invalid handler version.");
                 }
             }
 
