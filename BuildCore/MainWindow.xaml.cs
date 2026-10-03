@@ -5384,8 +5384,11 @@ namespace BuildCore
                 AutoTuneSummaryText.Text =
                     $"Snapshot: {applyResult.Snapshot.Id}. Successful changes were verified before being recorded.";
 
+                bool anyFailed = applyResult.Items.Any(item =>
+                    item.Status.StartsWith("FAILED", StringComparison.OrdinalIgnoreCase));
+
                 AutoTuneAssistantText.Text =
-                    applyResult.Failed
+                    anyFailed
                         ? "One or more tweaks could not be applied. Review the results before making further changes."
                         : "All selected tweaks were applied and verified.";
 
@@ -5601,12 +5604,23 @@ namespace BuildCore
                 TextWrapping = TextWrapping.Wrap
             });
 
+            var toggle = new ToggleSwitch
+            {
+                Header = "SELECT FOR AUTOTUNE",
+                IsOn = _autoTuneSelectedTweaks.Contains(tweak.Id),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 10, 0, 0),
+                Tag = tweak.Id
+            };
+            toggle.Toggled += AutoTuneTweakToggle_Toggled;
+            panel.Children.Add(toggle);
+
             panel.Children.Add(new TextBlock
             {
-                Text = "REVIEW ONLY • NO SYSTEM CHANGE",
+                Text = "SELECTION ONLY • NO SYSTEM CHANGE",
                 Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
                 FontSize = 8,
-                Margin = new Thickness(0, 8, 0, 0)
+                Margin = new Thickness(0, 6, 0, 0)
             });
 
             card.Child = panel;
