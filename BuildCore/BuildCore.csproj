@@ -42,9 +42,12 @@
 	</PropertyGroup>
 	<!-- Publish Properties -->
 	<PropertyGroup>
+		<!-- Keep trimming disabled until the full WinUI/native dependency graph has been
+		     validated for release. Trimming can remove members used through reflection
+		     or by Windows App SDK components and can turn a working build into a
+		     runtime-only release failure. -->
+		<PublishTrimmed>false</PublishTrimmed>
 		<PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
 		<PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
-		<PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
-		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
 	</PropertyGroup>
 </Project>
