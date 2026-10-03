@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.UI;
 
 namespace BuildCore
 {
@@ -365,7 +367,7 @@ namespace BuildCore
 
                     OptimizationResultsStatusText.Foreground =
                         new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                            Microsoft.UI.Colors.LightGreen);
+                            GetAccentColor());
 
                     OptimizationResultsSummaryText.Text =
                         resumed.Analysis?.Summary ??
@@ -5849,6 +5851,9 @@ namespace BuildCore
 
             OptimizePage.Visibility =
                 Visibility.Collapsed;
+
+            SettingsPage.Visibility =
+                Visibility.Collapsed;
         }
 
         private void ShowAutoTune()
@@ -5900,6 +5905,113 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Optimize";
+        }
+
+        private void ShowSettings()
+        {
+            HideAllPages();
+            SettingsPage.Visibility = Visibility.Visible;
+            PageTitleText.Text = "Settings";
+            LoadSettings();
+        }
+
+        private static ApplicationDataContainer GetSettingsStore()
+        {
+            return ApplicationData.Current.LocalSettings;
+        }
+
+        private static Color GetAccentColor()
+        {
+            string name =
+                GetSettingsStore().Values["AccentColor"] as string ??
+                "Lime";
+
+            return name switch
+            {
+                "Blue" => Color.FromArgb(255, 90, 170, 255),
+                "Purple" => Color.FromArgb(255, 180, 120, 255),
+                "Orange" => Color.FromArgb(255, 255, 165, 70),
+                "Red" => Color.FromArgb(255, 255, 105, 105),
+                "White" => Color.FromArgb(255, 245, 245, 248),
+                _ => Color.FromArgb(255, 124, 255, 138)
+            };
+        }
+
+        private void LoadSettings()
+        {
+            var store = GetSettingsStore();
+            string accent =
+                store.Values["AccentColor"] as string ?? "Lime";
+
+            AccentColorComboBox.SelectedIndex =
+                accent switch
+                {
+                    "Blue" => 1,
+                    "Purple" => 2,
+                    "Orange" => 3,
+                    "Red" => 4,
+                    "White" => 5,
+                    _ => 0
+                };
+
+            ConfirmOptimizationToggle.IsOn =
+                GetBoolSetting(store, "ConfirmOptimization", true);
+            AutoSnapshotToggle.IsOn =
+                GetBoolSetting(store, "AutoSnapshot", true);
+            AnimationsToggle.IsOn =
+                GetBoolSetting(store, "Animations", true);
+            RememberPageToggle.IsOn =
+                GetBoolSetting(store, "RememberPage", false);
+
+            ApplyAccentColor();
+        }
+
+        private static bool GetBoolSetting(
+            ApplicationDataContainer store,
+            string key,
+            bool defaultValue)
+        {
+            return store.Values.TryGetValue(key, out object? value) &&
+                   value is bool setting
+                ? setting
+                : defaultValue;
+        }
+
+        private void ApplyAccentColor()
+        {
+            if (Resources["BuildCoreAccentBrush"]
+                is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+            {
+                brush.Color = GetAccentColor();
+            }
+        }
+
+        private void AccentColorComboBox_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            if (AccentColorComboBox.SelectedItem is not ComboBoxItem item)
+                return;
+
+            string name = item.Content?.ToString() ?? "Lime";
+            GetSettingsStore().Values["AccentColor"] = name;
+            ApplyAccentColor();
+        }
+
+        private void ResetSettingsButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            var store = GetSettingsStore();
+            store.Values.Clear();
+
+            ConfirmOptimizationToggle.IsOn = true;
+            AutoSnapshotToggle.IsOn = true;
+            AnimationsToggle.IsOn = true;
+            RememberPageToggle.IsOn = false;
+            AccentColorComboBox.SelectedIndex = 0;
+
+            ApplyAccentColor();
         }
 
         // ============================================================
@@ -6361,11 +6473,35 @@ namespace BuildCore
             ShowOptimize();
         }
 
+        private void ConfirmOptimizationToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            GetSettingsStore().Values["ConfirmOptimization"] =
+                ConfirmOptimizationToggle.IsOn;
+        }
+
+        private void AutoSnapshotToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            GetSettingsStore().Values["AutoSnapshot"] =
+                AutoSnapshotToggle.IsOn;
+        }
+
+        private void AnimationsToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            GetSettingsStore().Values["Animations"] =
+                AnimationsToggle.IsOn;
+        }
+
+        private void RememberPageToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            GetSettingsStore().Values["RememberPage"] =
+                RememberPageToggle.IsOn;
+        }
+
         private void SettingsButton_Click(
             object sender,
             RoutedEventArgs e)
         {
-            ShowDashboard();
+            ShowSettings();
         }
     }
 }
