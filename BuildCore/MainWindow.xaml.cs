@@ -4862,11 +4862,24 @@ namespace BuildCore
         private void UpdateCpuTelemetry(
             HardwareMonitorData data)
         {
-            CpuTemperatureLarge.Text =
-                "N/A";
+            if (data.CpuTemperature.HasValue &&
+                data.CpuTemperature.Value >= 0 &&
+                data.CpuTemperature.Value <= 120)
+            {
+                CpuTemperatureLarge.Text =
+                    $"{data.CpuTemperature.Value:F0}°C";
 
-            CpuTemperatureText.Text =
-                "Sensor unavailable";
+                CpuTemperatureText.Text =
+                    $"CPU temperature • {data.CpuTemperatureSource}";
+            }
+            else
+            {
+                CpuTemperatureLarge.Text =
+                    "N/A";
+
+                CpuTemperatureText.Text =
+                    "CPU temperature sensor unavailable";
+            }
 
             if (data.CpuClock.HasValue &&
                 data.CpuClock.Value > 0)
