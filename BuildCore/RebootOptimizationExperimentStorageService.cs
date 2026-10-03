@@ -670,7 +670,6 @@ namespace BuildCore
                      !experiment.RecoveryAttemptedAtUtc.HasValue ||
                      experiment.RecoveryRequiresReboot ||
                      experiment.RecoveryFinalized ||
-                     experiment.RecoverySucceeded ||
                      string.IsNullOrWhiteSpace(experiment.RecoveryStatus)))
                 {
                     return false;
