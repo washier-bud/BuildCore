@@ -5115,22 +5115,63 @@ namespace BuildCore
         // PAGE NAVIGATION
         // ============================================================
 
-        private void ShowDashboard()
+        private void HideAllPages()
         {
             DashboardPage.Visibility =
-                Visibility.Visible;
+                Visibility.Collapsed;
+
+            SystemPage.Visibility =
+                Visibility.Collapsed;
+
+            PerformancePage.Visibility =
+                Visibility.Collapsed;
 
             OptimizePage.Visibility =
                 Visibility.Collapsed;
         }
 
+        private void ShowDashboard()
+        {
+            HideAllPages();
+
+            DashboardPage.Visibility =
+                Visibility.Visible;
+
+            PageTitleText.Text =
+                "Dashboard";
+        }
+
+        private void ShowSystem()
+        {
+            HideAllPages();
+
+            SystemPage.Visibility =
+                Visibility.Visible;
+
+            PageTitleText.Text =
+                "System";
+        }
+
+        private void ShowPerformance()
+        {
+            HideAllPages();
+
+            PerformancePage.Visibility =
+                Visibility.Visible;
+
+            PageTitleText.Text =
+                "Performance";
+        }
+
         private void ShowOptimize()
         {
-            DashboardPage.Visibility =
-                Visibility.Collapsed;
+            HideAllPages();
 
             OptimizePage.Visibility =
                 Visibility.Visible;
+
+            PageTitleText.Text =
+                "Optimize";
         }
 
         // ============================================================
@@ -5148,14 +5189,14 @@ namespace BuildCore
             object sender,
             RoutedEventArgs e)
         {
-            ShowDashboard();
+            ShowSystem();
         }
 
         private void PerformanceButton_Click(
             object sender,
             RoutedEventArgs e)
         {
-            ShowDashboard();
+            ShowPerformance();
         }
 
         private void OptimizeButton_Click(
