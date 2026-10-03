@@ -5963,6 +5963,16 @@ namespace BuildCore
             RememberPageToggle.IsOn =
                 GetBoolSetting(store, "RememberPage", false);
 
+            string textStyle =
+                store.Values["TextStyle"] as string ?? "Clean";
+            TextStyleComboBox.SelectedIndex =
+                textStyle switch
+                {
+                    "Bold" => 1,
+                    "Minimal" => 2,
+                    _ => 0
+                };
+
             ApplyAccentColor();
         }
 
@@ -5985,6 +5995,17 @@ namespace BuildCore
             {
                 brush.Color = GetAccentColor();
             }
+        }
+
+        private void TextStyleComboBox_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            if (TextStyleComboBox.SelectedItem is not ComboBoxItem item)
+                return;
+
+            string name = item.Content?.ToString() ?? "Clean";
+            GetSettingsStore().Values["TextStyle"] = name;
         }
 
         private void AccentColorComboBox_SelectionChanged(
@@ -6011,6 +6032,7 @@ namespace BuildCore
             AnimationsToggle.IsOn = true;
             RememberPageToggle.IsOn = false;
             AccentColorComboBox.SelectedIndex = 0;
+            TextStyleComboBox.SelectedIndex = 0;
 
             ApplyAccentColor();
         }
