@@ -89,11 +89,46 @@ namespace BuildCore
         private void ReadCpuTemperature(
             HardwareMonitorData data)
         {
+            // Primary source: LibreHardwareMonitor CPU sensors.
+            // Prefer AMD Tctl/Tdie / Tdie and Intel package readings.
+            try
+            {
+                float? best = null;
+                string source = "Unavailable";
+                int priority = int.MaxValue;
+
+                foreach (IHardware hardware in _computer.Hardware)
+                {
+                    if (hardware.HardwareType != HardwareType.Cpu)
+                        continue;
+
+                    hardware.Update();
+                    FindCpuTemperature(
+                        hardware,
+                        ref best,
+                        ref source,
+                        ref priority);
+                }
+
+                if (best.HasValue)
+                {
+                    data.CpuTemperature = best.Value;
+                    data.CpuTemperatureSource = source;
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"CPU hardware temperature error: {ex}");
+            }
+
+            // Secondary source: Windows ACPI thermal zone.
             try
             {
                 using var searcher =
                     new ManagementObjectSearcher(
-                        @"root\WMI",
+                        @"root\\WMI",
                         "SELECT CurrentTemperature FROM MSAcpi_ThermalZoneTemperature");
 
                 foreach (ManagementObject obj in searcher.Get())
@@ -101,26 +136,73 @@ namespace BuildCore
                     if (obj["CurrentTemperature"] == null)
                         continue;
 
-                    double rawTemperature =
-                        Convert.ToDouble(
-                            obj["CurrentTemperature"]);
+                    double raw = Convert.ToDouble(obj["CurrentTemperature"]);
+                    double celsius = (raw / 10.0) - 273.15;
 
-                    double celsius =
-                        (rawTemperature / 10.0) - 273.15;
-
-                    if (celsius >= 0 &&
-                        celsius <= 120)
+                    if (celsius >= 0 && celsius <= 120)
                     {
-                        data.CpuTemperature =
-                            (float)celsius;
-
+                        data.CpuTemperature = (float)celsius;
+                        data.CpuTemperatureSource = "Windows ACPI";
                         return;
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                data.CpuTemperature = null;
+                Debug.WriteLine(
+                    $"CPU ACPI temperature fallback error: {ex}");
+            }
+
+            data.CpuTemperature = null;
+            data.CpuTemperatureSource = "Unavailable";
+        }
+
+        private static void FindCpuTemperature(
+            IHardware hardware,
+            ref float? best,
+            ref string source,
+            ref int priority)
+        {
+            foreach (ISensor sensor in hardware.Sensors)
+            {
+                if (sensor.SensorType != SensorType.Temperature ||
+                    !sensor.Value.HasValue)
+                    continue;
+
+                float value = sensor.Value.Value;
+                if (value < 0 || value > 120)
+                    continue;
+
+                string name = sensor.Name.Trim();
+                string lower = name.ToLowerInvariant();
+
+                int candidatePriority =
+                    lower.Contains("tctl/tdie") ? 0 :
+                    lower.Contains("cpu package") ? 1 :
+                    lower.Equals("package") ? 2 :
+                    lower.Contains("tdie") ? 3 :
+                    lower.Contains("tctl") ? 4 :
+                    lower.Contains("cpu") ? 5 :
+                    lower.Contains("core max") ? 6 :
+                    lower.Contains("core") ? 7 :
+                    20;
+
+                if (candidatePriority < priority)
+                {
+                    priority = candidatePriority;
+                    best = value;
+                    source = $"LibreHardwareMonitor • {name}";
+                }
+            }
+
+            foreach (IHardware child in hardware.SubHardware)
+            {
+                child.Update();
+                FindCpuTemperature(
+                    child,
+                    ref best,
+                    ref source,
+                    ref priority);
             }
         }
 
