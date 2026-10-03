@@ -1979,6 +1979,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock
@@ -2009,6 +2010,14 @@
                             x:Name="ReviewSelectedOptimizationsButton"
                             Content="REVIEW SELECTED"
                             Click="ReviewSelectedOptimizationsButton_Click"
+                            Padding="14,8"
+                            Margin="8,0,0,0"/>
+                        
+                        <Button
+                            Grid.Column="4"
+                            x:Name="ApplySelectedOptimizationsButton"
+                            Content="APPLY SELECTED"
+                            Click="ApplySelectedOptimizationsButton_Click"
                             Padding="14,8"
                             Margin="8,0,0,0"/>
                     </Grid>
