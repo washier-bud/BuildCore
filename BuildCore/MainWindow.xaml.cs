@@ -420,6 +420,8 @@ namespace BuildCore
 
             StorageText.Text =
                 info.Storage;
+
+            UpdateSystemPageValues();
         }
 
         private void LoadWindowsSystemInformation()
@@ -467,6 +469,80 @@ namespace BuildCore
             ProcessorText.Text =
                 $"{data.ProcessorCount} cores / " +
                 $"{data.LogicalProcessorCount} threads";
+
+            UpdateSystemPageValues();
+        }
+
+        private void UpdateSystemPageValues()
+        {
+            SystemCpuText.Text =
+                CpuText.Text;
+
+            SystemGpuText.Text =
+                GpuText.Text;
+
+            SystemRamText.Text =
+                RamText.Text;
+
+            SystemStorageText.Text =
+                StorageText.Text;
+
+            SystemWindowsText.Text =
+                WindowsVersionText.Text;
+
+            SystemWindowsBuildText.Text =
+                WindowsBuildText.Text;
+
+            SystemPowerPlanText.Text =
+                PowerPlanText.Text;
+
+            SystemGameModeText.Text =
+                GameModeText.Text;
+
+            SystemHagsText.Text =
+                HagsText.Text;
+
+            SystemMemoryIntegrityText.Text =
+                MemoryIntegrityText.Text;
+
+            SystemDefenderText.Text =
+                DefenderText.Text;
+
+            SystemGameBarText.Text =
+                GameBarText.Text;
+
+            SystemWindowsUpdateText.Text =
+                WindowsUpdateText.Text;
+        }
+
+        private void UpdatePerformancePageValues()
+        {
+            PerformanceCpuText.Text =
+                CpuPerformanceLarge.Text;
+
+            PerformanceCpuTempText.Text =
+                CpuTemperatureLarge.Text;
+
+            PerformanceCpuClockText.Text =
+                CpuClockLarge.Text;
+
+            PerformanceGpuText.Text =
+                GpuUsageText.Text;
+
+            PerformanceGpuTempText.Text =
+                GpuTemperatureLarge.Text;
+
+            PerformanceGpuClockText.Text =
+                GpuClockLarge.Text;
+
+            PerformanceGpuVramText.Text =
+                GpuMemoryLarge.Text;
+
+            PerformanceRamText.Text =
+                RamPerformanceLarge.Text;
+
+            PerformanceDiskText.Text =
+                DiskPerformanceLarge.Text;
         }
 
         // ============================================================
@@ -4569,6 +4645,8 @@ namespace BuildCore
 
                 UpdatePerformanceStatus(data);
 
+                UpdatePerformancePageValues();
+
                 UpdateHardwareMonitoring();
             }
             catch (Exception ex)
@@ -4620,6 +4698,8 @@ namespace BuildCore
 
                 UpdateGpuTelemetry(
                     hardwareData);
+
+                UpdatePerformancePageValues();
             }
             catch (Exception ex)
             {
