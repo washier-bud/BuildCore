@@ -42,7 +42,11 @@ namespace BuildCore
                 {
                     Text =
                         $"{tweak.Title}  •  " +
-                        (handler == null ? "NO HANDLER" : "HANDLER READY"),
+                        (handler == null
+                            ? "NO HANDLER"
+                            : handler.CanApply
+                                ? "APPLY READY"
+                                : "REVIEW ONLY"),
                     TextWrapping = TextWrapping.Wrap
                 });
             }
