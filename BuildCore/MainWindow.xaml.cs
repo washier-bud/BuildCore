@@ -5524,7 +5524,7 @@ namespace BuildCore
 
                 row.ColumnDefinitions.Add(new ColumnDefinition());
                 row.ColumnDefinitions.Add(
-                    new ColumnDefinition { Width = new GridLength(90) });
+                    new ColumnDefinition { Width = new GridLength(150) });
 
                 var textPanel = new StackPanel();
 
@@ -5552,10 +5552,15 @@ namespace BuildCore
 
                 var toggle = new ToggleSwitch
                 {
-                    Header = "ENABLE",
                     IsOn = _selectedLibraryTweaks.Contains(tweak.Id),
+                    OnContent = "ON",
+                    OffContent = "OFF",
+                    OnContentTemplate = null,
+                    OffContentTemplate = null,
                     HorizontalAlignment = HorizontalAlignment.Right,
                     VerticalAlignment = VerticalAlignment.Center,
+                    Width = 125,
+                    MinWidth = 125,
                     Tag = new OptimizationLibraryToggleContext
                     {
                         Tweak = tweak
