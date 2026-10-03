@@ -5607,6 +5607,8 @@ namespace BuildCore
             {
                 _selectedLibraryTweaks.Remove(context.Tweak.Id);
             }
+
+            RefreshLibrarySelectionUi();
         }
 
         private void ApplyOptimizationCategoryFilter()
