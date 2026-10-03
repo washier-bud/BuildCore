@@ -1783,6 +1783,158 @@
                         </Border>
                     </Grid>
 
+                    <!-- OPTIMIZATION CATEGORY SELECTOR -->
+                    <Border
+                        Margin="0,18,0,0"
+                        Padding="14"
+                        CornerRadius="12"
+                        Background="#0F0F13"
+                        BorderBrush="#24242A"
+                        BorderThickness="1">
+
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock
+                                        Text="OPTIMIZATION LIBRARY"
+                                        Foreground="#7CFF8A"
+                                        FontSize="9"
+                                        FontWeight="SemiBold"/>
+
+                                    <TextBlock
+                                        x:Name="OptimizationCategoryText"
+                                        Text="ALL OPTIMIZATIONS"
+                                        Foreground="White"
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <TextBlock
+                                    x:Name="OptimizationCategoryCountText"
+                                    Grid.Column="1"
+                                    Text="ALL"
+                                    Foreground="#66666D"
+                                    FontSize="8"
+                                    VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    x:Name="OptimizationCategoryAllButton"
+                                    Grid.Column="0"
+                                    Tag="All"
+                                    Content="ALL"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="0,0,4,4"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Tag="Windows"
+                                    Content="WINDOWS"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4,0"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="2"
+                                    Tag="Registry"
+                                    Content="REGISTRY"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4,0"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="3"
+                                    Tag="Network"
+                                    Content="NETWORK"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4,0"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="4"
+                                    Tag="Power"
+                                    Content="POWER"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4,0,0,4"
+                                    Padding="10,9"/>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Grid.Column="0"
+                                    Tag="Gaming"
+                                    Content="GAMING"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="0,4,4,0"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Tag="Graphics"
+                                    Content="GRAPHICS"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="2"
+                                    Tag="Cleanup"
+                                    Content="CLEANUP"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="3"
+                                    Tag="Audio"
+                                    Content="AUDIO"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4"
+                                    Padding="10,9"/>
+
+                                <Button
+                                    Grid.Column="4"
+                                    Tag="Timing"
+                                    Content="TIMING"
+                                    Click="OptimizationCategoryButton_Click"
+                                    Margin="4,4,0,0"
+                                    Padding="10,9"/>
+                            </Grid>
+
+                            <Button
+                                HorizontalAlignment="Left"
+                                Tag="Boot"
+                                Content="BOOT / BCDEDIT"
+                                Click="OptimizationCategoryButton_Click"
+                                Margin="0,8,0,0"
+                                Padding="12,9"/>
+                        </StackPanel>
+                    </Border>
+
                     <!-- RECOMMENDATIONS -->
                     <Grid Margin="0,28,0,0">
                         <Grid.ColumnDefinitions>
