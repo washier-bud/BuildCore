@@ -6149,6 +6149,8 @@ namespace BuildCore
                 GetBoolSetting(store, "Animations", true);
             RememberPageToggle.IsOn =
                 GetBoolSetting(store, "RememberPage", false);
+            MinimizeToTrayToggle.IsOn =
+                GetBoolSetting(store, "MinimizeToTray", false);
 
             string textStyle =
                 store.Values["TextStyle"] as string ?? "Clean";
