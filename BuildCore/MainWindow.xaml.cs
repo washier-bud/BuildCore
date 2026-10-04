@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.Storage;
 using Windows.UI;
 
 namespace BuildCore
@@ -6195,9 +6194,118 @@ namespace BuildCore
             LoadSettings();
         }
 
-        private static ApplicationDataContainer GetSettingsStore()
+        private static readonly BuildCoreSettingsStore SettingsStore =
+            new BuildCoreSettingsStore();
+
+        private sealed class BuildCoreSettingsStore
         {
-            return ApplicationData.Current.LocalSettings;
+            private readonly string _filePath;
+            private readonly Dictionary<string, object?> _values;
+
+            public BuildCoreSettingsStore()
+            {
+                string directory = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "BuildCore");
+
+                Directory.CreateDirectory(directory);
+                _filePath = Path.Combine(directory, "settings.json");
+                _values = LoadValues();
+                Values = new BuildCoreSettingsValues(this);
+            }
+
+            public BuildCoreSettingsValues Values { get; }
+
+            private Dictionary<string, object?> LoadValues()
+            {
+                try
+                {
+                    if (!File.Exists(_filePath))
+                        return new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+
+                    string json = File.ReadAllText(_filePath);
+                    var document = System.Text.Json.JsonDocument.Parse(json);
+                    var values = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var property in document.RootElement.EnumerateObject())
+                    {
+                        values[property.Name] = property.Value.ValueKind switch
+                        {
+                            System.Text.Json.JsonValueKind.String => property.Value.GetString(),
+                            System.Text.Json.JsonValueKind.True => true,
+                            System.Text.Json.JsonValueKind.False => false,
+                            System.Text.Json.JsonValueKind.Number => property.Value.TryGetInt32(out int intValue)
+                                ? intValue
+                                : property.Value.GetDouble(),
+                            _ => null
+                        };
+                    }
+
+                    return values;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BUILDCORE SETTINGS LOAD ERROR: {ex}");
+                    return new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+                }
+            }
+
+            private void SaveValues()
+            {
+                try
+                {
+                    string json = System.Text.Json.JsonSerializer.Serialize(
+                        _values,
+                        new System.Text.Json.JsonSerializerOptions
+                        {
+                            WriteIndented = true
+                        });
+
+                    File.WriteAllText(_filePath, json);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"BUILDCORE SETTINGS SAVE ERROR: {ex}");
+                }
+            }
+
+            public sealed class BuildCoreSettingsValues
+            {
+                private readonly BuildCoreSettingsStore _store;
+
+                internal BuildCoreSettingsValues(BuildCoreSettingsStore store)
+                {
+                    _store = store;
+                }
+
+                public object? this[string key]
+                {
+                    get => _store._values.TryGetValue(key, out object? value)
+                        ? value
+                        : null;
+                    set
+                    {
+                        _store._values[key] = value;
+                        _store.SaveValues();
+                    }
+                }
+
+                public bool TryGetValue(string key, out object? value)
+                {
+                    return _store._values.TryGetValue(key, out value);
+                }
+
+                public void Clear()
+                {
+                    _store._values.Clear();
+                    _store.SaveValues();
+                }
+            }
+        }
+
+        private static BuildCoreSettingsStore GetSettingsStore()
+        {
+            return SettingsStore;
         }
 
         private static Color GetAccentColor()
@@ -6259,7 +6367,7 @@ namespace BuildCore
         }
 
         private static bool GetBoolSetting(
-            ApplicationDataContainer store,
+            BuildCoreSettingsStore store,
             string key,
             bool defaultValue)
         {
