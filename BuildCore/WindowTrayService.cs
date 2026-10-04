@@ -10,12 +10,18 @@ namespace BuildCore
         private const int WM_TRAY = WM_APP + 1;
         private const int WM_LBUTTONDBLCLK = 0x0203;
         private const int WM_RBUTTONUP = 0x0205;
+        private const int WM_NULL = 0x0000;
         private const int NIM_ADD = 0x00000000;
         private const int NIM_DELETE = 0x00000002;
         private const int NIF_MESSAGE = 0x00000001;
         private const int NIF_ICON = 0x00000002;
         private const int NIF_TIP = 0x00000004;
         private const int ID_TRAY = 1001;
+        private const uint MENU_OPEN = 2001;
+        private const uint MENU_EXIT = 2002;
+        private const uint MF_STRING = 0x00000000;
+        private const uint TPM_RIGHTBUTTON = 0x0002;
+        private const uint TPM_RETURNCMD = 0x0100;
 
         private readonly MainWindow _window;
         private readonly IntPtr _windowHandle;
@@ -58,14 +64,57 @@ namespace BuildCore
 
                 if (notification == WM_RBUTTONUP)
                 {
-                    // Right-click support is intentionally handled by the native
-                    // tray icon. The primary action remains double-click to reopen.
-                    ShowWindow();
+                    ShowTrayMenu();
                     return IntPtr.Zero;
                 }
             }
 
             return CallWindowProc(_previousWndProc, hWnd, msg, wParam, lParam);
+        }
+
+        private void ShowTrayMenu()
+        {
+            if (_disposed)
+                return;
+
+            IntPtr menu = CreatePopupMenu();
+            if (menu == IntPtr.Zero)
+                return;
+
+            try
+            {
+                AppendMenu(menu, MF_STRING, MENU_OPEN, "Open BuildCore");
+                AppendMenu(menu, MF_STRING, MENU_EXIT, "Exit BuildCore");
+
+                if (!GetCursorPos(out POINT cursor))
+                    return;
+
+                SetForegroundWindow(_windowHandle);
+
+                uint command = TrackPopupMenu(
+                    menu,
+                    TPM_RIGHTBUTTON | TPM_RETURNCMD,
+                    cursor.X,
+                    cursor.Y,
+                    0,
+                    _windowHandle,
+                    IntPtr.Zero);
+
+                if (command == MENU_OPEN)
+                {
+                    ShowWindow();
+                }
+                else if (command == MENU_EXIT)
+                {
+                    _window.ExitFromTray();
+                }
+
+                PostMessage(_windowHandle, WM_NULL, IntPtr.Zero, IntPtr.Zero);
+            }
+            finally
+            {
+                DestroyMenu(menu);
+            }
         }
 
         public void ShowWindow()
@@ -129,6 +178,49 @@ namespace BuildCore
             public uint uGuid;
             public IntPtr hIcon;
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr CreatePopupMenu();
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool AppendMenu(
+            IntPtr hMenu,
+            uint flags,
+            uint newItem,
+            string newItemText);
+
+        [DllImport("user32.dll")]
+        private static extern uint TrackPopupMenu(
+            IntPtr hMenu,
+            uint flags,
+            int x,
+            int y,
+            int reserved,
+            IntPtr hWnd,
+            IntPtr rect);
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyMenu(IntPtr hMenu);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetCursorPos(out POINT point);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(
+            IntPtr hWnd,
+            uint msg,
+            IntPtr wParam,
+            IntPtr lParam);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern bool Shell_NotifyIcon(int message, ref NOTIFYICONDATA data);
