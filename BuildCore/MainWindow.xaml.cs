@@ -3805,6 +3805,9 @@ namespace BuildCore
                     ? test.IsSuccessful
                     : test.IsSuccessful && test.Comparison != null;
 
+            BenchmarkEvidenceTrust evidenceTrust =
+                test.EvaluateEvidenceTrust();
+
             var panel = new StackPanel { Spacing = 7 };
 
             panel.Children.Add(new TextBlock
@@ -3847,6 +3850,9 @@ namespace BuildCore
                     : new Microsoft.UI.Xaml.Media.SolidColorBrush(
                         Microsoft.UI.Colors.OrangeRed)
             });
+
+            panel.Children.Add(
+                CreateBenchmarkEvidenceTrustPanel(evidenceTrust));
 
             if (workloadTest &&
                 test.WorkloadBaseline != null &&
@@ -3949,6 +3955,90 @@ namespace BuildCore
             };
         }
 
+        private static Border CreateBenchmarkEvidenceTrustPanel(
+            BenchmarkEvidenceTrust trust)
+        {
+            string reasons =
+                trust.Reasons.Count == 0
+                    ? "No evidence warnings were recorded."
+                    : string.Join(
+                        " • ",
+                        trust.Reasons);
+
+            string decision =
+                trust.CanSupportMeasuredDecision
+                    ? "MEASURED DECISION: ALLOWED"
+                    : "MEASURED DECISION: BLOCKED";
+
+            string autoTune =
+                trust.CanSupportAutoTuneDecision
+                    ? "AUTOTUNE DECISION: ALLOWED"
+                    : "AUTOTUNE DECISION: BLOCKED";
+
+            return new Border
+            {
+                Padding = new Thickness(10),
+                Margin = new Thickness(0, 2, 0, 2),
+                CornerRadius = new CornerRadius(8),
+                BorderThickness = new Thickness(1),
+                BorderBrush =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        trust.Level == BenchmarkEvidenceTrustLevel.Valid
+                            ? Microsoft.UI.Colors.LightGreen
+                            : trust.Level == BenchmarkEvidenceTrustLevel.Limited
+                                ? Microsoft.UI.Colors.Gold
+                                : Microsoft.UI.Colors.OrangeRed),
+                Background =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Transparent),
+                Child = new StackPanel
+                {
+                    Spacing = 3,
+                    Children =
+                    {
+                        new TextBlock
+                        {
+                            Text =
+                                $"EVIDENCE TRUST  •  {trust.Status}  •  GRADE {trust.Grade}",
+                            FontSize = 10,
+                            FontWeight =
+                                Microsoft.UI.Text.FontWeights.SemiBold,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.White)
+                        },
+                        new TextBlock
+                        {
+                            Text = trust.Summary,
+                            FontSize = 9,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.LightGray),
+                            TextWrapping = TextWrapping.Wrap
+                        },
+                        new TextBlock
+                        {
+                            Text = decision + "  •  " + autoTune,
+                            FontSize = 8,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.Gray),
+                            TextWrapping = TextWrapping.Wrap
+                        },
+                        new TextBlock
+                        {
+                            Text = "REASONS: " + reasons,
+                            FontSize = 8,
+                            Foreground =
+                                new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                                    Microsoft.UI.Colors.Gray),
+                            TextWrapping = TextWrapping.Wrap
+                        }
+                    }
+                }
+            };
+        }
+
         private void AddWorkloadHistoryMetric(
             StackPanel panel,
             string name,
@@ -4038,6 +4128,12 @@ namespace BuildCore
                 {
                     Spacing = 10
                 };
+
+            BenchmarkEvidenceTrust evidenceTrust =
+                test.EvaluateEvidenceTrust();
+
+            root.Children.Add(
+                CreateBenchmarkEvidenceTrustPanel(evidenceTrust));
 
             if (test.WorkloadAnalysis != null &&
                 test.WorkloadBaseline != null &&
