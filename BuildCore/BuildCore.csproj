@@ -18,6 +18,16 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
 
+    <!-- Self-contained unpackaged WinUI 3 deployment:
+         use the runtime shipped with BuildCore and do not resolve an
+         installed Windows App Runtime package at startup. -->
+    <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
+    <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
+    <WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>
+
+    <!-- Required by the Windows App SDK publish tooling. -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
