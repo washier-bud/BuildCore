@@ -1,4 +1,3 @@
-using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
@@ -195,11 +194,11 @@ namespace BuildCore
 
         private AppWindow GetAppWindow()
         {
-            WindowId windowId =
-                Win32Interop.GetWindowIdFromWindow(
-                    WindowNative.GetWindowHandle(this));
+            IntPtr windowHandle =
+                WindowNative.GetWindowHandle(this);
 
-            return AppWindow.GetFromWindowId(windowId);
+            return AppWindow.GetFromWindowId(
+                Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle));
         }
 
         private void MainWindow_Closed(object sender, WindowEventArgs args)
