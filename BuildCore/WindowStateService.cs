@@ -99,8 +99,8 @@ namespace BuildCore
 
         private static AppWindow GetAppWindow(MainWindow window)
         {
-            WindowId windowId =
-                Win32Interop.GetWindowIdFromWindow(
+            Microsoft.UI.WindowId windowId =
+                Microsoft.UI.Win32Interop.GetWindowIdFromWindow(
                     WindowNative.GetWindowHandle(window));
 
             return AppWindow.GetFromWindowId(windowId);
