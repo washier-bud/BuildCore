@@ -1,6 +1,8 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
+using Microsoft.UI.Windowing;
+using WinRT.Interop;
 using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -49,6 +51,9 @@ namespace BuildCore
 
         private bool _benchmarkRunning;
 
+        private WindowTrayService? _windowTrayService;
+        private bool _allowWindowClose;
+
         private bool _optimizationTestRunning;
 
         private string _selectedOptimizationCategory = "All";
@@ -79,6 +84,9 @@ namespace BuildCore
 
             WindowStateService.Restore(this);
             this.Closed += MainWindow_Closed;
+
+            AppWindow appWindow = GetAppWindow();
+            appWindow.Closing += MainWindow_AppWindowClosing;
 
             this.Loaded += MainWindow_Loaded;
 
@@ -133,6 +141,69 @@ namespace BuildCore
             LoadSnapshotInformation();
         }
 
+        private void MainWindow_AppWindowClosing(
+            AppWindow sender,
+            AppWindowClosingEventArgs args)
+        {
+            try
+            {
+                bool minimizeToTray =
+                    GetBoolSetting(
+                        GetSettingsStore(),
+                        "MinimizeToTray",
+                        false);
+
+                if (_allowWindowClose || !minimizeToTray)
+                    return;
+
+                args.Cancel = true;
+
+                _windowTrayService ??=
+                    new WindowTrayService(this);
+
+                sender.Hide();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE WINDOW CLOSE HANDLER ERROR: {ex}");
+            }
+        }
+
+        internal void ShowFromTray()
+        {
+            AppWindow appWindow = GetAppWindow();
+            appWindow.Show();
+            Activate();
+        }
+
+        internal void ExitFromTray()
+        {
+            _allowWindowClose = true;
+
+            try
+            {
+                _windowTrayService?.Dispose();
+                _windowTrayService = null;
+
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE TRAY EXIT ERROR: {ex}");
+            }
+        }
+
+        private AppWindow GetAppWindow()
+        {
+            WindowId windowId =
+                Win32Interop.GetWindowIdFromWindow(
+                    WindowNative.GetWindowHandle(this));
+
+            return AppWindow.GetFromWindowId(windowId);
+        }
+
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
             try
@@ -143,6 +214,9 @@ namespace BuildCore
             {
                 Debug.WriteLine($"BUILDCORE WINDOW STATE SAVE ERROR: {ex}");
             }
+
+            _windowTrayService?.Dispose();
+            _windowTrayService = null;
         }
 
         // ============================================================
@@ -6144,6 +6218,7 @@ namespace BuildCore
             AutoSnapshotToggle.IsOn = true;
             AnimationsToggle.IsOn = true;
             RememberPageToggle.IsOn = false;
+            MinimizeToTrayToggle.IsOn = false;
             AccentColorComboBox.SelectedIndex = 0;
             TextStyleComboBox.SelectedIndex = 0;
 
@@ -6631,6 +6706,22 @@ namespace BuildCore
         {
             GetSettingsStore().Values["RememberPage"] =
                 RememberPageToggle.IsOn;
+        }
+
+        private void MinimizeToTrayToggle_Toggled(
+            object sender,
+            RoutedEventArgs e)
+        {
+            bool enabled = MinimizeToTrayToggle.IsOn;
+
+            GetSettingsStore().Values["MinimizeToTray"] =
+                enabled;
+
+            if (!enabled)
+            {
+                _windowTrayService?.Dispose();
+                _windowTrayService = null;
+            }
         }
 
         private void SettingsButton_Click(
