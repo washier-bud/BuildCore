@@ -2703,6 +2703,19 @@
                                        Foreground="#66666D"
                                        FontSize="8"
                                        Margin="0,2,0,0"/>
+
+                            <ToggleSwitch x:Name="MinimizeToTrayToggle"
+                                          Header="Keep BuildCore running in the notification area"
+                                          IsOn="False"
+                                          OffContent="OFF"
+                                          OnContent="ON"
+                                          Toggled="MinimizeToTrayToggle_Toggled"
+                                          Margin="0,12,0,0"/>
+                            <TextBlock Text="When enabled, closing the window hides BuildCore in the Windows hidden-icons area instead of exiting the app. Use the tray icon to reopen or exit."
+                                       Foreground="#66666D"
+                                       FontSize="8"
+                                       TextWrapping="Wrap"
+                                       Margin="0,2,0,0"/>
                         </StackPanel>
                     </Border>
 
