@@ -1,9 +1,7 @@
+using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using WinRT.Interop;
-using Microsoft.UI.Windowing;
-using WinRT.Interop;
-using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -88,7 +86,7 @@ namespace BuildCore
             AppWindow appWindow = GetAppWindow();
             appWindow.Closing += MainWindow_AppWindowClosing;
 
-            this.Loaded += MainWindow_Loaded;
+            this.Activated += MainWindow_Activated;
 
             _performanceService =
                 new PerformanceService();
@@ -223,11 +221,11 @@ namespace BuildCore
         // PHASE 1.14B - REBOOT EXPERIMENT RESUME DETECTION
         // ============================================================
 
-        private async void MainWindow_Loaded(
+        private async void MainWindow_Activated(
             object sender,
-            RoutedEventArgs e)
+            WindowActivatedEventArgs args)
         {
-            this.Loaded -= MainWindow_Loaded;
+            this.Activated -= MainWindow_Activated;
 
             await DetectPendingRebootExperimentAsync();
         }
