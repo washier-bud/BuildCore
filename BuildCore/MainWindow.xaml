@@ -2705,7 +2705,7 @@
                                        Margin="0,2,0,0"/>
 
                             <ToggleSwitch x:Name="MinimizeToTrayToggle"
-                                          Header="Keep BuildCore running in the notification area"
+                                          Header="Keep BuildCore running in the hidden-icons area"
                                           IsOn="False"
                                           OffContent="OFF"
                                           OnContent="ON"
