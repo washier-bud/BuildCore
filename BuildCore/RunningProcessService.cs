@@ -11,7 +11,28 @@ namespace BuildCore
         {
             var processes = new List<RunningProcessInfo>();
 
-            foreach (Process process in Process.GetProcesses())
+            Process[] systemProcesses;
+
+            try
+            {
+                systemProcesses = Process.GetProcesses();
+            }
+            catch (Win32Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE PROCESS ENUMERATION ACCESS ERROR: {ex}");
+
+                return processes;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"BUILDCORE PROCESS ENUMERATION ERROR: {ex}");
+
+                return processes;
+            }
+
+            foreach (Process process in systemProcesses)
             {
                 try
                 {
@@ -28,18 +49,26 @@ namespace BuildCore
 
                     try
                     {
-                        startTimeUtc = process.StartTime.ToUniversalTime();
+                        startTimeUtc =
+                            process.StartTime.ToUniversalTime();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine(
+                            $"BUILDCORE PROCESS START TIME ERROR " +
+                            $"({process.Id}): {ex.Message}");
                     }
 
                     try
                     {
-                        executablePath = process.MainModule?.FileName ?? "";
+                        executablePath =
+                            process.MainModule?.FileName ?? "";
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine(
+                            $"BUILDCORE PROCESS PATH ACCESS ERROR " +
+                            $"({process.Id}): {ex.Message}");
                     }
 
                     processes.Add(new RunningProcessInfo
@@ -50,8 +79,10 @@ namespace BuildCore
                         ExecutablePath = executablePath
                     });
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(
+                        $"BUILDCORE PROCESS READ ERROR: {ex.Message}");
                 }
                 finally
                 {
@@ -60,7 +91,9 @@ namespace BuildCore
             }
 
             return processes
-                .OrderBy(p => p.ProcessName, StringComparer.OrdinalIgnoreCase)
+                .OrderBy(
+                    p => p.ProcessName,
+                    StringComparer.OrdinalIgnoreCase)
                 .ThenBy(p => p.ProcessId)
                 .ToList();
         }
