@@ -67,7 +67,7 @@ namespace BuildCore
 
                 Review("custom-plan", "custom-buildcore-plan-v1", "Review-only until BuildCore-managed plan creation and lifecycle cleanup are implemented.", false),
                 Review("processor-min", "processor-min-v1", "Review-only processor minimum-state analysis.", false),
-                Review("processor-boost", "processor-boost-v1", "Review-only processor boost-policy analysis.", false),
+                Real("processor-boost", "processor-boost-v2", "Sets the active plan AC processor boost policy to the Windows aggressive mode value and records the original setting.", () => CreatePowerIntegerRecommendation("processor-boost", "processor-boost-ac", 2)),
 
                 Real("high-performance", "high-performance-power-plan-v2", "Verified High Performance power-plan handler.", CreateHighPerformanceRecommendation),
                 Real("sleep", "workload-sleep-v1", "Disables AC sleep timeout for an active workload and verifies the power policy.", CreatePreventSleepRecommendation),
@@ -313,6 +313,29 @@ namespace BuildCore
                 Risk = definition.Risk, Impact = OptimizationImpact.Medium, CanAnalyze = true,
                 CanApply = current != "Unknown" && !current.Equals($"{target}%", StringComparison.OrdinalIgnoreCase),
                 CanTest = false, RequiresReboot = false, RollbackSupported = true, TestType = OptimizationTestType.None
+            };
+        }
+
+        private static OptimizationRecommendation CreatePowerIntegerRecommendation(string tweakId, string settingAlias, uint target)
+        {
+            string current = PowerOptimizationHandler.GetAcInteger(settingAlias);
+            OptimizationTweakDefinition definition = Definition(tweakId);
+            return new OptimizationRecommendation
+            {
+                Title = definition.Title,
+                Category = OptimizationCategory.Power,
+                CurrentValue = current,
+                RecommendedValue = target.ToString(),
+                Description = definition.Description,
+                Reason = "BuildCore changes the active AC processor policy, verifies it, and records the original value for rollback.",
+                Risk = definition.Risk,
+                Impact = OptimizationImpact.Medium,
+                CanAnalyze = true,
+                CanApply = current != "Unknown" && current != target.ToString(),
+                CanTest = false,
+                RequiresReboot = false,
+                RollbackSupported = true,
+                TestType = OptimizationTestType.None
             };
         }
 
