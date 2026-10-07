@@ -45,16 +45,16 @@ namespace BuildCore
             {
                 Real("windows-game-mode", "windows-game-mode-v2", "Verified Windows Game Mode handler.", CreateGameModeRecommendation),
                 Real("visual-effects", "windows-visual-effects-v2", "Disables Windows visual effects through a reversible per-user setting.", () => RegistryOptimizationHandler.CreateRecommendation("visual-effects")),
-                Review("background-apps", "windows-background-apps-v1", "Review-only until supported per-user background-app controls are wired.", false),
+                Real("background-apps", "windows-background-apps-v2", "Disables Windows per-user background app execution with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("background-apps")),
                 Review("delivery-optimization", "windows-delivery-optimization-v1", "Review-only until Delivery Optimization policy state capture is implemented.", false),
 
                 Review("registry-gaming", "registry-gaming-review-v1", "Review-only scheduler analysis; no undocumented registry values are applied.", false),
                 Review("registry-mouse", "registry-mouse-review-v1", "Review-only pointer settings analysis.", false),
-                Review("registry-ui", "registry-ui-review-v1", "Review-only Explorer/UI settings analysis.", false),
+                Real("registry-ui", "registry-ui-v2", "Sets the current user menu-show delay to zero with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("registry-ui")),
 
                 Review("explorer-extensions", "explorer-extensions-review-v1", "Review-only shell extension inventory.", false),
                 Real("explorer-animations", "explorer-animations-v2", "Disables the Windows minimize/maximize animation setting with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("explorer-animations")),
-                Review("explorer-recent", "explorer-recent-review-v1", "Review-only recent-item settings analysis.", false),
+                Real("explorer-recent", "explorer-recent-v2", "Disables recent-document tracking for the current user with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("explorer-recent")),
 
                 Review("network-power", "network-power-v1", "Review-only until adapter-specific power state capture and rollback are implemented.", true),
                 Review("network-rss", "network-rss-v1", "Review-only RSS analysis for supported adapters.", true),
@@ -394,6 +394,30 @@ namespace BuildCore
         private static readonly IReadOnlyDictionary<string, Definition> Definitions =
             new Dictionary<string, Definition>(StringComparer.OrdinalIgnoreCase)
             {
+                ["background-apps"] = new Definition
+                {
+                    TweakId = "background-apps", Title = "Limit background apps",
+                    KeyPath = @"Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications",
+                    ValueName = "GlobalUserDisabled", TargetValue = 1, RequiresReboot = false, Risk = OptimizationRisk.Low
+                },
+                ["registry-ui"] = new Definition
+                {
+                    TweakId = "registry-ui", Title = "Explorer/UI behavior",
+                    KeyPath = @"Control Panel\Desktop",
+                    ValueName = "MenuShowDelay", TargetValue = 0, RequiresReboot = false, Risk = OptimizationRisk.Low
+                },
+                ["explorer-recent"] = new Definition
+                {
+                    TweakId = "explorer-recent", Title = "Review recent-item activity",
+                    KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+                    ValueName = "Start_TrackDocs", TargetValue = 0, RequiresReboot = false, Risk = OptimizationRisk.Low
+                },
+                ["chrome-startup"] = new Definition
+                {
+                    TweakId = "chrome-startup", Title = "Chrome startup behavior",
+                    KeyPath = @"Software\Google\Chrome",
+                    ValueName = "StartupBoostEnabled", TargetValue = 0, RequiresReboot = true, Risk = OptimizationRisk.Low
+                },
                 ["visual-effects"] = new Definition
                 {
                     TweakId = "visual-effects",
