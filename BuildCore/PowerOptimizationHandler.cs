@@ -183,6 +183,47 @@ namespace BuildCore
             catch (Exception ex) { return new OptimizationRestoreResult { Success = false, Verified = false, Message = $"Unable to restore AC {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
         }
 
+        public static string GetAcInteger(string settingAlias)
+        {
+            try
+            {
+                string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
+                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
+                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                    return "Unknown";
+                return value.ToString(CultureInfo.InvariantCulture);
+            }
+            catch { return "Unknown"; }
+        }
+
+        public static OptimizationApplyResult ApplyAcInteger(string settingAlias, uint value)
+        {
+            try
+            {
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {value}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcInteger(settingAlias);
+                bool verified = current == value.ToString(CultureInfo.InvariantCulture);
+                return new OptimizationApplyResult { Success = verified, Verified = verified, Message = verified ? $"AC {GetFriendlyName(settingAlias)} set to {value} and verified." : "Power policy verification failed.", Error = verified ? null : "Power policy verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationApplyResult { Success = false, Verified = false, Message = $"Unable to change {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
+        public static OptimizationRestoreResult RestoreAcInteger(string settingAlias, string beforeValue)
+        {
+            if (!uint.TryParse(beforeValue, NumberStyles.None, CultureInfo.InvariantCulture, out uint value))
+                return new OptimizationRestoreResult { Success = false, Verified = false, Message = "The original power policy value could not be parsed.", Error = "Invalid saved power policy value." };
+            try
+            {
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {value}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcInteger(settingAlias);
+                bool verified = current == value.ToString(CultureInfo.InvariantCulture);
+                return new OptimizationRestoreResult { Success = verified, Verified = verified, Message = verified ? $"AC {GetFriendlyName(settingAlias)} restored to {value} and verified." : "Power policy restore verification failed.", Error = verified ? null : "Power policy restore verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationRestoreResult { Success = false, Verified = false, Message = $"Unable to restore {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
         public static string GetAcFlag(string settingAlias)
         {
             try
