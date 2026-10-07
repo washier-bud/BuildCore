@@ -437,7 +437,7 @@ namespace BuildCore
                 Risk = definition.Risk,
                 Impact = OptimizationImpact.Low,
                 CanAnalyze = true,
-                CanApply = current != "Unknown" && !current.Equals(definition.TargetValue.ToString(), StringComparison.Ordinal),
+                CanApply = current != "Unknown",
                 CanTest = false,
                 RequiresReboot = definition.RequiresReboot,
                 RollbackSupported = true,
