@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
-using Windows.Storage;
 using WinRT.Interop;
 
 namespace BuildCore
@@ -22,18 +24,27 @@ namespace BuildCore
         private const int MinimumWidth = 900;
         private const int MinimumHeight = 600;
 
+        private static readonly object SyncRoot = new();
+
+        private static string SettingsDirectory =>
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "BuildCore");
+
+        private static string SettingsPath =>
+            Path.Combine(SettingsDirectory, "windowstate.json");
+
         public static void Restore(MainWindow window)
         {
             try
             {
                 AppWindow appWindow = GetAppWindow(window);
-                ApplicationDataContainer store =
-                    ApplicationData.Current.LocalSettings;
+                Dictionary<string, JsonElement> values = LoadValues();
 
-                if (!TryGetInt(store, PositionXKey, out int restoreX) ||
-                    !TryGetInt(store, PositionYKey, out int restoreY) ||
-                    !TryGetInt(store, WidthKey, out int restoreWidth) ||
-                    !TryGetInt(store, HeightKey, out int restoreHeight))
+                if (!TryGetInt(values, PositionXKey, out int restoreX) ||
+                    !TryGetInt(values, PositionYKey, out int restoreY) ||
+                    !TryGetInt(values, WidthKey, out int restoreWidth) ||
+                    !TryGetInt(values, HeightKey, out int restoreHeight))
                 {
                     return;
                 }
@@ -41,7 +52,11 @@ namespace BuildCore
                 restoreWidth = Math.Max(restoreWidth, MinimumWidth);
                 restoreHeight = Math.Max(restoreHeight, MinimumHeight);
 
-                if (!IsVisibleOnAnyDisplay(restoreX, restoreY, restoreWidth, restoreHeight))
+                if (!IsVisibleOnAnyDisplay(
+                    restoreX,
+                    restoreY,
+                    restoreWidth,
+                    restoreHeight))
                 {
                     return;
                 }
@@ -49,13 +64,11 @@ namespace BuildCore
                 appWindow.Resize(new SizeInt32(restoreWidth, restoreHeight));
                 appWindow.Move(new PointInt32(restoreX, restoreY));
 
-                if (TryGetBool(store, MaximizedKey, out bool maximized) &&
-                    maximized)
+                if (TryGetBool(values, MaximizedKey, out bool wasMaximized) &&
+                    wasMaximized &&
+                    appWindow.Presenter is OverlappedPresenter restorePresenter)
                 {
-                    if (appWindow.Presenter is OverlappedPresenter restorePresenter)
-                    {
-                        restorePresenter.Maximize();
-                    }
+                    restorePresenter.Maximize();
                 }
             }
             catch (Exception ex)
@@ -67,33 +80,46 @@ namespace BuildCore
 
         public static void Save(MainWindow window)
         {
-            AppWindow appWindow = GetAppWindow(window);
-            ApplicationDataContainer store =
-                ApplicationData.Current.LocalSettings;
-
-            bool maximized =
-                appWindow.Presenter is OverlappedPresenter savePresenter &&
-                savePresenter.State == OverlappedPresenterState.Maximized;
-
-            store.Values[MaximizedKey] = maximized;
-
-            // Keep the last normal bounds intact while maximized. This
-            // means a later restore to windowed mode returns to the exact
-            // size and position the user had before maximizing.
-            if (!maximized)
+            try
             {
-                SizeInt32 size = appWindow.Size;
-                PointInt32 position = appWindow.Position;
+                AppWindow appWindow = GetAppWindow(window);
+                Dictionary<string, JsonElement> values = LoadValues();
 
-                if (size.Width >= MinimumWidth &&
-                    size.Height >= MinimumHeight)
+                bool isMaximized =
+                    appWindow.Presenter is OverlappedPresenter savePresenter &&
+                    savePresenter.State == OverlappedPresenterState.Maximized;
+
+                values[MaximizedKey] = JsonSerializer.SerializeToElement(isMaximized);
+
+                // Keep the last normal bounds intact while maximized. This
+                // means a later restore to windowed mode returns to the exact
+                // size and position the user had before maximizing.
+                if (!isMaximized)
                 {
-                    store.Values[WidthKey] = size.Width;
-                    store.Values[HeightKey] = size.Height;
+                    SizeInt32 windowSize = appWindow.Size;
+                    PointInt32 windowPosition = appWindow.Position;
+
+                    if (windowSize.Width >= MinimumWidth &&
+                        windowSize.Height >= MinimumHeight)
+                    {
+                        values[WidthKey] =
+                            JsonSerializer.SerializeToElement(windowSize.Width);
+                        values[HeightKey] =
+                            JsonSerializer.SerializeToElement(windowSize.Height);
+                    }
+
+                    values[PositionXKey] =
+                        JsonSerializer.SerializeToElement(windowPosition.X);
+                    values[PositionYKey] =
+                        JsonSerializer.SerializeToElement(windowPosition.Y);
                 }
 
-                store.Values[PositionXKey] = position.X;
-                store.Values[PositionYKey] = position.Y;
+                SaveValues(values);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"BUILDCORE WINDOW STATE SAVE ERROR: {ex}");
             }
         }
 
@@ -107,25 +133,25 @@ namespace BuildCore
         }
 
         private static bool IsVisibleOnAnyDisplay(
-            int x,
-            int y,
-            int width,
-            int height)
+            int windowX,
+            int windowY,
+            int windowWidth,
+            int windowHeight)
         {
-            int right = x + width;
-            int bottom = y + height;
+            int rightEdge = windowX + windowWidth;
+            int bottomEdge = windowY + windowHeight;
 
             foreach (DisplayArea display in DisplayArea.FindAll())
             {
                 RectInt32 workArea = display.WorkArea;
 
                 int intersectionWidth =
-                    Math.Min(right, workArea.X + workArea.Width) -
-                    Math.Max(x, workArea.X);
+                    Math.Min(rightEdge, workArea.X + workArea.Width) -
+                    Math.Max(windowX, workArea.X);
 
                 int intersectionHeight =
-                    Math.Min(bottom, workArea.Y + workArea.Height) -
-                    Math.Max(y, workArea.Y);
+                    Math.Min(bottomEdge, workArea.Y + workArea.Height) -
+                    Math.Max(windowY, workArea.Y);
 
                 if (intersectionWidth >= 100 &&
                     intersectionHeight >= 100)
@@ -137,13 +163,61 @@ namespace BuildCore
             return false;
         }
 
+        private static Dictionary<string, JsonElement> LoadValues()
+        {
+            lock (SyncRoot)
+            {
+                try
+                {
+                    if (!File.Exists(SettingsPath))
+                    {
+                        return new Dictionary<string, JsonElement>(
+                            StringComparer.Ordinal);
+                    }
+
+                    string json = File.ReadAllText(SettingsPath);
+
+                    return JsonSerializer.Deserialize<
+                        Dictionary<string, JsonElement>>(json)
+                        ?? new Dictionary<string, JsonElement>(
+                            StringComparer.Ordinal);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        $"BUILDCORE WINDOW STATE LOAD ERROR: {ex}");
+
+                    return new Dictionary<string, JsonElement>(
+                        StringComparer.Ordinal);
+                }
+            }
+        }
+
+        private static void SaveValues(
+            Dictionary<string, JsonElement> values)
+        {
+            lock (SyncRoot)
+            {
+                Directory.CreateDirectory(SettingsDirectory);
+
+                string json = JsonSerializer.Serialize(
+                    values,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+
+                File.WriteAllText(SettingsPath, json);
+            }
+        }
+
         private static bool TryGetInt(
-            ApplicationDataContainer store,
+            Dictionary<string, JsonElement> values,
             string key,
             out int value)
         {
-            if (store.Values.TryGetValue(key, out object? raw) &&
-                raw is int integer)
+            if (values.TryGetValue(key, out JsonElement raw) &&
+                raw.TryGetInt32(out int integer))
             {
                 value = integer;
                 return true;
@@ -154,14 +228,16 @@ namespace BuildCore
         }
 
         private static bool TryGetBool(
-            ApplicationDataContainer store,
+            Dictionary<string, JsonElement> values,
             string key,
             out bool value)
         {
-            if (store.Values.TryGetValue(key, out object? raw) &&
-                raw is bool boolean)
+            if (values.TryGetValue(key, out JsonElement raw) &&
+                raw.ValueKind == JsonValueKind.True ||
+                values.TryGetValue(key, out raw) &&
+                raw.ValueKind == JsonValueKind.False)
             {
-                value = boolean;
+                value = raw.GetBoolean();
                 return true;
             }
 
