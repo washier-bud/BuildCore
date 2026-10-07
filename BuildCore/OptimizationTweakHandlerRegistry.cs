@@ -61,9 +61,9 @@ namespace BuildCore
                 Review("network-offloads", "network-offloads-v1", "Review-only network offload analysis.", false),
                 Review("network-dns", "network-dns-v1", "Review-only until the user-selected DNS target is explicitly captured.", false),
 
-                Review("cpu-idle", "cpu-idle-v1", "Review-only processor idle policy analysis.", false),
-                Review("usb-selective", "usb-selective-v1", "Review-only USB selective suspend analysis.", false),
-                Review("pcie-link", "pcie-link-v1", "Review-only PCIe link-state power analysis.", false),
+                Real("cpu-idle", "cpu-idle-v2", "Sets the active plan AC processor minimum state to 100% with exact rollback.", () => CreatePowerPercentageRecommendation("cpu-idle", "processor-min-ac", 100)),
+                Real("usb-selective", "usb-selective-v2", "Disables AC USB selective suspend with exact rollback.", () => CreatePowerFlagRecommendation("usb-selective", "usb-selective-ac", false)),
+                Real("pcie-link", "pcie-link-v2", "Disables AC PCIe link-state power management with exact rollback.", () => CreatePowerFlagRecommendation("pcie-link", "pcie-link-ac", false)),
 
                 Review("custom-plan", "custom-buildcore-plan-v1", "Review-only until BuildCore-managed plan creation and lifecycle cleanup are implemented.", false),
                 Review("processor-min", "processor-min-v1", "Review-only processor minimum-state analysis.", false),
@@ -299,6 +299,37 @@ namespace BuildCore
                     recommendation => recommendation.Title.Equals(
                         "Performance Power Plan",
                         StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static OptimizationRecommendation CreatePowerPercentageRecommendation(string tweakId, string settingAlias, uint target)
+        {
+            string current = PowerOptimizationHandler.GetAcPercentage(settingAlias);
+            OptimizationTweakDefinition definition = Definition(tweakId);
+            return new OptimizationRecommendation
+            {
+                Title = definition.Title, Category = OptimizationCategory.Power, CurrentValue = current, RecommendedValue = $"{target}%",
+                Description = definition.Description,
+                Reason = "BuildCore changes only the active power plan's AC setting, verifies the result, and records the original value for rollback.",
+                Risk = definition.Risk, Impact = OptimizationImpact.Medium, CanAnalyze = true,
+                CanApply = current != "Unknown" && !current.Equals($"{target}%", StringComparison.OrdinalIgnoreCase),
+                CanTest = false, RequiresReboot = false, RollbackSupported = true, TestType = OptimizationTestType.None
+            };
+        }
+
+        private static OptimizationRecommendation CreatePowerFlagRecommendation(string tweakId, string settingAlias, bool targetEnabled)
+        {
+            string current = PowerOptimizationHandler.GetAcFlag(settingAlias);
+            OptimizationTweakDefinition definition = Definition(tweakId);
+            string target = targetEnabled ? "Enabled" : "Disabled";
+            return new OptimizationRecommendation
+            {
+                Title = definition.Title, Category = OptimizationCategory.Power, CurrentValue = current, RecommendedValue = target,
+                Description = definition.Description,
+                Reason = "BuildCore changes only the active power plan's AC setting, verifies the result, and records the original value for rollback.",
+                Risk = definition.Risk, Impact = OptimizationImpact.Medium, CanAnalyze = true,
+                CanApply = current != "Unknown" && !current.Equals(target, StringComparison.OrdinalIgnoreCase),
+                CanTest = false, RequiresReboot = false, RollbackSupported = true, TestType = OptimizationTestType.None
+            };
         }
 
         private static OptimizationRecommendation CreatePreventSleepRecommendation()
