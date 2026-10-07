@@ -405,6 +405,14 @@ namespace BuildCore
                 }
             };
 
+        public static bool IsSupported(string optimizationTitle)
+        {
+            return Definitions.Values.Any(
+                definition => definition.Title.Equals(
+                    optimizationTitle,
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
         public static OptimizationRecommendation CreateRecommendation(string tweakId)
         {
             if (!Definitions.TryGetValue(tweakId, out Definition? definition))
