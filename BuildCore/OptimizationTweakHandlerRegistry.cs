@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Win32;
 using System.Linq;
 
 namespace BuildCore
@@ -43,7 +44,7 @@ namespace BuildCore
             new List<OptimizationTweakHandler>
             {
                 Real("windows-game-mode", "windows-game-mode-v2", "Verified Windows Game Mode handler.", CreateGameModeRecommendation),
-                Review("visual-effects", "windows-visual-effects-v1", "Review-only until the Windows visual-effects policy is wired to a reversible state capture.", false),
+                Real("visual-effects", "windows-visual-effects-v2", "Disables Windows visual effects through a reversible per-user setting.", () => RegistryOptimizationHandler.CreateRecommendation("visual-effects")),
                 Review("background-apps", "windows-background-apps-v1", "Review-only until supported per-user background-app controls are wired.", false),
                 Review("delivery-optimization", "windows-delivery-optimization-v1", "Review-only until Delivery Optimization policy state capture is implemented.", false),
 
@@ -52,7 +53,7 @@ namespace BuildCore
                 Review("registry-ui", "registry-ui-review-v1", "Review-only Explorer/UI settings analysis.", false),
 
                 Review("explorer-extensions", "explorer-extensions-review-v1", "Review-only shell extension inventory.", false),
-                Review("explorer-animations", "explorer-animations-v1", "Review-only until shell animation state capture is implemented.", false),
+                Real("explorer-animations", "explorer-animations-v2", "Disables the Windows minimize/maximize animation setting with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("explorer-animations")),
                 Review("explorer-recent", "explorer-recent-review-v1", "Review-only recent-item settings analysis.", false),
 
                 Review("network-power", "network-power-v1", "Review-only until adapter-specific power state capture and rollback are implemented.", true),
@@ -101,7 +102,7 @@ namespace BuildCore
                 Review("presentation", "presentation-review-v1", "Review-only presentation-mode analysis.", false),
 
                 Review("chrome-startup", "chrome-startup-v1", "Review-only Chrome startup discovery.", false),
-                Review("chrome-background", "chrome-background-v1", "Review-only Chrome background execution discovery.", false),
+                Real("chrome-background", "chrome-background-v2", "Disables Chrome background execution through its per-user setting when present.", () => RegistryOptimizationHandler.CreateRecommendation("chrome-background")),
                 Review("chrome-extensions", "chrome-extensions-v1", "Review-only Chrome extension discovery.", false),
 
                 Review("optional-apps", "windows-optional-apps-v1", "Review-only optional-component inventory.", false),
@@ -122,7 +123,7 @@ namespace BuildCore
 
                 Review("alt-tab-mode", "alt-tab-mode-v1", "Review-only Alt-Tab configuration discovery.", true),
                 Review("background-priority", "background-priority-v1", "Review-only background application behavior analysis.", false),
-                Review("game-bar", "game-bar-review-v1", "Review-only Game Bar capture analysis.", false),
+                Real("game-bar", "game-bar-v2", "Disables Game Bar capture through the current user's GameDVR setting.", () => RegistryOptimizationHandler.CreateRecommendation("game-bar")),
 
                 Review("boot-timeout", "boot-timeout-v1", "Review-only boot menu timeout analysis.", false),
                 Review("disabledynamictick", "bcdedit-disabledynamictick-v1", "Review-only BCDEdit experiment preparation.", true),
@@ -346,4 +347,233 @@ namespace BuildCore
             };
         }
     }
+    internal static class RegistryOptimizationHandler
+    {
+        private sealed class Definition
+        {
+            public string TweakId { get; init; } = "";
+            public string Title { get; init; } = "";
+            public string KeyPath { get; init; } = "";
+            public string ValueName { get; init; } = "";
+            public int TargetValue { get; init; }
+            public bool RequiresReboot { get; init; }
+            public OptimizationRisk Risk { get; init; }
+        }
+
+        private static readonly IReadOnlyDictionary<string, Definition> Definitions =
+            new Dictionary<string, Definition>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["visual-effects"] = new Definition
+                {
+                    TweakId = "visual-effects",
+                    Title = "Reduce visual effects",
+                    KeyPath = @"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects",
+                    ValueName = "VisualFXSetting",
+                    TargetValue = 2,
+                    RequiresReboot = true,
+                    Risk = OptimizationRisk.Low
+                },
+                ["explorer-animations"] = new Definition
+                {
+                    TweakId = "explorer-animations",
+                    Title = "Reduce Explorer animations",
+                    KeyPath = @"Control Panel\\Desktop\\WindowMetrics",
+                    ValueName = "MinAnimate",
+                    TargetValue = 0,
+                    RequiresReboot = true,
+                    Risk = OptimizationRisk.Low
+                },
+                ["game-bar"] = new Definition
+                {
+                    TweakId = "game-bar",
+                    Title = "Game Bar capture review",
+                    KeyPath = @"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+                    ValueName = "AppCaptureEnabled",
+                    TargetValue = 0,
+                    RequiresReboot = false,
+                    Risk = OptimizationRisk.Low
+                },
+                ["chrome-background"] = new Definition
+                {
+                    TweakId = "chrome-background",
+                    Title = "Chrome background apps",
+                    KeyPath = @"Software\\Google\\Chrome",
+                    ValueName = "BackgroundModeEnabled",
+                    TargetValue = 0,
+                    RequiresReboot = false,
+                    Risk = OptimizationRisk.Low
+                }
+            };
+
+        public static OptimizationRecommendation CreateRecommendation(string tweakId)
+        {
+            if (!Definitions.TryGetValue(tweakId, out Definition? definition))
+                throw new InvalidOperationException($"No registry optimization definition exists for '{tweakId}'.");
+
+            string current = ReadValue(definition);
+            OptimizationTweakDefinition tweak = OptimizationLibrary.Groups
+                .SelectMany(group => group.Tweaks)
+                .First(item => item.Id.Equals(tweakId, StringComparison.OrdinalIgnoreCase));
+            OptimizationCategory category = OptimizationLibrary.Groups
+                .First(group => group.Tweaks.Any(item => item.Id.Equals(tweakId, StringComparison.OrdinalIgnoreCase)))
+                .Category;
+
+            return new OptimizationRecommendation
+            {
+                Title = definition.Title,
+                Category = category,
+                CurrentValue = current,
+                RecommendedValue = definition.TargetValue.ToString(),
+                Description = tweak.Description,
+                Reason = "BuildCore captures the existing per-user registry value, applies the supported target, verifies it, and can restore the captured value.",
+                Risk = definition.Risk,
+                Impact = OptimizationImpact.Low,
+                CanAnalyze = true,
+                CanApply = current != "Unknown" && !current.Equals(definition.TargetValue.ToString(), StringComparison.Ordinal),
+                CanTest = false,
+                RequiresReboot = definition.RequiresReboot,
+                RollbackSupported = true,
+                TestType = OptimizationTestType.None,
+                TestDescription = definition.RequiresReboot
+                    ? "Windows may require sign-out or restart before the visual change is fully reflected."
+                    : "The setting is persistent in the current user's profile."
+            };
+        }
+
+        public static OptimizationApplyResult Apply(OptimizationRecommendation recommendation)
+        {
+            Definition? definition = Definitions.Values.FirstOrDefault(
+                item => item.Title.Equals(recommendation.Title, StringComparison.OrdinalIgnoreCase));
+
+            if (definition == null)
+                return Failure("No registry handler exists for this optimization.");
+
+            if (!int.TryParse(recommendation.RecommendedValue, out int targetValue))
+                return Failure("The registry target value is invalid.");
+
+            try
+            {
+                using RegistryKey key = Registry.CurrentUser.CreateSubKey(definition.KeyPath)
+                    ?? throw new InvalidOperationException("BuildCore could not open the per-user registry key.");
+
+                key.SetValue(definition.ValueName, targetValue, RegistryValueKind.DWord);
+                key.Flush();
+
+                string current = ReadValue(definition);
+                bool verified = current.Equals(targetValue.ToString(), StringComparison.Ordinal);
+
+                return new OptimizationApplyResult
+                {
+                    Success = verified,
+                    Verified = verified,
+                    Message = verified
+                        ? $"{definition.Title} applied and verified."
+                        : $"{definition.Title} was written, but verification failed.",
+                    Error = verified ? null : "Registry verification failed."
+                };
+            }
+            catch (Exception ex)
+            {
+                return Failure($"{definition.Title} could not be applied: {ex.Message}");
+            }
+        }
+
+        public static OptimizationRestoreResult Restore(OptimizationTransaction transaction)
+        {
+            Definition? definition = Definitions.Values.FirstOrDefault(
+                item => item.Title.Equals(transaction.OptimizationTitle, StringComparison.OrdinalIgnoreCase));
+
+            if (definition == null)
+            {
+                return new OptimizationRestoreResult
+                {
+                    Success = false,
+                    Verified = false,
+                    Message = "No registry restore handler exists for this optimization.",
+                    Error = "Unknown registry optimization."
+                };
+            }
+
+            try
+            {
+                using RegistryKey key = Registry.CurrentUser.CreateSubKey(definition.KeyPath)
+                    ?? throw new InvalidOperationException("BuildCore could not open the per-user registry key.");
+
+                if (transaction.BeforeValue.Equals("missing", StringComparison.OrdinalIgnoreCase))
+                {
+                    key.DeleteValue(definition.ValueName, false);
+                }
+                else if (int.TryParse(transaction.BeforeValue, out int previousValue))
+                {
+                    key.SetValue(definition.ValueName, previousValue, RegistryValueKind.DWord);
+                }
+                else
+                {
+                    return new OptimizationRestoreResult
+                    {
+                        Success = false,
+                        Verified = false,
+                        Message = "The original registry value could not be parsed.",
+                        Error = "Invalid saved registry value."
+                    };
+                }
+
+                key.Flush();
+                string current = ReadValue(definition);
+                bool verified = transaction.BeforeValue.Equals("missing", StringComparison.OrdinalIgnoreCase)
+                    ? current.Equals("missing", StringComparison.OrdinalIgnoreCase)
+                    : current.Equals(transaction.BeforeValue, StringComparison.Ordinal);
+
+                return new OptimizationRestoreResult
+                {
+                    Success = verified,
+                    Verified = verified,
+                    Message = verified
+                        ? $"{definition.Title} restored and verified."
+                        : $"{definition.Title} restore was attempted, but verification failed.",
+                    Error = verified ? null : "Registry restore verification failed."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new OptimizationRestoreResult
+                {
+                    Success = false,
+                    Verified = false,
+                    Message = $"{definition.Title} could not be restored: {ex.Message}",
+                    Error = ex.Message
+                };
+            }
+        }
+
+        private static string ReadValue(Definition definition)
+        {
+            try
+            {
+                using RegistryKey? key = Registry.CurrentUser.OpenSubKey(definition.KeyPath);
+                if (key == null)
+                    return "missing";
+
+                object? value = key.GetValue(definition.ValueName);
+                if (value == null)
+                    return "missing";
+
+                return Convert.ToInt32(value).ToString();
+            }
+            catch
+            {
+                return "Unknown";
+            }
+        }
+
+        private static OptimizationApplyResult Failure(string message) =>
+            new OptimizationApplyResult
+            {
+                Success = false,
+                Verified = false,
+                Message = message,
+                Error = message
+            };
+    }
+
 }
