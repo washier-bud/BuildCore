@@ -248,6 +248,7 @@ namespace BuildCore
                 "standby-timeout-ac" => "STANDBYIDLE",
                 "monitor-timeout-ac" => "VIDEOIDLE",
                 "processor-min-ac" => "PROCTHROTTLEMIN",
+                "processor-boost-ac" => "PERFBOOSTMODE",
                 "usb-selective-ac" => "USBSELECTIVE",
                 "pcie-link-ac" => "ASPM",
                 _ => throw new ArgumentException(
@@ -261,6 +262,7 @@ namespace BuildCore
                 "standby-timeout-ac" => "sleep timeout",
                 "monitor-timeout-ac" => "display timeout",
                 "processor-min-ac" => "processor minimum state",
+                "processor-boost-ac" => "processor boost policy",
                 "usb-selective-ac" => "USB selective suspend",
                 "pcie-link-ac" => "PCIe link state power management",
                 _ => "power setting"
