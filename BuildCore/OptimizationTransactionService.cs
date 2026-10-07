@@ -181,10 +181,17 @@ namespace BuildCore
         public static bool HasRestoreHandler(
             string optimizationTitle)
         {
+            if (RegistryOptimizationHandler.IsSupported(optimizationTitle))
+            {
+                return true;
+            }
+
             return optimizationTitle switch
             {
                 "Performance Power Plan" => true,
                 "Enable Windows Game Mode" => true,
+                "Prevent sleep during workload" => true,
+                "Workload display timeout" => true,
                 _ => false
             };
         }
