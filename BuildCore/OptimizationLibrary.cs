@@ -36,7 +36,7 @@ namespace BuildCore
                 Group("windows-settings", "Best Windows Settings", OptimizationCategory.Windows,
                     "Core Windows settings commonly reviewed for performance and gaming.",
                     T("windows-game-mode", "Windows Game Mode", "Enable Game Mode for supported games.", true, OptimizationRisk.Low),
-                    T("visual-effects", "Reduce visual effects", "Reduce non-essential Windows visual effects.", true, OptimizationRisk.Low),
+                    T("visual-effects", "Reduce visual effects", "Reduce non-essential Windows visual effects.", true, OptimizationRisk.Low, true),
                     T("background-apps", "Limit background apps", "Review and limit unnecessary background activity.", true, OptimizationRisk.Low),
                     T("delivery-optimization", "Review Delivery Optimization", "Limit peer-to-peer update activity when it is not needed.", false, OptimizationRisk.Low)),
 
@@ -49,7 +49,7 @@ namespace BuildCore
                 Group("explorer", "Unseen Explorer Tweaks", OptimizationCategory.Windows,
                     "Small Explorer changes intended to reduce unnecessary shell behavior.",
                     T("explorer-extensions", "Review shell extensions", "Identify unnecessary third-party Explorer extensions before disabling them.", false, OptimizationRisk.Low),
-                    T("explorer-animations", "Reduce Explorer animations", "Reduce non-essential shell animation effects.", true, OptimizationRisk.Low),
+                    T("explorer-animations", "Reduce Explorer animations", "Reduce non-essential shell animation effects.", true, OptimizationRisk.Low, true),
                     T("explorer-recent", "Review recent-item activity", "Review recent-item collection and privacy settings.", false, OptimizationRisk.Low)),
 
                 Group("network", "Best Network Settings", OptimizationCategory.Network,
