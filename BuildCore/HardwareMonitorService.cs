@@ -212,7 +212,7 @@ namespace BuildCore
             {
                 using var searcher =
                     new ManagementObjectSearcher(
-                        @"root\\WMI",
+                        @"root\WMI",
                         "SELECT CurrentTemperature FROM MSAcpi_ThermalZoneTemperature");
 
                 foreach (ManagementObject obj in searcher.Get())
