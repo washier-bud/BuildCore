@@ -276,6 +276,7 @@ namespace BuildCore
                 "standby-timeout-ac" => "SUB_SLEEP",
                 "monitor-timeout-ac" => "SUB_VIDEO",
                 "processor-min-ac" => "SUB_PROCESSOR",
+                "processor-boost-ac" => "SUB_PROCESSOR",
                 "usb-selective-ac" => "SUB_USB",
                 "pcie-link-ac" => "SUB_PCIEXPRESS",
                 _ => throw new ArgumentException(
