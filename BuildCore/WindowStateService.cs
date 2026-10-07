@@ -30,31 +30,31 @@ namespace BuildCore
                 ApplicationDataContainer store =
                     ApplicationData.Current.LocalSettings;
 
-                if (!TryGetInt(store, PositionXKey, out int x) ||
-                    !TryGetInt(store, PositionYKey, out int y) ||
-                    !TryGetInt(store, WidthKey, out int width) ||
-                    !TryGetInt(store, HeightKey, out int height))
+                if (!TryGetInt(store, PositionXKey, out int restoreX) ||
+                    !TryGetInt(store, PositionYKey, out int restoreY) ||
+                    !TryGetInt(store, WidthKey, out int restoreWidth) ||
+                    !TryGetInt(store, HeightKey, out int restoreHeight))
                 {
                     return;
                 }
 
-                width = Math.Max(width, MinimumWidth);
-                height = Math.Max(height, MinimumHeight);
+                restoreWidth = Math.Max(restoreWidth, MinimumWidth);
+                restoreHeight = Math.Max(restoreHeight, MinimumHeight);
 
-                if (!IsVisibleOnAnyDisplay(x, y, width, height))
+                if (!IsVisibleOnAnyDisplay(restoreX, restoreY, restoreWidth, restoreHeight))
                 {
                     return;
                 }
 
-                appWindow.Resize(new SizeInt32(width, height));
-                appWindow.Move(new PointInt32(x, y));
+                appWindow.Resize(new SizeInt32(restoreWidth, restoreHeight));
+                appWindow.Move(new PointInt32(restoreX, restoreY));
 
                 if (TryGetBool(store, MaximizedKey, out bool maximized) &&
                     maximized)
                 {
-                    if (appWindow.Presenter is OverlappedPresenter presenter)
+                    if (appWindow.Presenter is OverlappedPresenter restorePresenter)
                     {
-                        presenter.Maximize();
+                        restorePresenter.Maximize();
                     }
                 }
             }
@@ -72,8 +72,8 @@ namespace BuildCore
                 ApplicationData.Current.LocalSettings;
 
             bool maximized =
-                appWindow.Presenter is OverlappedPresenter presenter &&
-                presenter.State == OverlappedPresenterState.Maximized;
+                appWindow.Presenter is OverlappedPresenter savePresenter &&
+                savePresenter.State == OverlappedPresenterState.Maximized;
 
             store.Values[MaximizedKey] = maximized;
 
