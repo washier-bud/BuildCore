@@ -240,7 +240,7 @@ namespace BuildCore
                 tweakId,
                 handlerId,
                 description,
-                requiresReboot,
+                definition.RequiresReboot,
                 definition.RollbackSupported,
                 false,
                 () => CreateReviewRecommendation(definition));
