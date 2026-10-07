@@ -26,10 +26,14 @@ namespace BuildCore
                 if (RegistryOptimizationHandler.IsSupported(transaction.OptimizationTitle))
                 {
                     return RegistryOptimizationHandler.Restore(transaction);
+
                 }
 
                 return transaction.OptimizationTitle switch
                 {
+                    "CPU idle policy" => PowerOptimizationHandler.RestoreAcPercentage("processor-min-ac", transaction.BeforeValue),
+                    "USB selective suspend" => PowerOptimizationHandler.RestoreAcFlag("usb-selective-ac", transaction.BeforeValue),
+                    "PCIe link state power management" => PowerOptimizationHandler.RestoreAcFlag("pcie-link-ac", transaction.BeforeValue),
                     "Performance Power Plan" =>
                         RestorePowerPlan(transaction),
 
