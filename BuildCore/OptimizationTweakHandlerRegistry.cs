@@ -367,7 +367,7 @@ namespace BuildCore
                 {
                     TweakId = "visual-effects",
                     Title = "Reduce visual effects",
-                    KeyPath = @"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects",
+                    KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects",
                     ValueName = "VisualFXSetting",
                     TargetValue = 2,
                     RequiresReboot = true,
@@ -377,7 +377,7 @@ namespace BuildCore
                 {
                     TweakId = "explorer-animations",
                     Title = "Reduce Explorer animations",
-                    KeyPath = @"Control Panel\\Desktop\\WindowMetrics",
+                    KeyPath = @"Control Panel\Desktop\WindowMetrics",
                     ValueName = "MinAnimate",
                     TargetValue = 0,
                     RequiresReboot = true,
@@ -387,7 +387,7 @@ namespace BuildCore
                 {
                     TweakId = "game-bar",
                     Title = "Game Bar capture review",
-                    KeyPath = @"Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+                    KeyPath = @"Software\Microsoft\Windows\CurrentVersion\GameDVR",
                     ValueName = "AppCaptureEnabled",
                     TargetValue = 0,
                     RequiresReboot = false,
@@ -397,7 +397,7 @@ namespace BuildCore
                 {
                     TweakId = "chrome-background",
                     Title = "Chrome background apps",
-                    KeyPath = @"Software\\Google\\Chrome",
+                    KeyPath = @"Software\Google\Chrome",
                     ValueName = "BackgroundModeEnabled",
                     TargetValue = 0,
                     RequiresReboot = false,
