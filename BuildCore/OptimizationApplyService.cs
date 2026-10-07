@@ -35,7 +35,16 @@ namespace BuildCore
 
             try
             {
-                if (RegistryOptimizationHandler.IsSupported(recommendation.Title))
+                if (recommendation.Title.Equals("CPU idle policy", StringComparison.OrdinalIgnoreCase))
+                return PowerOptimizationHandler.ApplyAcPercentage("processor-min-ac", 100);
+
+            if (recommendation.Title.Equals("USB selective suspend", StringComparison.OrdinalIgnoreCase))
+                return PowerOptimizationHandler.ApplyAcFlag("usb-selective-ac", false);
+
+            if (recommendation.Title.Equals("PCIe link state power management", StringComparison.OrdinalIgnoreCase))
+                return PowerOptimizationHandler.ApplyAcFlag("pcie-link-ac", false);
+
+            if (RegistryOptimizationHandler.IsSupported(recommendation.Title))
                 {
                     return RegistryOptimizationHandler.Apply(recommendation);
                 }
