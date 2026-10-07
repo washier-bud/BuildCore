@@ -140,8 +140,8 @@ namespace BuildCore
                 Group("latency-timing", "Best Latency Timing", OptimizationCategory.Timing,
                     "Timing controls are treated as experimental until measured against a baseline.",
                     T("system-timer", "System timer review", "Measure timer behavior before changing timer policies.", false, OptimizationRisk.Medium),
-                    T("dynamic-ticks", "Dynamic tick review", "Review dynamic-tick behavior for the target workload.", false, OptimizationRisk.Medium, true),
-                    T("platform-clock", "Platform clock review", "Review platform-clock behavior without forcing undocumented boot settings.", false, OptimizationRisk.High, true)),
+                    T("disabledynamictick", "Dynamic tick review", "Review dynamic-tick behavior for the target workload.", false, OptimizationRisk.Medium, true),
+                    T("useplatformclock", "Platform clock review", "Review platform-clock behavior without forcing undocumented boot settings.", false, OptimizationRisk.High, true)),
 
                 Group("audio", "Complete Sound Optimization", OptimizationCategory.Audio,
                     "Audio latency controls with device-specific safeguards.",
