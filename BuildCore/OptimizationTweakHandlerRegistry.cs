@@ -101,7 +101,7 @@ namespace BuildCore
                 Review("gpu-scheduling", "gpu-scheduling-review-v1", "Review-only GPU scheduling analysis.", false),
                 Review("presentation", "presentation-review-v1", "Review-only presentation-mode analysis.", false),
 
-                Review("chrome-startup", "chrome-startup-v1", "Review-only Chrome startup discovery.", false),
+                Real("chrome-startup", "chrome-startup-v2", "Disables Chrome Startup Boost through its per-user setting with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("chrome-startup")),
                 Real("chrome-background", "chrome-background-v2", "Disables Chrome background execution through its per-user setting when present.", () => RegistryOptimizationHandler.CreateRecommendation("chrome-background")),
                 Review("chrome-extensions", "chrome-extensions-v1", "Review-only Chrome extension discovery.", false),
 
