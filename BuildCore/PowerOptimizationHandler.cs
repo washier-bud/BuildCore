@@ -142,11 +142,101 @@ namespace BuildCore
             }
         }
 
+        public static string GetAcPercentage(string settingAlias)
+        {
+            try
+            {
+                string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
+                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
+                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                    return "Unknown";
+                return $"{value}%";
+            }
+            catch { return "Unknown"; }
+        }
+
+        public static OptimizationApplyResult ApplyAcPercentage(string settingAlias, uint percentage)
+        {
+            try
+            {
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {percentage}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcPercentage(settingAlias);
+                bool verified = current.Equals($"{percentage}%", StringComparison.OrdinalIgnoreCase);
+                return new OptimizationApplyResult { Success = verified, Verified = verified, Message = verified ? $"AC {GetFriendlyName(settingAlias)} set to {percentage}% and verified." : $"AC {GetFriendlyName(settingAlias)} was changed, but verification failed.", Error = verified ? null : "Power policy verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationApplyResult { Success = false, Verified = false, Message = $"Unable to change AC {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
+        public static OptimizationRestoreResult RestoreAcPercentage(string settingAlias, string beforeValue)
+        {
+            if (!TryParsePercentage(beforeValue, out uint percentage))
+                return new OptimizationRestoreResult { Success = false, Verified = false, Message = "The original power percentage could not be parsed.", Error = "Invalid saved power percentage." };
+            try
+            {
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {percentage}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcPercentage(settingAlias);
+                bool verified = current.Equals($"{percentage}%", StringComparison.OrdinalIgnoreCase);
+                return new OptimizationRestoreResult { Success = verified, Verified = verified, Message = verified ? $"AC {GetFriendlyName(settingAlias)} restored to {percentage}% and verified." : $"BuildCore attempted to restore AC {GetFriendlyName(settingAlias)}, but verification failed.", Error = verified ? null : "Power policy restore verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationRestoreResult { Success = false, Verified = false, Message = $"Unable to restore AC {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
+        public static string GetAcFlag(string settingAlias)
+        {
+            try
+            {
+                string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
+                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
+                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                    return "Unknown";
+                return value == 0 ? "Disabled" : "Enabled";
+            }
+            catch { return "Unknown"; }
+        }
+
+        public static OptimizationApplyResult ApplyAcFlag(string settingAlias, bool enabled)
+        {
+            try
+            {
+                uint value = enabled ? 1u : 0u;
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {value}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcFlag(settingAlias);
+                string expected = enabled ? "Enabled" : "Disabled";
+                bool verified = current.Equals(expected, StringComparison.OrdinalIgnoreCase);
+                return new OptimizationApplyResult { Success = verified, Verified = verified, Message = verified ? $"{GetFriendlyName(settingAlias)} set to {expected} and verified." : $"{GetFriendlyName(settingAlias)} was changed, but verification failed.", Error = verified ? null : "Power policy verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationApplyResult { Success = false, Verified = false, Message = $"Unable to change {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
+        public static OptimizationRestoreResult RestoreAcFlag(string settingAlias, string beforeValue)
+        {
+            if (!beforeValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase) && !beforeValue.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
+                return new OptimizationRestoreResult { Success = false, Verified = false, Message = "The original power flag could not be parsed.", Error = "Invalid saved power flag." };
+            bool enabled = beforeValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase);
+            try
+            {
+                uint value = enabled ? 1u : 0u;
+                RunProcess("powercfg", $"/setacvalueindex SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)} {value}");
+                RunProcess("powercfg", "/setactive SCHEME_CURRENT");
+                string current = GetAcFlag(settingAlias);
+                string expected = enabled ? "Enabled" : "Disabled";
+                bool verified = current.Equals(expected, StringComparison.OrdinalIgnoreCase);
+                return new OptimizationRestoreResult { Success = verified, Verified = verified, Message = verified ? $"{GetFriendlyName(settingAlias)} restored to {expected} and verified." : $"BuildCore attempted to restore {GetFriendlyName(settingAlias)}, but verification failed.", Error = verified ? null : "Power policy restore verification failed." };
+            }
+            catch (Exception ex) { return new OptimizationRestoreResult { Success = false, Verified = false, Message = $"Unable to restore {GetFriendlyName(settingAlias)}.", Error = ex.Message }; }
+        }
+
         private static string GetSubgroupAlias(string settingAlias) =>
             settingAlias switch
             {
                 "standby-timeout-ac" => "SUB_SLEEP",
                 "monitor-timeout-ac" => "SUB_VIDEO",
+                "processor-min-ac" => "SUB_PROCESSOR",
+                "usb-selective-ac" => "SUB_USB",
+                "pcie-link-ac" => "SUB_PCIEXPRESS",
                 _ => throw new ArgumentException(
                     $"Unsupported power setting '{settingAlias}'.",
                     nameof(settingAlias))
@@ -157,6 +247,9 @@ namespace BuildCore
             {
                 "standby-timeout-ac" => "STANDBYIDLE",
                 "monitor-timeout-ac" => "VIDEOIDLE",
+                "processor-min-ac" => "PROCTHROTTLEMIN",
+                "usb-selective-ac" => "USBSELECTIVE",
+                "pcie-link-ac" => "ASPM",
                 _ => throw new ArgumentException(
                     $"Unsupported power setting '{settingAlias}'.",
                     nameof(settingAlias))
@@ -167,8 +260,17 @@ namespace BuildCore
             {
                 "standby-timeout-ac" => "sleep timeout",
                 "monitor-timeout-ac" => "display timeout",
+                "processor-min-ac" => "processor minimum state",
+                "usb-selective-ac" => "USB selective suspend",
+                "pcie-link-ac" => "PCIe link state power management",
                 _ => "power setting"
             };
+
+        private static bool TryParsePercentage(string value, out uint percentage)
+        {
+            string number = value.Replace("%", "", StringComparison.Ordinal).Trim();
+            return uint.TryParse(number, NumberStyles.None, CultureInfo.InvariantCulture, out percentage);
+        }
 
         private static bool TryParseSeconds(
             string value,
