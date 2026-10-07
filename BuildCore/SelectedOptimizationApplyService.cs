@@ -46,6 +46,7 @@ namespace BuildCore
             BuildCoreSnapshot snapshot = SnapshotService.CreateSnapshot();
 
             var items = new List<SelectedOptimizationApplyItem>();
+            var appliedTransactions = new List<OptimizationTransaction>();
 
             foreach (OptimizationTweakDefinition tweak in
                 OptimizationLibrary.Groups
@@ -103,19 +104,63 @@ namespace BuildCore
                     transaction,
                     result);
 
+                bool appliedAndVerified = result.Success && result.Verified;
+
                 items.Add(new SelectedOptimizationApplyItem
                 {
                     TweakId = tweak.Id,
                     Title = tweak.Title,
                     Transaction = transaction,
                     Status =
-                        result.Success && result.Verified
+                        appliedAndVerified
                             ? "APPLIED & VERIFIED"
                             : "FAILED — " + result.Message
                 });
 
-                if (!result.Success || !result.Verified)
+                if (appliedAndVerified)
+                {
+                    appliedTransactions.Add(transaction);
+                }
+                else
+                {
+                    for (int index = appliedTransactions.Count - 1; index >= 0; index--)
+                    {
+                        OptimizationTransaction rollbackTransaction =
+                            appliedTransactions[index];
+
+                        OptimizationRestoreResult rollbackResult =
+                            OptimizationRestoreService.Restore(
+                                rollbackTransaction);
+
+                        OptimizationTransactionService.CompleteRestore(
+                            rollbackTransaction,
+                            rollbackResult);
+
+                        SelectedOptimizationApplyItem? appliedItem =
+                            items.FirstOrDefault(
+                                item => item.Transaction?.TransactionId ==
+                                        rollbackTransaction.TransactionId);
+
+                        if (appliedItem != null)
+                        {
+                            string rollbackStatus =
+                                rollbackResult.Success && rollbackResult.Verified
+                                    ? "ROLLED BACK & VERIFIED"
+                                    : "ROLLBACK FAILED — " + rollbackResult.Message;
+
+                            items[items.IndexOf(appliedItem)] =
+                                new SelectedOptimizationApplyItem
+                                {
+                                    TweakId = appliedItem.TweakId,
+                                    Title = appliedItem.Title,
+                                    Transaction = rollbackTransaction,
+                                    Status = appliedItem.Status + " → " + rollbackStatus
+                                };
+                        }
+                    }
+
                     break;
+                }
             }
 
             return new SelectedOptimizationApplyResult
