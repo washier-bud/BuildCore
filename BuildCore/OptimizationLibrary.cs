@@ -37,20 +37,20 @@ namespace BuildCore
                     "Core Windows settings commonly reviewed for performance and gaming.",
                     T("windows-game-mode", "Windows Game Mode", "Enable Game Mode for supported games.", true, OptimizationRisk.Low),
                     T("visual-effects", "Reduce visual effects", "Reduce non-essential Windows visual effects.", true, OptimizationRisk.Low, true),
-                    T("background-apps", "Limit background apps", "Review and limit unnecessary background activity.", true, OptimizationRisk.Low),
+                    T("background-apps", "Limit background apps", "Disable per-user background app execution when it is not needed.", false, OptimizationRisk.Low),
                     T("delivery-optimization", "Review Delivery Optimization", "Limit peer-to-peer update activity when it is not needed.", false, OptimizationRisk.Low)),
 
                 Group("registry", "Best System Registry", OptimizationCategory.Registry,
                     "Targeted registry settings with explicit scope and reversible state.",
                     T("registry-gaming", "Gaming scheduler review", "Review supported scheduler-related settings instead of applying undocumented values.", false, OptimizationRisk.Medium),
                     T("registry-mouse", "Mouse response settings", "Review supported pointer-related Windows settings.", false, OptimizationRisk.Low),
-                    T("registry-ui", "Explorer/UI behavior", "Review selected Explorer behaviors without deleting registry data.", false, OptimizationRisk.Low)),
+                    T("registry-ui", "Explorer/UI behavior", "Reduce menu-show delay for the current user.", false, OptimizationRisk.Low)),
 
                 Group("explorer", "Unseen Explorer Tweaks", OptimizationCategory.Windows,
                     "Small Explorer changes intended to reduce unnecessary shell behavior.",
                     T("explorer-extensions", "Review shell extensions", "Identify unnecessary third-party Explorer extensions before disabling them.", false, OptimizationRisk.Low),
                     T("explorer-animations", "Reduce Explorer animations", "Reduce non-essential shell animation effects.", true, OptimizationRisk.Low, true),
-                    T("explorer-recent", "Review recent-item activity", "Review recent-item collection and privacy settings.", false, OptimizationRisk.Low)),
+                    T("explorer-recent", "Review recent-item activity", "Disable recent-document tracking for the current user.", false, OptimizationRisk.Low)),
 
                 Group("network", "Best Network Settings", OptimizationCategory.Network,
                     "Network settings are presented for review before any adapter or TCP changes.",
@@ -121,7 +121,7 @@ namespace BuildCore
 
                 Group("chrome", "Google Chrome Debloat", OptimizationCategory.Cleanup,
                     "Browser cleanup limited to explicit Chrome settings and user-approved data.",
-                    T("chrome-startup", "Chrome startup behavior", "Review unnecessary startup behavior and background execution.", true, OptimizationRisk.Low),
+                    T("chrome-startup", "Chrome startup behavior", "Disable Chrome Startup Boost when it is not needed.", true, OptimizationRisk.Low),
                     T("chrome-background", "Chrome background apps", "Disable unnecessary background execution where supported.", true, OptimizationRisk.Low),
                     T("chrome-extensions", "Review extensions", "Identify unused extensions before disabling them.", false, OptimizationRisk.Low)),
 
