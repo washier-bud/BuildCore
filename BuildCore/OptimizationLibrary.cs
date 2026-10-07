@@ -122,7 +122,7 @@ namespace BuildCore
                 Group("chrome", "Google Chrome Debloat", OptimizationCategory.Cleanup,
                     "Browser cleanup limited to explicit Chrome settings and user-approved data.",
                     T("chrome-startup", "Chrome startup behavior", "Disable Chrome Startup Boost when it is not needed.", true, OptimizationRisk.Low),
-                    T("chrome-background", "Chrome background apps", "Disable unnecessary background execution where supported.", true, OptimizationRisk.Low),
+                    T("chrome-background", "Chrome background apps", "Disable unnecessary background execution where supported.", false, OptimizationRisk.Low),
                     T("chrome-extensions", "Review extensions", "Identify unused extensions before disabling them.", false, OptimizationRisk.Low)),
 
                 Group("windows-debloat", "Windows Debloat", OptimizationCategory.Cleanup,
