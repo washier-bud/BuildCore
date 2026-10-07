@@ -23,6 +23,11 @@ namespace BuildCore
 
             try
             {
+                if (RegistryOptimizationHandler.IsSupported(transaction.OptimizationTitle))
+                {
+                    return RegistryOptimizationHandler.Restore(transaction);
+                }
+
                 return transaction.OptimizationTitle switch
                 {
                     "Performance Power Plan" =>
