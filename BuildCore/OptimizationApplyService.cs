@@ -35,6 +35,11 @@ namespace BuildCore
 
             try
             {
+                if (RegistryOptimizationHandler.IsSupported(recommendation.Title))
+                {
+                    return RegistryOptimizationHandler.Apply(recommendation);
+                }
+
                 return recommendation.Title switch
                 {
                     "Performance Power Plan" =>
