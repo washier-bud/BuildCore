@@ -113,9 +113,10 @@ namespace BuildCore
                 WindowsSystemService.Scan();
 
             bool verified =
-                verification.PowerPlan.Equals(
-                    "High Performance",
-                    StringComparison.OrdinalIgnoreCase);
+                WindowsSystemService.CaptureActivePowerPlanState()
+                    .Contains(
+                        "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c",
+                        StringComparison.OrdinalIgnoreCase);
 
             if (verified)
             {
