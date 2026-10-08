@@ -240,7 +240,8 @@ namespace BuildCore
 
         private static bool HasEnabledPowerManagement(AdapterState state)
         {
-            return IsEnabled(state.ArpOffload) ||
+            return IsEnabled(state.AllowComputerToTurnOffDevice) ||
+                   IsEnabled(state.ArpOffload) ||
                    IsEnabled(state.D0PacketCoalescing) ||
                    IsEnabled(state.DeviceSleepOnDisconnect) ||
                    IsEnabled(state.NSOffload) ||
@@ -252,7 +253,8 @@ namespace BuildCore
 
         private static bool StatesMatch(AdapterState expected, AdapterState actual)
         {
-            return SameState(expected.ArpOffload, actual.ArpOffload) &&
+            return SameState(expected.AllowComputerToTurnOffDevice, actual.AllowComputerToTurnOffDevice) &&
+                   SameState(expected.ArpOffload, actual.ArpOffload) &&
                    SameState(expected.D0PacketCoalescing, actual.D0PacketCoalescing) &&
                    SameState(expected.DeviceSleepOnDisconnect, actual.DeviceSleepOnDisconnect) &&
                    SameState(expected.NSOffload, actual.NSOffload) &&
