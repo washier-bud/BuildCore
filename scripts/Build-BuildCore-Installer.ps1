@@ -24,18 +24,26 @@ if (-not (Test-Path $installerScript)) {
     throw "Installer script not found: $installerScript"
 }
 
-$compilerCandidates = @(
-    (Join-Path $env:ProgramFiles "Inno Setup 7\ISCC.exe"),
-    (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 7\ISCC.exe"),
-    (Join-Path $env:ProgramFiles "Inno Setup 6\ISCC.exe"),
-    (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6\ISCC.exe")
-)
+$compiler = (Get-Command ISCC.exe -ErrorAction SilentlyContinue).Source
 
-$compiler = $compilerCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $compiler) {
+    $compilerCandidates = @(
+        (Join-Path $env:ProgramFiles "Inno Setup 7\ISCC.exe"),
+        (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 7\ISCC.exe"),
+        (Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 7\ISCC.exe"),
+        (Join-Path $env:ProgramFiles "Inno Setup 6\ISCC.exe"),
+        (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6\ISCC.exe"),
+        (Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe")
+    )
+
+    $compiler = $compilerCandidates | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+}
 
 if (-not $compiler) {
     throw "Inno Setup compiler (ISCC.exe) was not found. Install Inno Setup 7 and run this script again."
 }
+
+Write-Host "Using Inno Setup compiler: $compiler"
 
 New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
 
