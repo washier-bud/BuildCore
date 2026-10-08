@@ -53,8 +53,8 @@ namespace BuildCore
                     T("explorer-recent", "Review recent-item activity", "Disable recent-document tracking for the current user.", false, OptimizationRisk.Low)),
 
                 Group("network", "Best Network Settings", OptimizationCategory.Network,
-                    "Network settings are presented for review before any adapter or TCP changes.",
-                    T("network-power", "Disable adapter power saving", "Disable supported network-adapter power-saving behavior.", true, OptimizationRisk.Medium),
+                    "Network settings use verified adapter controls where Windows exposes a safe, reversible setting.",
+                    T("network-power", "Disable adapter power saving", "Disable the Windows network-adapter power-management setting on supported physical adapters.", true, OptimizationRisk.Medium),
                     T("network-rss", "Review RSS", "Review Receive Side Scaling configuration for supported adapters.", true, OptimizationRisk.Low),
                     T("network-offloads", "Review network offloads", "Review offload features rather than blindly disabling them.", false, OptimizationRisk.Medium),
                     T("network-dns", "Use selected DNS", "Allow a user-selected DNS configuration.", false, OptimizationRisk.Low)),
