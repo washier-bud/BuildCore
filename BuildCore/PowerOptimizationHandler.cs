@@ -267,7 +267,7 @@ namespace BuildCore
                 "monitor-timeout-ac" => "SUB_VIDEO",
                 "processor-min-ac" => "SUB_PROCESSOR",
                 "processor-boost-ac" => "SUB_PROCESSOR",
-                "usb-selective-ac" => "2a737441-1930-4402-8d77-b2b3bba308a3",
+                "usb-selective-ac" => "2a737441-1930-4402-8d77-b2bebba308a3",
                 "pcie-link-ac" => "SUB_PCIEXPRESS",
                 _ => throw new ArgumentException(
                     $"Unsupported power setting '{settingAlias}'.",
