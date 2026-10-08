@@ -6407,7 +6407,6 @@ namespace BuildCore
             RememberPageToggle.IsOn = false;
             MinimizeToTrayToggle.IsOn = false;
             AccentColorComboBox.SelectedIndex = 0;
-            TextStyleComboBox.SelectedIndex = 0;
 
             ApplyAccentColor();
         }
