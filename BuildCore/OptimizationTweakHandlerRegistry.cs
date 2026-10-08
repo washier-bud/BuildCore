@@ -311,7 +311,7 @@ namespace BuildCore
                 Description = definition.Description,
                 Reason = "BuildCore changes only the active power plan's AC setting, verifies the result, and records the original value for rollback.",
                 Risk = definition.Risk, Impact = OptimizationImpact.Medium, CanAnalyze = true,
-                CanApply = current != "Unknown" && !current.Equals($"{target}%", StringComparison.OrdinalIgnoreCase),
+                CanApply = current != "Unknown",
                 CanTest = false, RequiresReboot = false, RollbackSupported = true, TestType = OptimizationTestType.None
             };
         }
@@ -331,7 +331,7 @@ namespace BuildCore
                 Risk = definition.Risk,
                 Impact = OptimizationImpact.Medium,
                 CanAnalyze = true,
-                CanApply = current != "Unknown" && current != target.ToString(),
+                CanApply = current != "Unknown",
                 CanTest = false,
                 RequiresReboot = false,
                 RollbackSupported = true,
@@ -350,7 +350,7 @@ namespace BuildCore
                 Description = definition.Description,
                 Reason = "BuildCore changes only the active power plan's AC setting, verifies the result, and records the original value for rollback.",
                 Risk = definition.Risk, Impact = OptimizationImpact.Medium, CanAnalyze = true,
-                CanApply = current != "Unknown" && !current.Equals(target, StringComparison.OrdinalIgnoreCase),
+                CanApply = current != "Unknown",
                 CanTest = false, RequiresReboot = false, RollbackSupported = true, TestType = OptimizationTestType.None
             };
         }
