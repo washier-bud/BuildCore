@@ -41,7 +41,7 @@ namespace BuildCore
     public static class OptimizationTweakHandlerRegistry
     {
         private static readonly IReadOnlyList<OptimizationTweakHandler> Handlers =
-            Array.AsReadOnly(new List<OptimizationTweakHandler>
+            new List<OptimizationTweakHandler>
             {
                 Real("windows-game-mode", "windows-game-mode-v2", "Verified Windows Game Mode handler.", CreateGameModeRecommendation),
                 Real("visual-effects", "windows-visual-effects-v2", "Disables Windows visual effects through a reversible per-user setting.", () => RegistryOptimizationHandler.CreateRecommendation("visual-effects")),
@@ -128,7 +128,7 @@ namespace BuildCore
                 Review("boot-timeout", "boot-timeout-v1", "Review-only boot menu timeout analysis.", false),
                 Review("disabledynamictick", "bcdedit-disabledynamictick-v1", "Review-only BCDEdit experiment preparation.", true),
                 Review("useplatformclock", "bcdedit-useplatformclock-v1", "Review-only BCDEdit experiment preparation.", true),
-            });
+            };
 
         public static IReadOnlyList<OptimizationTweakHandler> GetHandlers() => Handlers;
 
