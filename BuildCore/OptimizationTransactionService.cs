@@ -59,11 +59,13 @@ namespace BuildCore
                     recommendation.Category,
 
                 BeforeValue =
-                    recommendation.Title.Equals("Performance Power Plan", StringComparison.OrdinalIgnoreCase)
-                        ? WindowsSystemService.CaptureActivePowerPlanState()
-                        : recommendation.Title.Equals("Enable Windows Game Mode", StringComparison.OrdinalIgnoreCase)
-                            ? WindowsSystemService.CaptureGameModeState()
-                            : recommendation.CurrentValue,
+                    recommendation.Title.Equals("Disable adapter power saving", StringComparison.OrdinalIgnoreCase)
+                        ? NetworkAdapterPowerOptimizationHandler.CaptureTransactionState()
+                        : recommendation.Title.Equals("Performance Power Plan", StringComparison.OrdinalIgnoreCase)
+                            ? WindowsSystemService.CaptureActivePowerPlanState()
+                            : recommendation.Title.Equals("Enable Windows Game Mode", StringComparison.OrdinalIgnoreCase)
+                                ? WindowsSystemService.CaptureGameModeState()
+                                : recommendation.CurrentValue,
 
                 TargetValue =
                     recommendation.RecommendedValue,
