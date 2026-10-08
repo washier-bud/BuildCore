@@ -56,6 +56,7 @@ namespace BuildCore
             bool batchSucceeded = true;
             bool batchRolledBack = false;
             bool rollbackVerified = true;
+            bool hadApplyFailure = false;
 
             foreach (OptimizationTweakDefinition tweak in
                 OptimizationLibrary.Groups
@@ -75,12 +76,8 @@ namespace BuildCore
                     });
 
                     batchSucceeded = false;
-                    (batchRolledBack, rollbackVerified) =
-                        RollbackAppliedTransactions(
-                            items,
-                            appliedTransactions);
-
-                    break;
+                    hadApplyFailure = true;
+                    continue;
                 }
 
                 OptimizationRecommendation? recommendation =
@@ -96,12 +93,8 @@ namespace BuildCore
                     });
 
                     batchSucceeded = false;
-                    (batchRolledBack, rollbackVerified) =
-                        RollbackAppliedTransactions(
-                            items,
-                            appliedTransactions);
-
-                    break;
+                    hadApplyFailure = true;
+                    continue;
                 }
 
                 if (!handler.CanApply)
@@ -126,12 +119,8 @@ namespace BuildCore
                     });
 
                     batchSucceeded = false;
-                    (batchRolledBack, rollbackVerified) =
-                        RollbackAppliedTransactions(
-                            items,
-                            appliedTransactions);
-
-                    break;
+                    hadApplyFailure = true;
+                    continue;
                 }
 
                 OptimizationTransaction transaction =
@@ -168,12 +157,15 @@ namespace BuildCore
 
                 batchSucceeded = false;
 
+                hadApplyFailure = true;
+            }
+
+            if (hadApplyFailure && appliedTransactions.Count > 0)
+            {
                 (batchRolledBack, rollbackVerified) =
                     RollbackAppliedTransactions(
                         items,
                         appliedTransactions);
-
-                break;
             }
 
             return new SelectedOptimizationApplyResult
