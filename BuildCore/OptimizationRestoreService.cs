@@ -53,6 +53,7 @@ namespace BuildCore
                     "CPU idle policy" => PowerOptimizationHandler.RestoreAcPercentage("processor-min-ac", transaction.BeforeValue),
                     "USB selective suspend" => PowerOptimizationHandler.RestoreAcFlag("usb-selective-ac", transaction.BeforeValue),
                     "PCIe link state power management" => PowerOptimizationHandler.RestoreAcFlag("pcie-link-ac", transaction.BeforeValue),
+                    "Processor boost policy" => PowerOptimizationHandler.RestoreAcInteger("processor-boost-ac", transaction.BeforeValue),
                     "Performance Power Plan" =>
                         RestorePowerPlan(transaction),
 
@@ -96,56 +97,45 @@ namespace BuildCore
             RestorePowerPlan(
                 OptimizationTransaction transaction)
         {
-            string previousPlan =
-                transaction.BeforeValue;
-
-            if (string.IsNullOrWhiteSpace(
-                previousPlan))
+            if (string.IsNullOrWhiteSpace(transaction.BeforeValue))
             {
-                return Failure(
-                    "The original power plan was not recorded.");
+                return Failure("The original power plan was not recorded.");
             }
 
-            string schemeArgument;
-
-            if (previousPlan.Equals(
-                "Balanced",
-                StringComparison.OrdinalIgnoreCase))
+            ActivePowerPlanState? previousPlan = null;
+            try
             {
-                schemeArgument =
-                    "SCHEME_BALANCED";
+                previousPlan = System.Text.Json.JsonSerializer.Deserialize<ActivePowerPlanState>(transaction.BeforeValue);
             }
-            else if (previousPlan.Equals(
-                "High Performance",
-                StringComparison.OrdinalIgnoreCase))
+            catch
             {
-                schemeArgument =
-                    "SCHEME_MIN";
-            }
-            else if (previousPlan.Equals(
-                "Ultimate Performance",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                schemeArgument =
-                    "SCHEME_MAX";
-            }
-            else
-            {
-                return Failure(
-                    $"BuildCore does not yet know how to restore the power plan '{previousPlan}'.");
+                // Legacy transactions may contain only the display name.
             }
 
-            RunProcess(
-                "powercfg",
-                $"/setactive {schemeArgument}");
+            string? schemeGuid = previousPlan?.Guid;
+            string previousName = previousPlan?.Name ?? transaction.BeforeValue;
 
-            WindowsSystemData verification =
-                WindowsSystemService.Scan();
+            if (string.IsNullOrWhiteSpace(schemeGuid) &&
+                previousName.Equals("Balanced", StringComparison.OrdinalIgnoreCase))
+                schemeGuid = "381b4222-f694-41f0-9685-ff5bb260df2e";
+            else if (string.IsNullOrWhiteSpace(schemeGuid) &&
+                     previousName.Equals("High Performance", StringComparison.OrdinalIgnoreCase))
+                schemeGuid = "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c";
+            else if (string.IsNullOrWhiteSpace(schemeGuid) &&
+                     previousName.Equals("Ultimate Performance", StringComparison.OrdinalIgnoreCase))
+                schemeGuid = "e9a42b02-d5df-448d-aa00-03f14749eb61";
 
-            bool verified =
-                verification.PowerPlan.Equals(
-                    previousPlan,
-                    StringComparison.OrdinalIgnoreCase);
+            if (string.IsNullOrWhiteSpace(schemeGuid))
+                return Failure($"BuildCore cannot safely restore the original power plan '{previousName}' because its GUID was not recorded.");
+
+            RunProcess("powercfg", $"/setactive {schemeGuid}");
+
+            string verificationState = WindowsSystemService.CaptureActivePowerPlanState();
+            ActivePowerPlanState? verifiedPlan =
+                System.Text.Json.JsonSerializer.Deserialize<ActivePowerPlanState>(verificationState);
+
+            bool verified = verifiedPlan != null &&
+                verifiedPlan.Guid.Equals(schemeGuid, StringComparison.OrdinalIgnoreCase);
 
             if (verified)
             {
@@ -153,8 +143,7 @@ namespace BuildCore
                 {
                     Success = true,
                     Verified = true,
-                    Message =
-                        $"Power plan restored to {previousPlan} and verified."
+                    Message = $"Power plan restored to {verifiedPlan!.Name} and verified."
                 };
             }
 
@@ -162,8 +151,7 @@ namespace BuildCore
             {
                 Success = false,
                 Verified = false,
-                Message =
-                    $"BuildCore attempted to restore {previousPlan}, but verification failed."
+                Message = $"BuildCore attempted to restore {previousName}, but verification failed."
             };
         }
 
@@ -171,49 +159,43 @@ namespace BuildCore
             RestoreGameMode(
                 OptimizationTransaction transaction)
         {
-            bool shouldBeEnabled =
-                transaction.BeforeValue.Equals(
-                    "Enabled",
-                    StringComparison.OrdinalIgnoreCase);
+            if (transaction.BeforeValue.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                return Failure("The original Game Mode registry state could not be safely captured.");
 
-            using RegistryKey? key =
-                Registry.CurrentUser.CreateSubKey(
-                    @"Software\Microsoft\GameBar");
-
+            using RegistryKey? key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\GameBar");
             if (key == null)
-            {
-                return Failure(
-                    "BuildCore could not access the Windows Game Mode registry settings.");
-            }
+                return Failure("BuildCore could not access the Windows Game Mode registry settings.");
 
-            key.SetValue(
-                "AutoGameModeEnabled",
-                shouldBeEnabled ? 1 : 0,
-                RegistryValueKind.DWord);
+            if (transaction.BeforeValue.Equals("missing", StringComparison.OrdinalIgnoreCase))
+            {
+                key.DeleteValue("AutoGameModeEnabled", false);
+            }
+            else if (transaction.BeforeValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase) ||
+                     transaction.BeforeValue.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
+            {
+                key.SetValue(
+                    "AutoGameModeEnabled",
+                    transaction.BeforeValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase) ? 1 : 0,
+                    RegistryValueKind.DWord);
+            }
+            else
+            {
+                return Failure("The original Game Mode registry state is invalid.");
+            }
 
             key.Flush();
 
-            WindowsSystemData verification =
-                WindowsSystemService.Scan();
-
-            if (verification.GameModeEnabled ==
-                shouldBeEnabled)
-            {
-                return new OptimizationRestoreResult
-                {
-                    Success = true,
-                    Verified = true,
-                    Message =
-                        $"Windows Game Mode restored to {(shouldBeEnabled ? "Enabled" : "Disabled")} and verified."
-                };
-            }
+            string restoredState = WindowsSystemService.CaptureGameModeState();
+            bool verified = restoredState.Equals(transaction.BeforeValue, StringComparison.OrdinalIgnoreCase);
 
             return new OptimizationRestoreResult
             {
-                Success = false,
-                Verified = false,
-                Message =
-                    "Game Mode was changed, but BuildCore could not verify the restored state."
+                Success = verified,
+                Verified = verified,
+                Message = verified
+                    ? $"Windows Game Mode restored to {transaction.BeforeValue} and verified."
+                    : "Game Mode was changed, but BuildCore could not verify the restored registry state.",
+                Error = verified ? null : "Game Mode restore verification failed."
             };
         }
 
