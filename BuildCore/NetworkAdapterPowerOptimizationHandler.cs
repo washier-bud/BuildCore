@@ -229,7 +229,7 @@ namespace BuildCore
             }
             catch (Exception ex)
             {
-                return ApplyFailure(
+                return RestoreFailure(
                     "BuildCore could not restore the original adapter power-saving state.",
                     ex.Message);
             }
