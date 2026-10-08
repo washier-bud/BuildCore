@@ -123,41 +123,55 @@ namespace BuildCore
                     continue;
                 }
 
-                OptimizationTransaction transaction =
-                    OptimizationTransactionService.CreateTransaction(
-                        snapshot.Id,
-                        recommendation);
-
-                OptimizationApplyResult result =
-                    OptimizationApplyService.Apply(recommendation);
-
-                OptimizationTransactionService.CompleteTransaction(
-                    transaction,
-                    result);
-
-                bool appliedAndVerified =
-                    result.Success && result.Verified;
-
-                items.Add(new SelectedOptimizationApplyItem
+                try
                 {
-                    TweakId = tweak.Id,
-                    Title = tweak.Title,
-                    Transaction = transaction,
-                    Status =
-                        appliedAndVerified
-                            ? "APPLIED & VERIFIED"
-                            : "FAILED — " + result.Message
-                });
+                    OptimizationTransaction transaction =
+                        OptimizationTransactionService.CreateTransaction(
+                            snapshot.Id,
+                            recommendation);
 
-                if (appliedAndVerified)
-                {
-                    appliedTransactions.Add(transaction);
-                    continue;
+                    OptimizationApplyResult result =
+                        OptimizationApplyService.Apply(recommendation);
+
+                    OptimizationTransactionService.CompleteTransaction(
+                        transaction,
+                        result);
+
+                    bool appliedAndVerified =
+                        result.Success && result.Verified;
+
+                    items.Add(new SelectedOptimizationApplyItem
+                    {
+                        TweakId = tweak.Id,
+                        Title = tweak.Title,
+                        Transaction = transaction,
+                        Status =
+                            appliedAndVerified
+                                ? "APPLIED & VERIFIED"
+                                : "FAILED — " + result.Message
+                    });
+
+                    if (appliedAndVerified)
+                    {
+                        appliedTransactions.Add(transaction);
+                        continue;
+                    }
+
+                    batchSucceeded = false;
+                    hadApplyFailure = true;
                 }
+                catch (Exception ex)
+                {
+                    items.Add(new SelectedOptimizationApplyItem
+                    {
+                        TweakId = tweak.Id,
+                        Title = tweak.Title,
+                        Status = "FAILED — " + ex.Message
+                    });
 
-                batchSucceeded = false;
-
-                hadApplyFailure = true;
+                    batchSucceeded = false;
+                    hadApplyFailure = true;
+                }
             }
 
             if (hadApplyFailure && appliedTransactions.Count > 0)
