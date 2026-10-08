@@ -186,7 +186,8 @@ namespace BuildCore
                     "$ErrorActionPreference='Stop'; " +
                     "$states=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" +
                     encoded +
-                    "') | ConvertFrom-Json); " +
+                    "')); " +
+                    "$states=$states | ConvertFrom-Json; " +
                     "foreach($state in @($states)) { " +
                     "$pm=Get-NetAdapterPowerManagement -Name $state.Name -ErrorAction SilentlyContinue; " +
                     "if($null -eq $pm) { throw ('Network adapter not found: ' + $state.Name) }; " +
