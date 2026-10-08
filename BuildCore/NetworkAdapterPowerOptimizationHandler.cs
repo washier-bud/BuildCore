@@ -171,7 +171,7 @@ namespace BuildCore
 
                 if (states == null || states.Count == 0)
                 {
-                    return ApplyFailure(
+                    return RestoreFailure(
                         "The original network-adapter power state was not recorded.");
                 }
 
@@ -215,7 +215,7 @@ namespace BuildCore
                             original.AllowComputerToTurnOffDevice,
                             StringComparison.OrdinalIgnoreCase))
                     {
-                        return ApplyFailure(
+                        return RestoreFailure(
                             $"BuildCore restored the adapter power setting, but verification failed for '{original.Name}'.");
                     }
                 }
@@ -305,7 +305,7 @@ namespace BuildCore
             return output.Trim();
         }
 
-        private static OptimizationApplyResult Failure(
+        private static OptimizationApplyResult ApplyFailure(
             string message,
             string? error = null)
         {
