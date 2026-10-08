@@ -111,15 +111,33 @@ namespace BuildCore
 
                 if (!recommendation.CanApply)
                 {
+                    bool alreadyOptimal =
+                        string.Equals(
+                            recommendation.CurrentValue,
+                            recommendation.RecommendedValue,
+                            StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(
+                            recommendation.RecommendedValue,
+                            "No change",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        (recommendation.RecommendedValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase) &&
+                         recommendation.CurrentValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase));
+
                     items.Add(new SelectedOptimizationApplyItem
                     {
                         TweakId = tweak.Id,
                         Title = tweak.Title,
-                        Status = "FAILED — current state could not be safely captured for this handler."
+                        Status = alreadyOptimal
+                            ? "SKIPPED — already at recommended state."
+                            : "FAILED — current state could not be safely captured for this handler."
                     });
 
-                    batchSucceeded = false;
-                    hadApplyFailure = true;
+                    if (!alreadyOptimal)
+                    {
+                        batchSucceeded = false;
+                        hadApplyFailure = true;
+                    }
+
                     continue;
                 }
 
