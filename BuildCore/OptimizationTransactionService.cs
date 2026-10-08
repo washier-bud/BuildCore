@@ -59,7 +59,11 @@ namespace BuildCore
                     recommendation.Category,
 
                 BeforeValue =
-                    recommendation.CurrentValue,
+                    recommendation.Title.Equals("Performance Power Plan", StringComparison.OrdinalIgnoreCase)
+                        ? WindowsSystemService.CaptureActivePowerPlanState()
+                        : recommendation.Title.Equals("Enable Windows Game Mode", StringComparison.OrdinalIgnoreCase)
+                            ? WindowsSystemService.CaptureGameModeState()
+                            : recommendation.CurrentValue,
 
                 TargetValue =
                     recommendation.RecommendedValue,
@@ -191,6 +195,7 @@ namespace BuildCore
                 "Disable adapter power saving" => true,
                 "Performance Power Plan" => true,
                 "Enable Windows Game Mode" => true,
+                "Processor boost policy" => true,
                 "Prevent sleep during workload" => true,
                 "Workload display timeout" => true,
                 _ => false
