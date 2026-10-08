@@ -154,7 +154,7 @@ namespace BuildCore
             }
             catch (Exception ex)
             {
-                return Failure(
+                return ApplyFailure(
                     "BuildCore could not disable adapter power saving. Run BuildCore as Administrator and verify that the Windows NetAdapter power-management cmdlets are available.",
                     ex.Message);
             }
@@ -171,7 +171,7 @@ namespace BuildCore
 
                 if (states == null || states.Count == 0)
                 {
-                    return Failure(
+                    return ApplyFailure(
                         "The original network-adapter power state was not recorded.");
                 }
 
@@ -215,7 +215,7 @@ namespace BuildCore
                             original.AllowComputerToTurnOffDevice,
                             StringComparison.OrdinalIgnoreCase))
                     {
-                        return Failure(
+                        return ApplyFailure(
                             $"BuildCore restored the adapter power setting, but verification failed for '{original.Name}'.");
                     }
                 }
@@ -229,7 +229,7 @@ namespace BuildCore
             }
             catch (Exception ex)
             {
-                return Failure(
+                return ApplyFailure(
                     "BuildCore could not restore the original adapter power-saving state.",
                     ex.Message);
             }
@@ -318,7 +318,7 @@ namespace BuildCore
             };
         }
 
-        private static OptimizationRestoreResult Failure(
+        private static OptimizationRestoreResult RestoreFailure(
             string message,
             string? error = null)
         {
