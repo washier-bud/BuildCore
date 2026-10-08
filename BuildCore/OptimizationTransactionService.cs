@@ -217,9 +217,45 @@ namespace BuildCore
                     transaction,
                     JsonOptions);
 
-            File.WriteAllText(
-                filePath,
-                json);
+            string temporaryPath =
+                filePath + ".tmp";
+
+            try
+            {
+                File.WriteAllText(
+                    temporaryPath,
+                    json);
+
+                if (File.Exists(filePath))
+                {
+                    File.Replace(
+                        temporaryPath,
+                        filePath,
+                        null);
+                }
+                else
+                {
+                    File.Move(
+                        temporaryPath,
+                        filePath);
+                }
+            }
+            catch
+            {
+                try
+                {
+                    if (File.Exists(temporaryPath))
+                    {
+                        File.Delete(temporaryPath);
+                    }
+                }
+                catch
+                {
+                    // Preserve the original persistence exception.
+                }
+
+                throw;
+            }
         }
 
         public static OptimizationTransaction?
