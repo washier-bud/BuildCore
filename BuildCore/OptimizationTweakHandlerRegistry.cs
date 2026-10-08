@@ -69,7 +69,6 @@ namespace BuildCore
                 Review("processor-min", "processor-min-v1", "Review-only processor minimum-state analysis.", false),
                 Real("processor-boost", "processor-boost-v2", "Sets the active plan AC processor boost policy to the Windows aggressive mode value and records the original setting.", () => CreatePowerIntegerRecommendation("processor-boost", "processor-boost-ac", 2)),
 
-                Real("high-performance", "high-performance-power-plan-v2", "Verified High Performance power-plan handler.", CreateHighPerformanceRecommendation),
                 Real("sleep", "workload-sleep-v1", "Disables AC sleep timeout for an active workload and verifies the power policy.", CreatePreventSleepRecommendation),
                 Real("display-timeout", "workload-display-timeout-v1", "Disables AC display timeout for an active workload and verifies the power policy.", CreateDisplayTimeoutRecommendation),
 
