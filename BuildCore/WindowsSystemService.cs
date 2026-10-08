@@ -38,34 +38,43 @@ namespace BuildCore
     {
         public static string CaptureActivePowerPlanState()
         {
-            using var process = new Process();
-            process.StartInfo = new ProcessStartInfo
-            {
-                FileName = "powercfg",
-                Arguments = "/getactivescheme",
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
+            string output = RunPowerCfg("/getactivescheme");
 
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(output))
-                throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? "Unable to query the active power plan." : error.Trim());
-
-            var guidMatch = System.Text.RegularExpressions.Regex.Match(
+            Match guidMatch = Regex.Match(
                 output,
-                @"\b([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\b");
+                @"(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b");
 
             if (!guidMatch.Success)
-                throw new InvalidOperationException("The active power-plan GUID could not be parsed.");
+            {
+                // Some localized Windows builds can vary the surrounding text.
+                // Fall back to /list and select the scheme marked as active.
+                output = RunPowerCfg("/list");
+
+                foreach (string line in output.Split(
+                    new[] { '\r', '\n' },
+                    StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (!line.Contains("*", StringComparison.Ordinal))
+                        continue;
+
+                    Match fallbackMatch = Regex.Match(
+                        line,
+                        @"(?i)\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b");
+
+                    if (fallbackMatch.Success)
+                    {
+                        guidMatch = fallbackMatch;
+                        break;
+                    }
+                }
+            }
+
+            if (!guidMatch.Success)
+                throw new InvalidOperationException(
+                    "The active power-plan GUID could not be parsed from powercfg output.");
 
             string name = "";
-            var nameMatch = System.Text.RegularExpressions.Regex.Match(
+            Match nameMatch = Regex.Match(
                 output,
                 @"\(([^\r\n]*)\)");
 
@@ -74,9 +83,40 @@ namespace BuildCore
 
             return JsonSerializer.Serialize(new ActivePowerPlanState
             {
-                Guid = guidMatch.Groups[1].Value,
+                Guid = guidMatch.Value,
                 Name = name
             });
+        }
+
+        private static string RunPowerCfg(string arguments)
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = "powercfg.exe",
+                Arguments = arguments,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                throw new InvalidOperationException(
+                    string.IsNullOrWhiteSpace(error)
+                        ? $"powercfg {arguments} failed with exit code {process.ExitCode}."
+                        : error.Trim());
+            }
+
+            return output;
         }
 
         public static string CaptureGameModeState()
