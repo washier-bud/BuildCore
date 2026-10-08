@@ -1,6 +1,7 @@
 $ErrorActionPreference = "Stop"
 
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Join-Path $repoRoot "BuildCore"
 $publishDir = Join-Path $projectRoot "bin\win-x64\publish"
 $releaseDir = Join-Path $projectRoot "bin\releases"
 $zipPath = Join-Path $releaseDir "BuildCore-1.0.0-win-x64.zip"
