@@ -2600,21 +2600,6 @@
                                 </ComboBox>
                             </Grid>
 
-                            <Grid Margin="0,16,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="220"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="TEXT STYLE" Foreground="#D8D8DD" FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Choose the visual weight of BuildCore interface text." Foreground="#66666D" FontSize="8" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                </StackPanel>
-                                <ComboBox x:Name="TextStyleComboBox" Grid.Column="1" SelectedIndex="0" SelectionChanged="TextStyleComboBox_SelectionChanged" HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="Clean"/>
-                                    <ComboBoxItem Content="Bold"/>
-                                    <ComboBoxItem Content="Minimal"/>
-                                </ComboBox>
-                            </Grid>
                         </StackPanel>
                     </Border>
 
