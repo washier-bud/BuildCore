@@ -73,7 +73,6 @@ namespace BuildCore
 
                 Group("power-settings", "Best Power Settings", OptimizationCategory.Power,
                     "Review the highest-impact Windows power settings individually.",
-                    T("high-performance", "High Performance plan", "Use Windows High Performance when appropriate for the workload.", true, OptimizationRisk.Low),
                     T("sleep", "Prevent sleep during workload", "Keep the system awake during long performance tests.", false, OptimizationRisk.Low),
                     T("display-timeout", "Workload display timeout", "Prevent display timeout during active benchmarks.", false, OptimizationRisk.Low)),
 
