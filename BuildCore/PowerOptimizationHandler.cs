@@ -10,6 +10,9 @@ namespace BuildCore
         private const string QueryPattern =
             @"Current AC Power Setting Index:\s*0x([0-9A-Fa-f]+)";
 
+        private const string FallbackAcIndexPattern =
+            @"0x([0-9A-Fa-f]+)\s*$";
+
         public static string GetAcTimeoutSeconds(string settingAlias)
         {
             try
@@ -18,19 +21,7 @@ namespace BuildCore
                     "powercfg",
                     $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
 
-                Match match = Regex.Match(
-                    output,
-                    QueryPattern,
-                    RegexOptions.IgnoreCase);
-
-                if (!match.Success)
-                    return "Unknown";
-
-                if (!uint.TryParse(
-                    match.Groups[1].Value,
-                    NumberStyles.HexNumber,
-                    CultureInfo.InvariantCulture,
-                    out uint seconds))
+                if (!TryParseCurrentAcIndex(output, out uint seconds))
                 {
                     return "Unknown";
                 }
@@ -147,8 +138,7 @@ namespace BuildCore
             try
             {
                 string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
-                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
-                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                if (!TryParseCurrentAcIndex(output, out uint value))
                     return "Unknown";
                 return $"{value}%";
             }
@@ -309,6 +299,31 @@ namespace BuildCore
                 "pcie-link-ac" => "PCIe link state power management",
                 _ => "power setting"
             };
+
+        private static bool TryParseCurrentAcIndex(string output, out uint value)
+        {
+            value = 0;
+
+            Match match = Regex.Match(
+                output,
+                QueryPattern,
+                RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+            {
+                match = Regex.Match(
+                    output,
+                    FallbackAcIndexPattern,
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            }
+
+            return match.Success &&
+                   uint.TryParse(
+                       match.Groups[1].Value,
+                       NumberStyles.HexNumber,
+                       CultureInfo.InvariantCulture,
+                       out value);
+        }
 
         private static bool TryParsePercentage(string value, out uint percentage)
         {
