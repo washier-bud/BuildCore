@@ -104,7 +104,7 @@ namespace BuildCore
                     break;
                 }
 
-                if (!recommendation.CanApply)
+                if (!handler.CanApply)
                 {
                     items.Add(new SelectedOptimizationApplyItem
                     {
@@ -114,6 +114,24 @@ namespace BuildCore
                     });
 
                     continue;
+                }
+
+                if (!recommendation.CanApply)
+                {
+                    items.Add(new SelectedOptimizationApplyItem
+                    {
+                        TweakId = tweak.Id,
+                        Title = tweak.Title,
+                        Status = "FAILED — current state could not be safely captured for this handler."
+                    });
+
+                    batchSucceeded = false;
+                    (batchRolledBack, rollbackVerified) =
+                        RollbackAppliedTransactions(
+                            items,
+                            appliedTransactions);
+
+                    break;
                 }
 
                 OptimizationTransaction transaction =
