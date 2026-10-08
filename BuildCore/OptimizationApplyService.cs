@@ -44,7 +44,7 @@ namespace BuildCore
             if (recommendation.Title.Equals("PCIe link state power management", StringComparison.OrdinalIgnoreCase))
                 return PowerOptimizationHandler.ApplyAcFlag("pcie-link-ac", false);
 
-            if (RegistryOptimizationHandler.IsSupported(recommendation.Title))
+            if (recommendation.Title.Equals("Disable adapter power saving", StringComparison.OrdinalIgnoreCase))\n                return NetworkAdapterPowerOptimizationHandler.Apply();\n\n            if (RegistryOptimizationHandler.IsSupported(recommendation.Title))
                 {
                     return RegistryOptimizationHandler.Apply(recommendation);
                 }
