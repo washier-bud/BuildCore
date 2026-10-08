@@ -183,8 +183,20 @@ namespace BuildCore
                     key.GetValue("UBR")?.ToString()
                     ?? "";
 
+                // Windows 11 retains the NT 10.x kernel version, so
+                // use the build number to distinguish Windows 11 from
+                // Windows 10 instead of trusting the legacy ProductName.
+                bool isWindows11 =
+                    int.TryParse(build, out int currentBuild) &&
+                    currentBuild >= 22000;
+
+                string detectedProductName =
+                    isWindows11
+                        ? "Windows 11"
+                        : productName;
+
                 data.WindowsVersion =
-                    $"{productName} {displayVersion}".Trim();
+                    $"{detectedProductName} {displayVersion}".Trim();
 
                 data.WindowsBuild =
                     $"{build}.{ubr}".Trim('.');
