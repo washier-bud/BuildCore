@@ -178,8 +178,7 @@ namespace BuildCore
             try
             {
                 string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
-                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
-                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                if (!TryParseCurrentAcIndex(output, out uint value))
                     return "Unknown";
                 return value.ToString(CultureInfo.InvariantCulture);
             }
@@ -219,8 +218,7 @@ namespace BuildCore
             try
             {
                 string output = RunProcess("powercfg", $"/query SCHEME_CURRENT {GetSubgroupAlias(settingAlias)} {GetSettingAlias(settingAlias)}");
-                Match match = Regex.Match(output, QueryPattern, RegexOptions.IgnoreCase);
-                if (!match.Success || !uint.TryParse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value))
+                if (!TryParseCurrentAcIndex(output, out uint value))
                     return "Unknown";
                 return value == 0 ? "Disabled" : "Enabled";
             }
