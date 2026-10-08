@@ -231,25 +231,13 @@ namespace BuildCore
         private static bool HasEnabledPowerManagement(AdapterState state)
         {
             return IsEnabled(state.AllowComputerToTurnOffDevice);
-                   IsEnabled(state.D0PacketCoalescing) ||
-                   IsEnabled(state.DeviceSleepOnDisconnect) ||
-                   IsEnabled(state.NSOffload) ||
-                   IsEnabled(state.RsnRekeyOffload) ||
-                   IsEnabled(state.SelectiveSuspend) ||
-                   IsEnabled(state.WakeOnMagicPacket) ||
-                   IsEnabled(state.WakeOnPattern);
         }
 
         private static bool StatesMatch(AdapterState expected, AdapterState actual)
         {
-            return SameState(expected.AllowComputerToTurnOffDevice, actual.AllowComputerToTurnOffDevice);
-                   SameState(expected.D0PacketCoalescing, actual.D0PacketCoalescing) &&
-                   SameState(expected.DeviceSleepOnDisconnect, actual.DeviceSleepOnDisconnect) &&
-                   SameState(expected.NSOffload, actual.NSOffload) &&
-                   SameState(expected.RsnRekeyOffload, actual.RsnRekeyOffload) &&
-                   SameState(expected.SelectiveSuspend, actual.SelectiveSuspend) &&
-                   SameState(expected.WakeOnMagicPacket, actual.WakeOnMagicPacket) &&
-                   SameState(expected.WakeOnPattern, actual.WakeOnPattern);
+            return SameState(
+                expected.AllowComputerToTurnOffDevice,
+                actual.AllowComputerToTurnOffDevice);
         }
 
         private static bool SameState(string expected, string actual)
