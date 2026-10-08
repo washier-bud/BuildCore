@@ -188,7 +188,8 @@ namespace BuildCore
 
             return optimizationTitle switch
             {
-                "Disable adapter power saving" => true,\n                "Performance Power Plan" => true,
+                "Disable adapter power saving" => true,
+                "Performance Power Plan" => true,
                 "Enable Windows Game Mode" => true,
                 "Prevent sleep during workload" => true,
                 "Workload display timeout" => true,
