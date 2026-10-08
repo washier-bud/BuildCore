@@ -93,7 +93,25 @@ namespace BuildCore
             catch (Exception ex)
             {
                 Debug.WriteLine($"BUILDCORE NETWORK POWER ANALYSIS ERROR: {ex}");
-                return null;
+
+                return new OptimizationRecommendation
+                {
+                    Title = "Disable adapter power saving",
+                    Category = OptimizationCategory.Network,
+                    CurrentValue = "Administrator access required to analyze adapter power management",
+                    RecommendedValue = "Disabled",
+                    Description = "Disable the Windows network-adapter power-management setting on supported physical adapters.",
+                    Reason = "Windows requires an elevated PowerShell session to query network-adapter power-management state.",
+                    Risk = OptimizationRisk.Medium,
+                    Impact = OptimizationImpact.Low,
+                    CanAnalyze = false,
+                    CanApply = false,
+                    CanTest = false,
+                    RequiresReboot = false,
+                    RollbackSupported = true,
+                    TestType = OptimizationTestType.None,
+                    TestDescription = "Run BuildCore as Administrator to analyze this setting."
+                };
             }
         }
 
