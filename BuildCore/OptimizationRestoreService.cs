@@ -21,6 +21,20 @@ namespace BuildCore
                     "Restore is not available for this transaction.");
             }
 
+            if (!OptimizationTransactionService.ValidateTransaction(
+                transaction.TransactionId))
+            {
+                return Failure(
+                    "The optimization transaction failed integrity validation.");
+            }
+
+            if (!OptimizationTransactionService.HasRestoreHandler(
+                transaction.OptimizationTitle))
+            {
+                return Failure(
+                    "The restore handler for this optimization is no longer available.");
+            }
+
             try
             {
                 if (RegistryOptimizationHandler.IsSupported(transaction.OptimizationTitle))
