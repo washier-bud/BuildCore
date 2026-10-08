@@ -56,7 +56,7 @@ namespace BuildCore
                 Real("explorer-animations", "explorer-animations-v2", "Disables the Windows minimize/maximize animation setting with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("explorer-animations")),
                 Real("explorer-recent", "explorer-recent-v2", "Disables recent-document tracking for the current user with reversible state capture.", () => RegistryOptimizationHandler.CreateRecommendation("explorer-recent")),
 
-                Review("network-power", "network-power-v1", "Review-only until adapter-specific power state capture and rollback are implemented.", true),
+                Real("network-power", "network-power-v2", "Disables the Windows adapter power-management setting on supported physical adapters with exact state capture and rollback.", NetworkAdapterPowerOptimizationHandler.CreateRecommendation),
                 Review("network-rss", "network-rss-v1", "Review-only RSS analysis for supported adapters.", true),
                 Review("network-offloads", "network-offloads-v1", "Review-only network offload analysis.", false),
                 Review("network-dns", "network-dns-v1", "Review-only until the user-selected DNS target is explicitly captured.", false),
