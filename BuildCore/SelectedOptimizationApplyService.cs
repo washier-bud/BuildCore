@@ -15,6 +15,9 @@ namespace BuildCore
     public sealed class SelectedOptimizationApplyResult
     {
         public string SnapshotId { get; init; } = "";
+        public bool BatchSucceeded { get; init; }
+        public bool BatchRolledBack { get; init; }
+        public bool RollbackVerified { get; init; }
         public IReadOnlyList<SelectedOptimizationApplyItem> Items { get; init; } =
             Array.Empty<SelectedOptimizationApplyItem>();
     }
@@ -33,7 +36,9 @@ namespace BuildCore
                     StringComparer.OrdinalIgnoreCase);
 
             if (selectedIds.Count == 0)
-                throw new ArgumentException("No optimizations were selected.", nameof(tweakIds));
+                throw new ArgumentException(
+                    "No optimizations were selected.",
+                    nameof(tweakIds));
 
             IReadOnlyList<string> registryErrors =
                 OptimizationTweakHandlerRegistry.ValidateRegistry();
@@ -47,6 +52,10 @@ namespace BuildCore
 
             var items = new List<SelectedOptimizationApplyItem>();
             var appliedTransactions = new List<OptimizationTransaction>();
+
+            bool batchSucceeded = true;
+            bool batchRolledBack = false;
+            bool rollbackVerified = true;
 
             foreach (OptimizationTweakDefinition tweak in
                 OptimizationLibrary.Groups
@@ -62,9 +71,16 @@ namespace BuildCore
                     {
                         TweakId = tweak.Id,
                         Title = tweak.Title,
-                        Status = "SKIPPED — no registered handler."
+                        Status = "FAILED — no registered handler."
                     });
-                    continue;
+
+                    batchSucceeded = false;
+                    (batchRolledBack, rollbackVerified) =
+                        RollbackAppliedTransactions(
+                            items,
+                            appliedTransactions);
+
+                    break;
                 }
 
                 OptimizationRecommendation? recommendation =
@@ -78,6 +94,13 @@ namespace BuildCore
                         Title = tweak.Title,
                         Status = "FAILED — current state could not be analyzed."
                     });
+
+                    batchSucceeded = false;
+                    (batchRolledBack, rollbackVerified) =
+                        RollbackAppliedTransactions(
+                            items,
+                            appliedTransactions);
+
                     break;
                 }
 
@@ -89,6 +112,7 @@ namespace BuildCore
                         Title = tweak.Title,
                         Status = "SKIPPED — handler is review-only."
                     });
+
                     continue;
                 }
 
@@ -104,7 +128,8 @@ namespace BuildCore
                     transaction,
                     result);
 
-                bool appliedAndVerified = result.Success && result.Verified;
+                bool appliedAndVerified =
+                    result.Success && result.Verified;
 
                 items.Add(new SelectedOptimizationApplyItem
                 {
@@ -120,54 +145,97 @@ namespace BuildCore
                 if (appliedAndVerified)
                 {
                     appliedTransactions.Add(transaction);
+                    continue;
                 }
-                else
-                {
-                    for (int index = appliedTransactions.Count - 1; index >= 0; index--)
-                    {
-                        OptimizationTransaction rollbackTransaction =
-                            appliedTransactions[index];
 
-                        OptimizationRestoreResult rollbackResult =
-                            OptimizationRestoreService.Restore(
-                                rollbackTransaction);
+                batchSucceeded = false;
 
-                        OptimizationTransactionService.CompleteRestore(
-                            rollbackTransaction,
-                            rollbackResult);
+                (batchRolledBack, rollbackVerified) =
+                    RollbackAppliedTransactions(
+                        items,
+                        appliedTransactions);
 
-                        SelectedOptimizationApplyItem? appliedItem =
-                            items.FirstOrDefault(
-                                item => item.Transaction?.TransactionId ==
-                                        rollbackTransaction.TransactionId);
-
-                        if (appliedItem != null)
-                        {
-                            string rollbackStatus =
-                                rollbackResult.Success && rollbackResult.Verified
-                                    ? "ROLLED BACK & VERIFIED"
-                                    : "ROLLBACK FAILED — " + rollbackResult.Message;
-
-                            items[items.IndexOf(appliedItem)] =
-                                new SelectedOptimizationApplyItem
-                                {
-                                    TweakId = appliedItem.TweakId,
-                                    Title = appliedItem.Title,
-                                    Transaction = rollbackTransaction,
-                                    Status = appliedItem.Status + " → " + rollbackStatus
-                                };
-                        }
-                    }
-
-                    break;
-                }
+                break;
             }
 
             return new SelectedOptimizationApplyResult
             {
                 SnapshotId = snapshot.Id,
+                BatchSucceeded = batchSucceeded,
+                BatchRolledBack = batchRolledBack,
+                RollbackVerified = rollbackVerified,
                 Items = items
             };
+        }
+
+        private static (bool RolledBack, bool Verified)
+            RollbackAppliedTransactions(
+                List<SelectedOptimizationApplyItem> items,
+                List<OptimizationTransaction> appliedTransactions)
+        {
+            if (appliedTransactions.Count == 0)
+                return (false, true);
+
+            bool allRollbackSucceeded = true;
+            bool allRollbackVerified = true;
+
+            for (int index = appliedTransactions.Count - 1;
+                 index >= 0;
+                 index--)
+            {
+                OptimizationTransaction rollbackTransaction =
+                    appliedTransactions[index];
+
+                OptimizationRestoreResult rollbackResult =
+                    OptimizationRestoreService.Restore(
+                        rollbackTransaction);
+
+                OptimizationTransactionService.CompleteRestore(
+                    rollbackTransaction,
+                    rollbackResult);
+
+                bool rollbackSucceeded =
+                    rollbackResult.Success &&
+                    rollbackResult.Verified;
+
+                if (!rollbackSucceeded)
+                {
+                    allRollbackSucceeded = false;
+                    allRollbackVerified = false;
+                }
+
+                int itemIndex = items.FindIndex(
+                    item =>
+                        item.Transaction?.TransactionId ==
+                        rollbackTransaction.TransactionId);
+
+                if (itemIndex >= 0)
+                {
+                    SelectedOptimizationApplyItem appliedItem =
+                        items[itemIndex];
+
+                    string rollbackStatus =
+                        rollbackSucceeded
+                            ? "ROLLED BACK & VERIFIED"
+                            : "ROLLBACK FAILED — " +
+                              rollbackResult.Message;
+
+                    items[itemIndex] =
+                        new SelectedOptimizationApplyItem
+                        {
+                            TweakId = appliedItem.TweakId,
+                            Title = appliedItem.Title,
+                            Transaction = rollbackTransaction,
+                            Status = appliedItem.Status +
+                                     " → " +
+                                     rollbackStatus
+                        };
+                }
+            }
+
+            return (
+                allRollbackSucceeded,
+                allRollbackVerified);
         }
     }
 }
