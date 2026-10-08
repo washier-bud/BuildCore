@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace BuildCore
 {
@@ -27,8 +28,67 @@ namespace BuildCore
         public string LogicalProcessorCount { get; set; } = "Unknown";
     }
 
+    public sealed class ActivePowerPlanState
+    {
+        public string Guid { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
     public static class WindowsSystemService
     {
+        public static string CaptureActivePowerPlanState()
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = "powercfg",
+                Arguments = "/getactivescheme",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(output))
+                throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? "Unable to query the active power plan." : error.Trim());
+
+            var match = System.Text.RegularExpressions.Regex.Match(
+                output,
+                @"Power Scheme GUID:\s*([0-9a-fA-F-]{36})\s*\((.*?)\)");
+
+            if (!match.Success)
+                throw new InvalidOperationException("The active power-plan GUID could not be parsed.");
+
+            return JsonSerializer.Serialize(new ActivePowerPlanState
+            {
+                Guid = match.Groups[1].Value,
+                Name = match.Groups[2].Value.Trim()
+            });
+        }
+
+        public static string CaptureGameModeState()
+        {
+            try
+            {
+                using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\GameBar");
+                if (key == null || key.GetValue("AutoGameModeEnabled") == null)
+                    return "missing";
+
+                return Convert.ToInt32(key.GetValue("AutoGameModeEnabled")) == 1
+                    ? "Enabled"
+                    : "Disabled";
+            }
+            catch
+            {
+                return "Unknown";
+            }
+        }
+
         public static WindowsSystemData Scan()
         {
             var data = new WindowsSystemData();
