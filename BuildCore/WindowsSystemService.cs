@@ -57,17 +57,25 @@ namespace BuildCore
             if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(output))
                 throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? "Unable to query the active power plan." : error.Trim());
 
-            var match = System.Text.RegularExpressions.Regex.Match(
+            var guidMatch = System.Text.RegularExpressions.Regex.Match(
                 output,
-                @"Power Scheme GUID:\s*([0-9a-fA-F-]{36})\s*\((.*?)\)");
+                @"\b([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\b");
 
-            if (!match.Success)
+            if (!guidMatch.Success)
                 throw new InvalidOperationException("The active power-plan GUID could not be parsed.");
+
+            string name = "";
+            var nameMatch = System.Text.RegularExpressions.Regex.Match(
+                output,
+                @"\(([^\r\n]*)\)");
+
+            if (nameMatch.Success)
+                name = nameMatch.Groups[1].Value.Trim();
 
             return JsonSerializer.Serialize(new ActivePowerPlanState
             {
-                Guid = match.Groups[1].Value,
-                Name = match.Groups[2].Value.Trim()
+                Guid = guidMatch.Groups[1].Value,
+                Name = name
             });
         }
 
