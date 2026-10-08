@@ -37,7 +37,12 @@ namespace BuildCore
 
             try
             {
-                if (transaction.OptimizationTitle.Equals("Disable adapter power saving", StringComparison.OrdinalIgnoreCase))\n                {\n                    return NetworkAdapterPowerOptimizationHandler.Restore(transaction.BeforeValue);\n                }\n\n                if (RegistryOptimizationHandler.IsSupported(transaction.OptimizationTitle))
+                if (transaction.OptimizationTitle.Equals("Disable adapter power saving", StringComparison.OrdinalIgnoreCase))
+                {
+                    return NetworkAdapterPowerOptimizationHandler.Restore(transaction.BeforeValue);
+                }
+
+                if (RegistryOptimizationHandler.IsSupported(transaction.OptimizationTitle))
                 {
                     return RegistryOptimizationHandler.Restore(transaction);
 
