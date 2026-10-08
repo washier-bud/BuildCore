@@ -6,6 +6,15 @@
     <RootNamespace>BuildCore</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\BuildCore.ico</ApplicationIcon>
+    <AssemblyName>BuildCore</AssemblyName>
+    <Product>BuildCore</Product>
+    <Description>BuildCore PC performance optimization and system tuning.</Description>
+    <Company>BuildCore</Company>
+    <Copyright>Copyright © 2026 BuildCore</Copyright>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
