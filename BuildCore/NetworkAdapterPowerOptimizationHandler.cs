@@ -32,24 +32,11 @@ namespace BuildCore
             };
 
         private const string CaptureScript =
-            "$items = @(Get-NetAdapter -Physical -ErrorAction Stop | " +
-            "ForEach-Object { " +
-            "$adapter = $_; " +
-            "$pm = Get-NetAdapterPowerManagement -Name $adapter.Name -ErrorAction SilentlyContinue; " +
-            "if ($null -ne $pm) { " +
-            "[PSCustomObject]@{ " +
-            "Name=$adapter.Name; InterfaceDescription=$adapter.InterfaceDescription; " +
-            "AllowComputerToTurnOffDevice=[string]$pm.AllowComputerToTurnOffDevice; " +
-            "ArpOffload=[string]$pm.ArpOffload; D0PacketCoalescing=[string]$pm.D0PacketCoalescing; " +
-            "DeviceSleepOnDisconnect=[string]$pm.DeviceSleepOnDisconnect; NSOffload=[string]$pm.NSOffload; " +
-            "RsnRekeyOffload=[string]$pm.RsnRekeyOffload; SelectiveSuspend=[string]$pm.SelectiveSuspend; " +
-            "WakeOnMagicPacket=[string]$pm.WakeOnMagicPacket; WakeOnPattern=[string]$pm.WakeOnPattern " +
-            "} } } | " +
-            "Where-Object { $_.AllowComputerToTurnOffDevice -ne 'Unsupported' -or " +
-            "$_.ArpOffload -ne 'Unsupported' -or $_.D0PacketCoalescing -ne 'Unsupported' -or " +
-            "$_.DeviceSleepOnDisconnect -ne 'Unsupported' -or $_.NSOffload -ne 'Unsupported' -or " +
-            "$_.RsnRekeyOffload -ne 'Unsupported' -or $_.SelectiveSuspend -ne 'Unsupported' -or " +
-            "$_.WakeOnMagicPacket -ne 'Unsupported' -or $_.WakeOnPattern -ne 'Unsupported' }; " +
+            "$ErrorActionPreference='Stop'; " +
+            "$items = @(Get-NetAdapter -Physical -ErrorAction Stop | ForEach-Object { " +
+            "$pm = Get-NetAdapterPowerManagement -Name $_.Name -ErrorAction Stop; " +
+            "[PSCustomObject]@{ Name=$_.Name; InterfaceDescription=$_.InterfaceDescription; AllowComputerToTurnOffDevice=[string]$pm.AllowComputerToTurnOffDevice } " +
+            "} | Where-Object { $_.AllowComputerToTurnOffDevice -ne 'Unsupported' }); " +
             "@($items) | ConvertTo-Json -Compress";
 
         public static OptimizationRecommendation? CreateRecommendation()
@@ -127,21 +114,26 @@ namespace BuildCore
                     "$ErrorActionPreference='Stop'; " +
                     "$changed=0; " +
                     "Get-NetAdapter -Physical -ErrorAction Stop | ForEach-Object { " +
-                    "$pm=Get-NetAdapterPowerManagement -Name $_.Name -ErrorAction SilentlyContinue; " +
-                    "if ($null -ne $pm) { " +
-                    "Disable-NetAdapterPowerManagement -Name $_.Name -NoRestart -ErrorAction Stop; $changed++ } }; " +
+                    "$pm=Get-NetAdapterPowerManagement -Name $_.Name -ErrorAction Stop; " +
+                    "if($pm.AllowComputerToTurnOffDevice -eq 'Enabled') { " +
+                    "$pm.AllowComputerToTurnOffDevice='Disabled'; " +
+                    "$pm | Set-NetAdapterPowerManagement -NoRestart -ErrorAction Stop; " +
+                    "$changed++ } }; " +
                     "$changed");
 
                 List<AdapterState> states = CaptureStates();
-                int remaining = states.Count(HasEnabledPowerManagement);
+                int enabled = states.Count(
+                    state => state.AllowComputerToTurnOffDevice.Equals(
+                        "Enabled",
+                        StringComparison.OrdinalIgnoreCase));
 
-                if (states.Count > 0 && remaining == 0)
+                if (states.Count > 0 && enabled == 0)
                 {
                     return new OptimizationApplyResult
                     {
                         Success = true,
                         Verified = true,
-                        Message = $"Adapter power saving disabled and verified on {states.Count} supported physical adapter(s)."
+                        Message = $"Adapter power-saving setting disabled and verified on {states.Count} supported physical adapter(s)."
                     };
                 }
 
@@ -149,8 +141,7 @@ namespace BuildCore
                 {
                     Success = false,
                     Verified = false,
-                    Message = $"BuildCore changed adapter power-management settings, but {remaining} adapter(s) still expose enabled power-management features.",
-                    Error = string.IsNullOrWhiteSpace(output) ? null : output.Trim()
+                    Message = $"BuildCore changed {output.Trim()} adapter(s), but verification still found {enabled} adapter(s) with adapter power saving enabled."
                 };
             }
             catch (Exception ex)
@@ -178,42 +169,41 @@ namespace BuildCore
                     "$ErrorActionPreference='Stop'; " +
                     "$states=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + encoded + "')) | ConvertFrom-Json; " +
                     "foreach($state in @($states)) { " +
-                    "$name=$state.Name; " +
-                    "if($null -eq (Get-NetAdapter -Name $name -ErrorAction SilentlyContinue)) { throw ('Network adapter not found: ' + $name) }; " +
-                    "Disable-NetAdapterPowerManagement -Name $name -NoRestart -ErrorAction Stop; " +
-                    "if($state.ArpOffload -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -ArpOffload -NoRestart -ErrorAction Stop}elseif($state.ArpOffload -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -ArpOffload -NoRestart -ErrorAction Stop}; " +
-                    "if($state.D0PacketCoalescing -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -D0PacketCoalescing -NoRestart -ErrorAction Stop}elseif($state.D0PacketCoalescing -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -D0PacketCoalescing -NoRestart -ErrorAction Stop}; " +
-                    "if($state.DeviceSleepOnDisconnect -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -DeviceSleepOnDisconnect -NoRestart -ErrorAction Stop}elseif($state.DeviceSleepOnDisconnect -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -DeviceSleepOnDisconnect -NoRestart -ErrorAction Stop}; " +
-                    "if($state.NSOffload -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -NSOffload -NoRestart -ErrorAction Stop}elseif($state.NSOffload -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -NSOffload -NoRestart -ErrorAction Stop}; " +
-                    "if($state.RsnRekeyOffload -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -RsnRekeyOffload -NoRestart -ErrorAction Stop}elseif($state.RsnRekeyOffload -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -RsnRekeyOffload -NoRestart -ErrorAction Stop}; " +
-                    "if($state.SelectiveSuspend -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -SelectiveSuspend -NoRestart -ErrorAction Stop}elseif($state.SelectiveSuspend -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -SelectiveSuspend -NoRestart -ErrorAction Stop}; " +
-                    "if($state.WakeOnMagicPacket -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -WakeOnMagicPacket -NoRestart -ErrorAction Stop}elseif($state.WakeOnMagicPacket -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -WakeOnMagicPacket -NoRestart -ErrorAction Stop}; " +
-                    "if($state.WakeOnPattern -eq 'Enabled'){Enable-NetAdapterPowerManagement -Name $name -WakeOnPattern -NoRestart -ErrorAction Stop}elseif($state.WakeOnPattern -eq 'Disabled'){Disable-NetAdapterPowerManagement -Name $name -WakeOnPattern -NoRestart -ErrorAction Stop}; " +
+                    "$pm=Get-NetAdapterPowerManagement -Name $state.Name -ErrorAction Stop; " +
+                    "$pm.AllowComputerToTurnOffDevice=$state.AllowComputerToTurnOffDevice; " +
+                    "$pm | Set-NetAdapterPowerManagement -NoRestart -ErrorAction Stop; " +
                     "}";
 
                 RunPowerShell(script);
 
                 List<AdapterState> verified = CaptureStates();
+
                 foreach (AdapterState original in states)
                 {
                     AdapterState? current = verified.FirstOrDefault(
                         state => state.Name.Equals(original.Name, StringComparison.OrdinalIgnoreCase));
 
-                    if (current == null || !StatesMatch(original, current))
-                        return RestoreFailure($"BuildCore restored adapter power-management settings, but verification failed for '{original.Name}'.");
+                    if (current == null ||
+                        !current.AllowComputerToTurnOffDevice.Equals(
+                            original.AllowComputerToTurnOffDevice,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RestoreFailure(
+                            $"BuildCore restored the adapter power-management setting, but verification failed for '{original.Name}'.");
+                    }
                 }
 
                 return new OptimizationRestoreResult
                 {
                     Success = true,
                     Verified = true,
-                    Message = $"Original adapter power-management state restored and verified on {states.Count} adapter(s)."
+                    Message = $"Original adapter power-saving state restored and verified on {states.Count} adapter(s)."
                 };
             }
             catch (Exception ex)
             {
                 return RestoreFailure(
-                    "BuildCore could not restore the original adapter power-management state.",
+                    "BuildCore could not restore the original adapter power-saving state.",
                     ex.Message);
             }
         }
@@ -240,8 +230,7 @@ namespace BuildCore
 
         private static bool HasEnabledPowerManagement(AdapterState state)
         {
-            return IsEnabled(state.AllowComputerToTurnOffDevice) ||
-                   IsEnabled(state.ArpOffload) ||
+            return IsEnabled(state.AllowComputerToTurnOffDevice);
                    IsEnabled(state.D0PacketCoalescing) ||
                    IsEnabled(state.DeviceSleepOnDisconnect) ||
                    IsEnabled(state.NSOffload) ||
@@ -253,8 +242,7 @@ namespace BuildCore
 
         private static bool StatesMatch(AdapterState expected, AdapterState actual)
         {
-            return SameState(expected.AllowComputerToTurnOffDevice, actual.AllowComputerToTurnOffDevice) &&
-                   SameState(expected.ArpOffload, actual.ArpOffload) &&
+            return SameState(expected.AllowComputerToTurnOffDevice, actual.AllowComputerToTurnOffDevice);
                    SameState(expected.D0PacketCoalescing, actual.D0PacketCoalescing) &&
                    SameState(expected.DeviceSleepOnDisconnect, actual.DeviceSleepOnDisconnect) &&
                    SameState(expected.NSOffload, actual.NSOffload) &&
