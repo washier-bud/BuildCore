@@ -5224,12 +5224,16 @@ namespace BuildCore
             if (data.GpuMemoryUsed.HasValue &&
                 data.GpuMemoryUsed.Value >= 0)
             {
+                // LibreHardwareMonitor Data sensors expose memory values
+                // in bytes. Convert to GiB before displaying them.
                 double vramGB =
                     data.GpuMemoryUsed.Value /
-                    1024.0;
+                    (1024.0 * 1024.0 * 1024.0);
 
                 GpuMemoryLarge.Text =
-                    $"{vramGB:F1} GB";
+                    vramGB < 0.1
+                        ? $"{vramGB:F2} GB"
+                        : $"{vramGB:F1} GB";
             }
             else
             {
@@ -6354,16 +6358,6 @@ namespace BuildCore
             MinimizeToTrayToggle.IsOn =
                 GetBoolSetting(store, "MinimizeToTray", false);
 
-            string textStyle =
-                store.Values["TextStyle"] as string ?? "Clean";
-            TextStyleComboBox.SelectedIndex =
-                textStyle switch
-                {
-                    "Bold" => 1,
-                    "Minimal" => 2,
-                    _ => 0
-                };
-
             ApplyAccentColor();
         }
 
@@ -6386,17 +6380,6 @@ namespace BuildCore
             {
                 brush.Color = GetAccentColor();
             }
-        }
-
-        private void TextStyleComboBox_SelectionChanged(
-            object sender,
-            SelectionChangedEventArgs e)
-        {
-            if (TextStyleComboBox.SelectedItem is not ComboBoxItem item)
-                return;
-
-            string name = item.Content?.ToString() ?? "Clean";
-            GetSettingsStore().Values["TextStyle"] = name;
         }
 
         private void AccentColorComboBox_SelectionChanged(
