@@ -127,7 +127,7 @@ namespace BuildCore
 
                 Review("boot-timeout", "boot-timeout-v1", "Review-only boot menu timeout analysis.", false),
                 Review("disabledynamictick", "bcdedit-disabledynamictick-v1", "Review-only BCDEdit experiment preparation.", true),
-                Review("useplatformclock", "bcdedit-useplatformclock-v1", "Review-only BCDEdit experiment preparation.", true)
+                Review("useplatformclock", "bcdedit-useplatformclock-v1", "Review-only BCDEdit experiment preparation.", true),
             }));
 
         public static IReadOnlyList<OptimizationTweakHandler> GetHandlers() => Handlers;
