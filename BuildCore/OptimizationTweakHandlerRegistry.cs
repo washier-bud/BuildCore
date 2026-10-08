@@ -285,24 +285,74 @@ namespace BuildCore
 
         private static OptimizationRecommendation? CreateGameModeRecommendation()
         {
-            WindowsSystemData system = WindowsSystemService.Scan();
+            string current = WindowsSystemService.CaptureGameModeState();
 
-            return OptimizationAnalyzer.Analyze(system)
-                .FirstOrDefault(
-                    recommendation => recommendation.Title.Equals(
-                        "Enable Windows Game Mode",
-                        StringComparison.OrdinalIgnoreCase));
+            if (current.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            bool enabled = current.Equals("Enabled", StringComparison.OrdinalIgnoreCase);
+
+            return new OptimizationRecommendation
+            {
+                Title = "Enable Windows Game Mode",
+                Category = OptimizationCategory.Gaming,
+                CurrentValue = enabled ? "Enabled" : current.Equals("missing", StringComparison.OrdinalIgnoreCase) ? "Missing" : "Disabled",
+                RecommendedValue = "Enabled",
+                Description = "Enable Windows Game Mode for supported games.",
+                Reason = "BuildCore captures the current Game Mode registry state, enables it only when needed, verifies the result, and can restore the exact original state.",
+                Risk = OptimizationRisk.Low,
+                Impact = OptimizationImpact.Low,
+                CanAnalyze = true,
+                CanApply = !enabled,
+                CanTest = false,
+                RequiresReboot = false,
+                RollbackSupported = true,
+                TestType = OptimizationTestType.None,
+                TestDescription = enabled
+                    ? "Game Mode is already enabled."
+                    : "The setting can be enabled and verified immediately."
+            };
         }
 
         private static OptimizationRecommendation? CreateHighPerformanceRecommendation()
         {
-            WindowsSystemData system = WindowsSystemService.Scan();
+            try
+            {
+                string state = WindowsSystemService.CaptureActivePowerPlanState();
+                ActivePowerPlanState? plan =
+                    System.Text.Json.JsonSerializer.Deserialize<ActivePowerPlanState>(state);
 
-            return OptimizationAnalyzer.Analyze(system)
-                .FirstOrDefault(
-                    recommendation => recommendation.Title.Equals(
-                        "Performance Power Plan",
-                        StringComparison.OrdinalIgnoreCase));
+                if (plan == null || string.IsNullOrWhiteSpace(plan.Guid))
+                    return null;
+
+                bool alreadyHighPerformance =
+                    plan.Guid.Equals("8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c", StringComparison.OrdinalIgnoreCase);
+
+                return new OptimizationRecommendation
+                {
+                    Title = "Performance Power Plan",
+                    Category = OptimizationCategory.Power,
+                    CurrentValue = string.IsNullOrWhiteSpace(plan.Name) ? plan.Guid : plan.Name,
+                    RecommendedValue = "High Performance",
+                    Description = "Use the Windows High Performance power plan for performance-sensitive workloads.",
+                    Reason = "BuildCore records the exact active power-plan GUID before switching plans and verifies the High Performance GUID after the change.",
+                    Risk = OptimizationRisk.Low,
+                    Impact = OptimizationImpact.Low,
+                    CanAnalyze = true,
+                    CanApply = !alreadyHighPerformance,
+                    CanTest = false,
+                    RequiresReboot = false,
+                    RollbackSupported = true,
+                    TestType = OptimizationTestType.None,
+                    TestDescription = alreadyHighPerformance
+                        ? "High Performance is already active."
+                        : "The active power plan can be switched and verified immediately."
+                };
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static OptimizationRecommendation CreatePowerPercentageRecommendation(string tweakId, string settingAlias, uint target)
