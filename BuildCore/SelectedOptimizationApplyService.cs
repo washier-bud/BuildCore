@@ -123,16 +123,30 @@ namespace BuildCore
                         (recommendation.RecommendedValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase) &&
                          recommendation.CurrentValue.Equals("Enabled", StringComparison.OrdinalIgnoreCase));
 
+                    bool unavailable =
+                        string.Equals(
+                            recommendation.CurrentValue,
+                            "Unknown",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        recommendation.CurrentValue.Contains(
+                            "Administrator access required",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        recommendation.CurrentValue.Contains(
+                            "unsupported",
+                            StringComparison.OrdinalIgnoreCase);
+
                     items.Add(new SelectedOptimizationApplyItem
                     {
                         TweakId = tweak.Id,
                         Title = tweak.Title,
                         Status = alreadyOptimal
                             ? "SKIPPED — already at recommended state."
-                            : "FAILED — current state could not be safely captured for this handler."
+                            : unavailable
+                                ? "SKIPPED — required system state is unavailable on this PC."
+                                : "FAILED — current state could not be safely captured for this handler."
                     });
 
-                    if (!alreadyOptimal)
+                    if (!alreadyOptimal && !unavailable)
                     {
                         batchSucceeded = false;
                         hadApplyFailure = true;
