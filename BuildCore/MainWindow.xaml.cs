@@ -6379,16 +6379,13 @@ namespace BuildCore
         {
             string name =
                 GetSettingsStore().Values["AccentColor"] as string ??
-                "Lime";
+                "Silver";
 
             return name switch
             {
-                "Blue" => Color.FromArgb(255, 90, 170, 255),
-                "Purple" => Color.FromArgb(255, 180, 120, 255),
-                "Orange" => Color.FromArgb(255, 255, 165, 70),
-                "Red" => Color.FromArgb(255, 255, 105, 105),
                 "White" => Color.FromArgb(255, 245, 245, 248),
-                _ => Color.FromArgb(255, 124, 255, 138)
+                "Graphite" => Color.FromArgb(255, 145, 145, 153),
+                _ => Color.FromArgb(255, 216, 216, 222)
             };
         }
 
@@ -6396,16 +6393,13 @@ namespace BuildCore
         {
             var store = GetSettingsStore();
             string accent =
-                store.Values["AccentColor"] as string ?? "Lime";
+                store.Values["AccentColor"] as string ?? "Silver";
 
             AccentColorComboBox.SelectedIndex =
                 accent switch
                 {
-                    "Blue" => 1,
-                    "Purple" => 2,
-                    "Orange" => 3,
-                    "Red" => 4,
-                    "White" => 5,
+                    "White" => 1,
+                    "Graphite" => 2,
                     _ => 0
                 };
 
@@ -6451,7 +6445,7 @@ namespace BuildCore
             if (AccentColorComboBox.SelectedItem is not ComboBoxItem item)
                 return;
 
-            string name = item.Content?.ToString() ?? "Lime";
+            string name = item.Content?.ToString() ?? "Silver";
             GetSettingsStore().Values["AccentColor"] = name;
             ApplyAccentColor();
         }
