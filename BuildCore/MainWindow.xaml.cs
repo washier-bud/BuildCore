@@ -6116,6 +6116,39 @@ namespace BuildCore
                 _autoTuneSelectedTweaks.Count > 0;
         }
 
+        private void PlanetNavigationButton_PointerEntered(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button)
+            {
+                return;
+            }
+
+            button.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+            button.RenderTransform = new Microsoft.UI.Xaml.Media.ScaleTransform
+            {
+                ScaleX = 1.035,
+                ScaleY = 1.035
+            };
+        }
+
+        private void PlanetNavigationButton_PointerExited(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button)
+            {
+                return;
+            }
+
+            button.RenderTransform = new Microsoft.UI.Xaml.Media.ScaleTransform
+            {
+                ScaleX = 1.0,
+                ScaleY = 1.0
+            };
+        }
+
         private void HideAllPages()
         {
             AutoTunePage.Visibility =
