@@ -461,687 +461,156 @@
             <!-- DASHBOARD -->
             <!-- ================================================== -->
 
-            <ScrollViewer
-                x:Name="DashboardPage"
-                Margin="0,64,0,0"
-                VerticalScrollBarVisibility="Auto">
-
-                <StackPanel
-                    Padding="32">
-
-                    <TextBlock
-                        Text="BUILDCORE"
-                        Foreground="#5E5E65"
-                        FontSize="10"
-                        FontWeight="SemiBold"/>
-
-                    <TextBlock
-                        Text="Performance Dashboard"
-                        Foreground="White"
-                        FontSize="28"
-                        FontWeight="SemiBold"
-                        Margin="0,4,0,0"/>
-
-                    <Border
-                        Margin="0,28,0,0"
-                        Padding="22"
-                        CornerRadius="14"
-                        Background="#111116"
-                        BorderBrush="#24242A"
-                        BorderThickness="1">
-
-                        <StackPanel>
-
-                            <TextBlock
-                                Text="SYSTEM READY"
-                                Foreground="{StaticResource BuildCoreAccentBrush}"
-                                FontSize="10"
-                                FontWeight="SemiBold"/>
-
-                            <TextBlock
-                                Text="BuildCore is monitoring your system."
-                                Foreground="#A7A7AE"
-                                FontSize="12"
-                                Margin="0,6,0,0"/>
-
-                        </StackPanel>
-
-                    </Border>
-
-                    <TextBlock
-                        Text="HARDWARE"
-                        Foreground="#5E5E65"
-                        FontSize="10"
-                        FontWeight="SemiBold"
-                        Margin="0,30,0,12"/>
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border
-                            Grid.Column="0"
-                            Margin="0,0,7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="CPU"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="CpuText"
-                                    Text="Unknown CPU"
-                                    Foreground="White"
-                                    FontSize="12"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="CpuUsageText"
-                                    Text="0%"
-                                    Foreground="#7CFF8A"
-                                    FontSize="24"
-                                    FontWeight="SemiBold"
-                                    Margin="0,14,0,0"/>
-
-                                <TextBlock
-                                    x:Name="CpuStatusText"
-                                    Text="NORMAL"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,3,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="1"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="GPU"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="GpuText"
-                                    Text="Unknown GPU"
-                                    Foreground="White"
-                                    FontSize="12"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="GpuUsageText"
-                                    Text="0%"
-                                    Foreground="#7CFF8A"
-                                    FontSize="24"
-                                    FontWeight="SemiBold"
-                                    Margin="0,14,0,0"/>
-
-                                <TextBlock
-                                    x:Name="GpuUsageSensorText"
-                                    Text="GPU usage"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,3,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="2"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="MEMORY"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="RamText"
-                                    Text="Unknown RAM"
-                                    Foreground="White"
-                                    FontSize="12"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="RamUsageText"
-                                    Text="0%"
-                                    Foreground="#7CFF8A"
-                                    FontSize="24"
-                                    FontWeight="SemiBold"
-                                    Margin="0,14,0,0"/>
-
-                                <TextBlock
-                                    x:Name="RamStatusText"
-                                    Text="NORMAL"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,3,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="3"
-                            Margin="7,0,0,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="STORAGE"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="StorageText"
-                                    Text="Unknown Storage"
-                                    Foreground="White"
-                                    FontSize="12"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="DiskUsageText"
-                                    Text="0%"
-                                    Foreground="#7CFF8A"
-                                    FontSize="24"
-                                    FontWeight="SemiBold"
-                                    Margin="0,14,0,0"/>
-
-                                <TextBlock
-                                    x:Name="DiskStatusText"
-                                    Text="NORMAL"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,3,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                    </Grid>
-
-                    <TextBlock
-                        Text="LIVE PERFORMANCE"
-                        Foreground="#5E5E65"
-                        FontSize="10"
-                        FontWeight="SemiBold"
-                        Margin="0,30,0,12"/>
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border
-                            Grid.Column="0"
-                            Margin="0,0,7,0"
-                            Padding="18"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="CPU LOAD"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="CpuPerformanceLarge"
-                                    Text="0%"
-                                    Foreground="White"
-                                    FontSize="30"
-                                    FontWeight="SemiBold"
-                                    Margin="0,7,0,0"/>
-
-                                <TextBlock
-                                    x:Name="CpuTemperatureLarge"
-                                    Text="N/A"
-                                    Foreground="#7CFF8A"
-                                    FontSize="11"
-                                    Margin="0,5,0,0"/>
-
-                                <TextBlock
-                                    x:Name="CpuTemperatureText"
-                                    Text="Sensor unavailable"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,2,0,0"/>
-
-                                <Button
-                                    x:Name="CpuSensorDiagnosticButton"
-                                    Content="CPU SENSOR DIAGNOSTIC"
-                                    Click="CpuSensorDiagnosticButton_Click"
-                                    HorizontalAlignment="Left"
-                                    Padding="10,5"
-                                    Margin="0,8,0,0"
-                                    FontSize="8"/>
-
-                                <TextBlock
-                                    x:Name="CpuClockLarge"
-                                    Text="-- GHz"
-                                    Foreground="#A0A0A7"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="CpuClockText"
-                                    Text="Clock: -- GHz"
-                                    Foreground="#66666D"
-                                    FontSize="8"
-                                    Margin="0,2,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="1"
-                            Margin="7,0"
-                            Padding="18"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="GPU"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="GpuTemperatureLarge"
-                                    Text="N/A"
-                                    Foreground="White"
-                                    FontSize="30"
-                                    FontWeight="SemiBold"
-                                    Margin="0,7,0,0"/>
-
-                                <TextBlock
-                                    x:Name="GpuClockLarge"
-                                    Text="-- MHz"
-                                    Foreground="#7CFF8A"
-                                    FontSize="11"
-                                    Margin="0,5,0,0"/>
-
-                                <TextBlock
-                                    x:Name="GpuMemoryLarge"
-                                    Text="-- GB"
-                                    Foreground="#A0A0A7"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="2"
-                            Margin="7,0,0,0"
-                            Padding="18"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="MEMORY / STORAGE"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="RamPerformanceLarge"
-                                    Text="0%"
-                                    Foreground="White"
-                                    FontSize="30"
-                                    FontWeight="SemiBold"
-                                    Margin="0,7,0,0"/>
-
-                                <TextBlock
-                                    Text="Memory usage"
-                                    Foreground="#66666D"
-                                    FontSize="9"
-                                    Margin="0,4,0,0"/>
-
-                                <TextBlock
-                                    x:Name="DiskPerformanceLarge"
-                                    Text="0%"
-                                    Foreground="#7CFF8A"
-                                    FontSize="22"
-                                    FontWeight="SemiBold"
-                                    Margin="0,14,0,0"/>
-
-                                <TextBlock
-                                    Text="Disk activity"
-                                    Foreground="#66666D"
-                                    FontSize="9"
-                                    Margin="0,3,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                    </Grid>
-
-                    <TextBlock
-                        Text="WINDOWS CONFIGURATION"
-                        Foreground="#5E5E65"
-                        FontSize="10"
-                        FontWeight="SemiBold"
-                        Margin="0,30,0,12"/>
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border
-                            Grid.Column="0"
-                            Margin="0,0,7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="WINDOWS"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="WindowsVersionText"
-                                    Text="Unknown Windows"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                                <TextBlock
-                                    x:Name="WindowsBuildText"
-                                    Text="Build Unknown"
-                                    Foreground="#66666D"
-                                    FontSize="9"
-                                    Margin="0,5,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="1"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="POWER PLAN"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="PowerPlanText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="2"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="GAME MODE"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="GameModeText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="3"
-                            Margin="7,0,0,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="HAGS"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="HagsText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                    </Grid>
-
-                    <Grid
-                        Margin="0,10,0,0">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border
-                            Grid.Column="0"
-                            Margin="0,0,7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="MEMORY INTEGRITY"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="MemoryIntegrityText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="1"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="DEFENDER"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="DefenderText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="2"
-                            Margin="7,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="GAME BAR"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="GameBarText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                        <Border
-                            Grid.Column="3"
-                            Margin="7,0,0,0"
-                            Padding="16"
-                            CornerRadius="12"
-                            Background="#111116">
-
-                            <StackPanel>
-
-                                <TextBlock
-                                    Text="WINDOWS UPDATE"
-                                    Foreground="#66666D"
-                                    FontSize="9"/>
-
-                                <TextBlock
-                                    x:Name="WindowsUpdateText"
-                                    Text="Unknown"
-                                    Foreground="White"
-                                    FontSize="11"
-                                    TextWrapping="Wrap"
-                                    Margin="0,8,0,0"/>
-
-                            </StackPanel>
-
-                        </Border>
-
-                    </Grid>
-
-                    <Border
-                        Margin="0,10,0,0"
-                        Padding="16"
-                        CornerRadius="12"
-                        Background="#111116">
-
-                        <StackPanel>
-
-                            <TextBlock
-                                Text="PROCESSOR"
-                                Foreground="#66666D"
-                                FontSize="9"/>
-
-                            <TextBlock
-                                x:Name="ProcessorText"
-                                Text="Unknown"
-                                Foreground="White"
-                                FontSize="11"
-                                Margin="0,8,0,0"/>
-
-                        </StackPanel>
-
-                    </Border>
-
-                    <StackPanel
-                        Orientation="Horizontal"
-                        Margin="0,25,0,30">
-
-                        <Button
-                            x:Name="ScanWindowsButton"
-                            Click="ScanWindowsButton_Click"
-                            Content="SCAN WINDOWS"
-                            Padding="22,11"/>
-
-                        <TextBlock
-                            x:Name="WindowsScanStatusText"
-                            Text="READY"
-                            Foreground="#66666D"
-                            FontSize="9"
-                            VerticalAlignment="Center"
-                            Margin="14,0,0,0"/>
-
+            <Grid x:Name="DashboardPage" Margin="0,64,0,0" Background="#030305">
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#020204" Offset="0"/>
+                            <GradientStop Color="#0A0A0D" Offset="0.55"/>
+                            <GradientStop Color="#030305" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <!-- Monochrome deep-space stars -->
+                    <Canvas IsHitTestVisible="False" Opacity="0.7">
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="48" Canvas.Top="62" Opacity="0.65"/>
+                        <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="162" Canvas.Top="188" Opacity="0.45"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="284" Canvas.Top="90" Opacity="0.55"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="418" Canvas.Top="262" Opacity="0.5"/>
+                        <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="582" Canvas.Top="80" Opacity="0.6"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="742" Canvas.Top="170" Opacity="0.45"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="884" Canvas.Top="62" Opacity="0.55"/>
+                        <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="1082" Canvas.Top="224" Opacity="0.45"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="1194" Canvas.Top="102" Opacity="0.6"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="95" Canvas.Top="470" Opacity="0.45"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="326" Canvas.Top="622" Opacity="0.55"/>
+                        <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="520" Canvas.Top="548" Opacity="0.4"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="812" Canvas.Top="644" Opacity="0.55"/>
+                        <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="1034" Canvas.Top="520" Opacity="0.45"/>
+                        <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="1198" Canvas.Top="680" Opacity="0.5"/>
+                    </Canvas>
+
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,24,0,0" IsHitTestVisible="False">
+                        <TextBlock Text="SYSTEM COMMAND CENTER" Foreground="#A6A6AD" FontSize="10" FontWeight="SemiBold" CharacterSpacing="180"/>
+                        <TextBlock Text="Navigate your system" Foreground="White" FontSize="25" FontWeight="SemiBold" Margin="0,7,0,0"/>
+                        <TextBlock Text="Select a planet to open a BuildCore module" Foreground="#77777F" FontSize="11" Margin="0,4,0,0"/>
                     </StackPanel>
 
-                </StackPanel>
+                    <!-- Orbital tracks and monochrome planetary navigation -->
+                    <Canvas Width="1200" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Ellipse Width="430" Height="220" Canvas.Left="385" Canvas.Top="240" Stroke="#4CFFFFFF" StrokeThickness="1" Opacity="0.55"/>
+                        <Ellipse Width="610" Height="320" Canvas.Left="295" Canvas.Top="190" Stroke="#38FFFFFF" StrokeThickness="1" Opacity="0.65"/>
+                        <Ellipse Width="790" Height="420" Canvas.Left="205" Canvas.Top="140" Stroke="#30FFFFFF" StrokeThickness="1" Opacity="0.65"/>
+                        <Ellipse Width="970" Height="520" Canvas.Left="115" Canvas.Top="90" Stroke="#28FFFFFF" StrokeThickness="1" Opacity="0.7"/>
+                        <Ellipse Width="1130" Height="610" Canvas.Left="35" Canvas.Top="45" Stroke="#20FFFFFF" StrokeThickness="1" Opacity="0.8"/>
 
-            </ScrollViewer>
+                        <!-- Core Sun -->
+                        <Grid Canvas.Left="522" Canvas.Top="278" Width="156" Height="156" IsHitTestVisible="False">
+                            <Ellipse Width="156" Height="156" Fill="#18FFFFFF"/>
+                            <Ellipse Width="136" Height="136" Margin="10" Fill="#36FFFFFF"/>
+                            <Ellipse Width="118" Height="118" Margin="19">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush Center="0.35,0.32" RadiusX="0.78" RadiusY="0.78">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                        <GradientStop Color="#FFE3E3E3" Offset="0.18"/>
+                                        <GradientStop Color="#FF8C8C8C" Offset="0.42"/>
+                                        <GradientStop Color="#FF292929" Offset="0.72"/>
+                                        <GradientStop Color="#FF050505" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                        <GradientStop Color="#FF777777" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.StrokeThickness>1.5</Ellipse.StrokeThickness>
+                            </Ellipse>
+                        </Grid>
+                        <TextBlock Text="BUILDCORE" Canvas.Left="555" Canvas.Top="440" Foreground="White" FontSize="16" FontWeight="Bold" CharacterSpacing="70"/>
+                        <TextBlock Text="SYSTEM OPTIMIZER" Canvas.Left="559" Canvas.Top="463" Foreground="#85858B" FontSize="8" CharacterSpacing="170"/>
+
+                        <!-- Dashboard -->
+                        <Button Canvas.Left="135" Canvas.Top="292" Width="118" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="DashboardButton_Click" ToolTipService.ToolTip="Dashboard — overview, health and temperatures">
+                            <StackPanel HorizontalAlignment="Center" Spacing="9">
+                                <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.25" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFF7F7F7" Offset="0"/><GradientStop Color="#FF858585" Offset="0.25"/><GradientStop Color="#FF292929" Offset="0.62"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="DASHBOARD" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Overview · Health · Temps" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- System -->
+                        <Button Canvas.Left="280" Canvas.Top="92" Width="132" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="SystemButton_Click" ToolTipService.ToolTip="System — hardware and Windows details">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.22" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBEBEBE" Offset="0.2"/><GradientStop Color="#FF565656" Offset="0.48"/><GradientStop Color="#FF151515" Offset="0.8"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="SYSTEM" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Hardware &amp; OS" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Performance -->
+                        <Button Canvas.Left="570" Canvas.Top="72" Width="116" Height="126" Background="Transparent" BorderThickness="0" Padding="0" Click="PerformanceButton_Click" ToolTipService.ToolTip="Performance — FPS, latency and benchmarks">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.22" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FF999999" Offset="0.25"/><GradientStop Color="#FF3C3C3C" Offset="0.65"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="PERFORMANCE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="FPS · Latency · Benchmarks" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Optimize -->
+                        <Button Canvas.Left="890" Canvas.Top="145" Width="170" Height="190" Background="Transparent" BorderThickness="0" Padding="0" Click="OptimizeButton_Click" ToolTipService.ToolTip="Optimize — tweaks, settings and recovery">
+                            <StackPanel HorizontalAlignment="Center" Spacing="9">
+                                <Ellipse Width="150" Height="150" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.22" RadiusX="0.82" RadiusY="0.82"><GradientStop Color="#FFFDFDFD" Offset="0"/><GradientStop Color="#FFB8B8B8" Offset="0.15"/><GradientStop Color="#FF5C5C5C" Offset="0.35"/><GradientStop Color="#FF171717" Offset="0.7"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="OPTIMIZE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Tweaks · Settings · Recovery" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- AutoTune -->
+                        <Button Canvas.Left="905" Canvas.Top="425" Width="142" Height="148" Background="Transparent" BorderThickness="0" Padding="0" Click="AutoTuneButton_Click" ToolTipService.ToolTip="AutoTune — guided optimization and undo">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBDBDBD" Offset="0.24"/><GradientStop Color="#FF454545" Offset="0.6"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="AUTOTUNE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="AI Assistant · Apply · Undo" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- History -->
+                        <Button Canvas.Left="215" Canvas.Top="475" Width="180" Height="170" Background="Transparent" BorderThickness="0" Padding="0" Click="HistoryButton_Click" ToolTipService.ToolTip="History — logs, benchmarks and activity">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBDBDBD" Offset="0.2"/><GradientStop Color="#FF454545" Offset="0.48"/><GradientStop Color="#FF121212" Offset="0.82"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="HISTORY" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Logs · Benchmarks · Activity" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Settings -->
+                        <Button Canvas.Left="600" Canvas.Top="540" Width="125" Height="132" Background="Transparent" BorderThickness="0" Padding="0" Click="SettingsButton_Click" ToolTipService.ToolTip="Settings — appearance and app behavior">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FF9D9D9D" Offset="0.25"/><GradientStop Color="#FF3A3A3A" Offset="0.63"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="SETTINGS" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="App · Theme · Behavior" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Canvas>
+
+                    <TextBlock Text="BUILDCORE  /  MONOCHROME ORBITAL INTERFACE" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="28,0,0,18" Foreground="#55555D" FontSize="8" CharacterSpacing="100" IsHitTestVisible="False"/>
+                </Grid>
+            </Grid>
 
             <!-- ================================================== -->
             <!-- SYSTEM PAGE -->
