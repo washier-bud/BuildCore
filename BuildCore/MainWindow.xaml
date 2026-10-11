@@ -2104,12 +2104,9 @@
                                           SelectedIndex="0"
                                           SelectionChanged="AccentColorComboBox_SelectionChanged"
                                           HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="Lime"/>
-                                    <ComboBoxItem Content="Blue"/>
-                                    <ComboBoxItem Content="Purple"/>
-                                    <ComboBoxItem Content="Orange"/>
-                                    <ComboBoxItem Content="Red"/>
+                                    <ComboBoxItem Content="Silver"/>
                                     <ComboBoxItem Content="White"/>
+                                    <ComboBoxItem Content="Graphite"/>
                                 </ComboBox>
                             </Grid>
 
