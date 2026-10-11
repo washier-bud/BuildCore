@@ -6945,6 +6945,7 @@ namespace BuildCore
             }
 
             _planetNavigationInProgress = true;
+            bool navigationApplied = false;
 
             try
             {
@@ -6987,8 +6988,8 @@ namespace BuildCore
                 solarVisual.Offset = baseOffset;
 
                 Vector3 finalOffset = baseOffset + new Vector3(
-                    -(planetCenterX - centerX) * (zoomScale - 1.0f),
-                    -(planetCenterY - centerY) * (zoomScale - 1.0f),
+                    -(planetCenterX - centerX) * zoomScale,
+                    -(planetCenterY - centerY) * zoomScale,
                     0.0f);
 
                 Compositor compositor = solarVisual.Compositor;
@@ -7032,6 +7033,7 @@ namespace BuildCore
                 // Change the page after the zoom reaches its destination, then
                 // restore the scene so the next visit starts from a clean view.
                 navigate();
+                navigationApplied = true;
 
                 solarVisual.StopAnimation("Scale");
                 solarVisual.StopAnimation("Offset");
@@ -7059,7 +7061,9 @@ namespace BuildCore
             {
                 Debug.WriteLine($"BUILDCORE PLANET TRANSITION ERROR: {ex}");
                 // A visual transition must never prevent normal navigation.
-                navigate();
+                if (!navigationApplied)
+                    navigate();
+
                 if (targetPage != null)
                     targetPage.Opacity = 1.0;
 
