@@ -480,7 +480,7 @@
                             <Grid>
                                 <StackPanel>
                                     <TextBlock
-                                        Text="BUIL DCORE / ORBITAL INTERFACE"
+                                        Text="BUILDCORE / ORBITAL INTERFACE"
                                         Foreground="#88888F"
                                         FontSize="9"
                                         FontWeight="SemiBold"
