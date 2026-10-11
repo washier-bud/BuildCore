@@ -6980,11 +6980,13 @@ namespace BuildCore
 
                 solarVisual.StopAnimation("Scale");
                 solarVisual.StopAnimation("Offset");
+                Vector3 baseOffset = solarVisual.Offset;
+                Vector3 baseCenterPoint = solarVisual.CenterPoint;
                 solarVisual.CenterPoint = new Vector3(centerX, centerY, 0.0f);
                 solarVisual.Scale = Vector3.One;
-                solarVisual.Offset = Vector3.Zero;
+                solarVisual.Offset = baseOffset;
 
-                Vector3 finalOffset = new Vector3(
+                Vector3 finalOffset = baseOffset + new Vector3(
                     -(planetCenterX - centerX) * (zoomScale - 1.0f),
                     -(planetCenterY - centerY) * (zoomScale - 1.0f),
                     0.0f);
@@ -7034,8 +7036,8 @@ namespace BuildCore
                 solarVisual.StopAnimation("Scale");
                 solarVisual.StopAnimation("Offset");
                 solarVisual.Scale = Vector3.One;
-                solarVisual.Offset = Vector3.Zero;
-                solarVisual.CenterPoint = Vector3.Zero;
+                solarVisual.Offset = baseOffset;
+                solarVisual.CenterPoint = baseCenterPoint;
 
                 targetPage.Opacity = 0.0;
                 Visual pageVisual =
@@ -7068,7 +7070,7 @@ namespace BuildCore
                     solarVisual.StopAnimation("Scale");
                     solarVisual.StopAnimation("Offset");
                     solarVisual.Scale = Vector3.One;
-                    solarVisual.Offset = Vector3.Zero;
+                    // Preserve the layout-managed position of the canvas.
                     solarVisual.CenterPoint = Vector3.Zero;
                 }
             }
