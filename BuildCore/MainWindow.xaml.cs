@@ -6190,8 +6190,8 @@ namespace BuildCore
                                 ? Color.FromArgb(255, 255, 255, 255)
                                 : Color.FromArgb(255, 218, 218, 223));
                     labels[1].FontWeight = isActive
-                        ? Microsoft.UI.Text.FontWeight.SemiBold
-                        : Microsoft.UI.Text.FontWeight.Normal;
+                        ? Microsoft.UI.Text.FontWeights.SemiBold
+                        : Microsoft.UI.Text.FontWeights.Normal;
                 }
             }
         }
