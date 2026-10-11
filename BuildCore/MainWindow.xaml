@@ -15,6 +15,22 @@
     <Grid Background="Transparent">
         <Grid.Resources>
             <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#D8D8DE"/>
+            <SolidColorBrush x:Key="BuildCorePanelBrush" Color="#111116"/>
+            <SolidColorBrush x:Key="BuildCoreBorderBrush" Color="#29292F"/>
+            <SolidColorBrush x:Key="BuildCorePrimaryTextBrush" Color="#EEEEF1"/>
+            <SolidColorBrush x:Key="BuildCoreMutedTextBrush" Color="#85858D"/>
+
+            <!-- Shared monochrome default for controls that do not define their own appearance. -->
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="#17171C"/>
+                <Setter Property="Foreground" Value="#EEEEF1"/>
+                <Setter Property="BorderBrush" Value="#303036"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="CornerRadius" Value="6"/>
+            </Style>
         </Grid.Resources>
         <!-- Subtle cinematic space layer. Kept behind all interactive UI. -->
         <Canvas
