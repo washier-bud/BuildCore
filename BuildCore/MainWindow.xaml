@@ -547,7 +547,7 @@
                         <TextBlock Text="SYSTEM OPTIMIZER" Canvas.Left="559" Canvas.Top="463" Foreground="#85858B" FontSize="8" CharacterSpacing="170"/>
 
                         <!-- Dashboard -->
-                        <Button Canvas.Left="135" Canvas.Top="292" Width="118" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="DashboardButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Dashboard — overview, health and temperatures">
+                        <Button Canvas.Left="135" Canvas.Top="292" Width="118" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetDashboard_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Dashboard — overview, health and temperatures">
                             <StackPanel HorizontalAlignment="Center" Spacing="9">
                                 <Grid Width="70" Height="70">
 <Ellipse Width="86" Height="86" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -563,7 +563,7 @@
                         </Button>
 
                         <!-- System -->
-                        <Button Canvas.Left="280" Canvas.Top="92" Width="132" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="SystemButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="System — hardware and Windows details">
+                        <Button Canvas.Left="280" Canvas.Top="92" Width="132" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetSystem_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="System — hardware and Windows details">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="88" Height="88">
 <Ellipse Width="104" Height="104" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -579,7 +579,7 @@
                         </Button>
 
                         <!-- Performance -->
-                        <Button Canvas.Left="570" Canvas.Top="72" Width="116" Height="126" Background="Transparent" BorderThickness="0" Padding="0" Click="PerformanceButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Performance — FPS, latency and benchmarks">
+                        <Button Canvas.Left="570" Canvas.Top="72" Width="116" Height="126" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetPerformance_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Performance — FPS, latency and benchmarks">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="62" Height="62">
 <Ellipse Width="78" Height="78" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -595,7 +595,7 @@
                         </Button>
 
                         <!-- Optimize -->
-                        <Button Canvas.Left="890" Canvas.Top="145" Width="170" Height="190" Background="Transparent" BorderThickness="0" Padding="0" Click="OptimizeButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Optimize — tweaks, settings and recovery">
+                        <Button Canvas.Left="890" Canvas.Top="145" Width="170" Height="190" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetOptimize_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Optimize — tweaks, settings and recovery">
                             <StackPanel HorizontalAlignment="Center" Spacing="9">
                                 <Grid Width="150" Height="150">
 <Ellipse Width="166" Height="166" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -611,7 +611,7 @@
                         </Button>
 
                         <!-- AutoTune -->
-                        <Button Canvas.Left="905" Canvas.Top="425" Width="142" Height="148" Background="Transparent" BorderThickness="0" Padding="0" Click="AutoTuneButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="AutoTune — guided optimization and undo">
+                        <Button Canvas.Left="905" Canvas.Top="425" Width="142" Height="148" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetAutoTune_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="AutoTune — guided optimization and undo">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="82" Height="82">
 <Ellipse Width="98" Height="98" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -627,7 +627,7 @@
                         </Button>
 
                         <!-- History -->
-                        <Button Canvas.Left="215" Canvas.Top="475" Width="180" Height="170" Background="Transparent" BorderThickness="0" Padding="0" Click="HistoryButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="History — logs, benchmarks and activity">
+                        <Button Canvas.Left="215" Canvas.Top="475" Width="180" Height="170" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetHistory_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="History — logs, benchmarks and activity">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="120" Height="120">
 <Ellipse Width="136" Height="136" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
@@ -643,7 +643,7 @@
                         </Button>
 
                         <!-- Settings -->
-                        <Button Canvas.Left="600" Canvas.Top="540" Width="125" Height="132" Background="Transparent" BorderThickness="0" Padding="0" Click="SettingsButton_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Settings — appearance and app behavior">
+                        <Button Canvas.Left="600" Canvas.Top="540" Width="125" Height="132" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetSettings_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Settings — appearance and app behavior">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="72" Height="72">
 <Ellipse Width="88" Height="88" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
