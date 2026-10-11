@@ -497,7 +497,7 @@
                     </StackPanel>
 
                     <!-- Orbital tracks and monochrome planetary navigation -->
-                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Viewbox Stretch="Uniform" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Canvas Width="1200" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Ellipse Width="430" Height="220" Canvas.Left="385" Canvas.Top="240" Stroke="#4CFFFFFF" StrokeThickness="1" Opacity="0.55"/>
                         <Ellipse Width="610" Height="320" Canvas.Left="295" Canvas.Top="190" Stroke="#38FFFFFF" StrokeThickness="1" Opacity="0.65"/>
