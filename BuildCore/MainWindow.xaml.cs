@@ -6842,6 +6842,86 @@ namespace BuildCore
         // NAVIGATION
         // ============================================================
 
+        // ============================================================
+        // MONOCHROME PLANETARY NAVIGATION INTERACTIONS
+        // ============================================================
+
+        private void DashboardSpaceRoot_SizeChanged(
+            object sender,
+            SizeChangedEventArgs e)
+        {
+            if (PlanetaryCanvas == null)
+                return;
+
+            double availableWidth = Math.Max(320, e.NewSize.Width - 36);
+            double availableHeight = Math.Max(280, e.NewSize.Height - 72);
+            double scale = Math.Min(
+                1.0,
+                Math.Min(availableWidth / 1200.0, availableHeight / 700.0));
+
+            PlanetaryCanvas.RenderTransform =
+                new Microsoft.UI.Xaml.Media.ScaleTransform
+                {
+                    ScaleX = scale,
+                    ScaleY = scale
+                };
+        }
+
+        private void PlanetButton_PointerEntered(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button)
+                return;
+
+            button.Opacity = 1.0;
+
+            if (button.Content is not StackPanel panel)
+                return;
+
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                panel.Children
+                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault();
+
+            if (planet == null)
+                return;
+
+            planet.StrokeThickness = 1.6;
+            planet.Opacity = 1.0;
+            planet.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+            planet.RenderTransform =
+                new Microsoft.UI.Xaml.Media.ScaleTransform
+                {
+                    ScaleX = 1.06,
+                    ScaleY = 1.06
+                };
+        }
+
+        private void PlanetButton_PointerExited(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button)
+                return;
+
+            button.Opacity = 1.0;
+
+            if (button.Content is not StackPanel panel)
+                return;
+
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                panel.Children
+                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault();
+
+            if (planet == null)
+                return;
+
+            planet.StrokeThickness = 0.7;
+            planet.RenderTransform = null;
+        }
+
         private void DashboardButton_Click(
             object sender,
             RoutedEventArgs e)
