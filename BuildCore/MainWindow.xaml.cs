@@ -7013,16 +7013,24 @@ namespace BuildCore
                 travel.InsertKeyFrame(0.0f, Vector3.Zero);
                 travel.InsertKeyFrame(1.0f, finalOffset, ease);
 
-                // Make the chosen planet the brightest point as the camera
-                // moves toward it.
+                // Illuminate only the selected planet's halo during the
+                // camera move. Keep the surface shading and crater contrast intact.
                 if (planetButton.Content is StackPanel planetPanel &&
                     planetPanel.Children.OfType<Grid>().FirstOrDefault() is Grid sphere)
                 {
-                    foreach (Microsoft.UI.Xaml.Shapes.Ellipse ellipse in
-                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>())
-                    {
-                        ellipse.Opacity = 1.0;
-                    }
+                    Microsoft.UI.Xaml.Shapes.Ellipse? halo =
+                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                            .FirstOrDefault();
+
+                    if (halo != null)
+                        halo.Opacity = 1.0;
+
+                    Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                            .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
+
+                    if (planet != null)
+                        planet.StrokeThickness = 1.6;
                 }
 
                 solarVisual.StartAnimation("Scale", zoom);
@@ -7135,13 +7143,23 @@ namespace BuildCore
 
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
-            sphere.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
-            sphere.RenderTransform =
-                new Microsoft.UI.Xaml.Media.ScaleTransform
-                {
-                    ScaleX = 1.06,
-                    ScaleY = 1.06
-                };
+
+            // Animate the sphere through Composition so the hover feels smooth
+            // rather than snapping to its enlarged size.
+            Visual sphereVisual =
+                ElementCompositionPreview.GetElementVisual(sphere);
+            sphereVisual.StopAnimation("Scale");
+            sphereVisual.CenterPoint = new Vector3(
+                (float)(sphere.ActualWidth / 2.0),
+                (float)(sphere.ActualHeight / 2.0),
+                0.0f);
+
+            Vector3KeyFrameAnimation hoverScale =
+                sphereVisual.Compositor.CreateVector3KeyFrameAnimation();
+            hoverScale.Duration = TimeSpan.FromMilliseconds(170);
+            hoverScale.InsertKeyFrame(0.0f, sphereVisual.Scale);
+            hoverScale.InsertKeyFrame(1.0f, new Vector3(1.06f, 1.06f, 1.0f));
+            sphereVisual.StartAnimation("Scale", hoverScale);
         }
 
         private void PlanetButton_PointerExited(
@@ -7173,7 +7191,17 @@ namespace BuildCore
                 glow.Opacity = 0.0;
 
             planet.StrokeThickness = 0.7;
-            sphere.RenderTransform = null;
+
+            Visual sphereVisual =
+                ElementCompositionPreview.GetElementVisual(sphere);
+            sphereVisual.StopAnimation("Scale");
+
+            Vector3KeyFrameAnimation returnScale =
+                sphereVisual.Compositor.CreateVector3KeyFrameAnimation();
+            returnScale.Duration = TimeSpan.FromMilliseconds(190);
+            returnScale.InsertKeyFrame(0.0f, sphereVisual.Scale);
+            returnScale.InsertKeyFrame(1.0f, Vector3.One);
+            sphereVisual.StartAnimation("Scale", returnScale);
         }
 
         private void DashboardButton_Click(
