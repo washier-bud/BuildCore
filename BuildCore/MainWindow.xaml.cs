@@ -3,6 +3,9 @@ using Microsoft.UI.Windowing;
 using WinRT.Interop;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using System.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +55,8 @@ namespace BuildCore
         private bool _allowWindowClose;
 
         private bool _optimizationTestRunning;
+
+        private bool _planetNavigationInProgress;
 
         private string _selectedOptimizationCategory = "All";
 
@@ -6901,6 +6906,177 @@ namespace BuildCore
         // ============================================================
         // MONOCHROME PLANETARY NAVIGATION INTERACTIONS
         // ============================================================
+
+        // ============================================================
+        // CINEMATIC PLANET-TO-PAGE TRANSITIONS
+        // ============================================================
+
+        private void PlanetDashboard_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowDashboard, DashboardPage);
+
+        private void PlanetSystem_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowSystem, SystemPage);
+
+        private void PlanetPerformance_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowPerformance, PerformancePage);
+
+        private void PlanetOptimize_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowOptimize, OptimizePage);
+
+        private void PlanetAutoTune_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowAutoTune, AutoTunePage);
+
+        private void PlanetHistory_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowHistoryPage, HistoryPage);
+
+        private void PlanetSettings_Click(object sender, RoutedEventArgs e) =>
+            NavigateFromPlanet(sender, ShowSettings, SettingsPage);
+
+        private async void NavigateFromPlanet(
+            object sender,
+            Action navigate,
+            FrameworkElement targetPage)
+        {
+            if (_planetNavigationInProgress ||
+                sender is not Button planetButton ||
+                PlanetaryCanvas == null)
+            {
+                return;
+            }
+
+            _planetNavigationInProgress = true;
+
+            try
+            {
+                // The Composition visual scales around the center of the solar
+                // system, then translates so the selected planet fills the view.
+                Visual solarVisual =
+                    ElementCompositionPreview.GetElementVisual(PlanetaryCanvas);
+
+                float canvasWidth = (float)Math.Max(
+                    1.0,
+                    PlanetaryCanvas.ActualWidth);
+
+                float canvasHeight = (float)Math.Max(
+                    1.0,
+                    PlanetaryCanvas.ActualHeight);
+
+                float planetCenterX = (float)Canvas.GetLeft(planetButton) +
+                    (float)(planetButton.ActualWidth / 2.0);
+                float planetCenterY = (float)Canvas.GetTop(planetButton) +
+                    (float)(planetButton.ActualHeight / 2.0);
+
+                // Canvas.Left/Top are authored in the 1200x700 design space.
+                // If layout scales the canvas, convert the click target into
+                // the canvas's current local coordinate space.
+                float layoutScaleX = canvasWidth / 1200.0f;
+                float layoutScaleY = canvasHeight / 700.0f;
+                planetCenterX *= layoutScaleX;
+                planetCenterY *= layoutScaleY;
+
+                float centerX = canvasWidth / 2.0f;
+                float centerY = canvasHeight / 2.0f;
+                const float zoomScale = 3.45f;
+
+                solarVisual.StopAnimation("Scale");
+                solarVisual.StopAnimation("Offset");
+                solarVisual.CenterPoint = new Vector3(centerX, centerY, 0.0f);
+                solarVisual.Scale = Vector3.One;
+                solarVisual.Offset = Vector3.Zero;
+
+                Vector3 finalOffset = new Vector3(
+                    -(planetCenterX - centerX) * (zoomScale - 1.0f),
+                    -(planetCenterY - centerY) * (zoomScale - 1.0f),
+                    0.0f);
+
+                Compositor compositor = solarVisual.Compositor;
+                CompositionEasingFunction ease =
+                    compositor.CreateCubicBezierEasingFunction(
+                        new Vector2(0.18f, 0.72f),
+                        new Vector2(0.22f, 1.0f));
+
+                Vector3KeyFrameAnimation zoom =
+                    compositor.CreateVector3KeyFrameAnimation();
+                zoom.Duration = TimeSpan.FromMilliseconds(520);
+                zoom.InsertKeyFrame(0.0f, Vector3.One);
+                zoom.InsertKeyFrame(
+                    1.0f,
+                    new Vector3(zoomScale, zoomScale, 1.0f),
+                    ease);
+
+                Vector3KeyFrameAnimation travel =
+                    compositor.CreateVector3KeyFrameAnimation();
+                travel.Duration = TimeSpan.FromMilliseconds(520);
+                travel.InsertKeyFrame(0.0f, Vector3.Zero);
+                travel.InsertKeyFrame(1.0f, finalOffset, ease);
+
+                // Make the chosen planet the brightest point as the camera
+                // moves toward it.
+                if (planetButton.Content is StackPanel planetPanel &&
+                    planetPanel.Children.OfType<Grid>().FirstOrDefault() is Grid sphere)
+                {
+                    foreach (Microsoft.UI.Xaml.Shapes.Ellipse ellipse in
+                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>())
+                    {
+                        ellipse.Opacity = 1.0;
+                    }
+                }
+
+                solarVisual.StartAnimation("Scale", zoom);
+                solarVisual.StartAnimation("Offset", travel);
+
+                await Task.Delay(545);
+
+                // Change the page after the zoom reaches its destination, then
+                // restore the scene so the next visit starts from a clean view.
+                navigate();
+
+                solarVisual.StopAnimation("Scale");
+                solarVisual.StopAnimation("Offset");
+                solarVisual.Scale = Vector3.One;
+                solarVisual.Offset = Vector3.Zero;
+                solarVisual.CenterPoint = Vector3.Zero;
+
+                targetPage.Opacity = 0.0;
+                Visual pageVisual =
+                    ElementCompositionPreview.GetElementVisual(targetPage);
+
+                ScalarKeyFrameAnimation fadeIn =
+                    compositor.CreateScalarKeyFrameAnimation();
+                fadeIn.Duration = TimeSpan.FromMilliseconds(300);
+                fadeIn.InsertKeyFrame(0.0f, 0.0f);
+                fadeIn.InsertKeyFrame(1.0f, 1.0f, ease);
+                pageVisual.StartAnimation("Opacity", fadeIn);
+
+                await Task.Delay(320);
+                targetPage.Opacity = 1.0;
+                pageVisual.StopAnimation("Opacity");
+                pageVisual.Opacity = 1.0;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BUILDCORE PLANET TRANSITION ERROR: {ex}");
+                // A visual transition must never prevent normal navigation.
+                navigate();
+                if (targetPage != null)
+                    targetPage.Opacity = 1.0;
+
+                if (PlanetaryCanvas != null)
+                {
+                    Visual solarVisual =
+                        ElementCompositionPreview.GetElementVisual(PlanetaryCanvas);
+                    solarVisual.StopAnimation("Scale");
+                    solarVisual.StopAnimation("Offset");
+                    solarVisual.Scale = Vector3.One;
+                    solarVisual.Offset = Vector3.Zero;
+                    solarVisual.CenterPoint = Vector3.Zero;
+                }
+            }
+            finally
+            {
+                _planetNavigationInProgress = false;
+            }
+        }
 
         private void DashboardSpaceRoot_SizeChanged(
             object sender,
