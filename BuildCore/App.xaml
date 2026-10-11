@@ -10,7 +10,17 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+            <!-- BuildCore monochrome system accent palette. These resources keep WinUI controls grayscale. -->
+            <Color x:Key="SystemAccentColor">#D8D8DE</Color>
+            <Color x:Key="SystemAccentColorLight1">#E8E8EC</Color>
+            <Color x:Key="SystemAccentColorLight2">#F2F2F4</Color>
+            <Color x:Key="SystemAccentColorLight3">#FAFAFB</Color>
+            <Color x:Key="SystemAccentColorDark1">#A8A8B0</Color>
+            <Color x:Key="SystemAccentColorDark2">#777780</Color>
+            <Color x:Key="SystemAccentColorDark3">#4C4C54</Color>
+            <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="#D8D8DE"/>
+            <SolidColorBrush x:Key="SystemControlBackgroundAccentBrush" Color="#D8D8DE"/>
+            <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#E8E8EC"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
