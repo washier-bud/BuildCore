@@ -497,7 +497,8 @@
                     </StackPanel>
 
                     <!-- Orbital tracks and monochrome planetary navigation -->
-                    <Canvas Width="1200" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Canvas Width="1200" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Ellipse Width="430" Height="220" Canvas.Left="385" Canvas.Top="240" Stroke="#4CFFFFFF" StrokeThickness="1" Opacity="0.55"/>
                         <Ellipse Width="610" Height="320" Canvas.Left="295" Canvas.Top="190" Stroke="#38FFFFFF" StrokeThickness="1" Opacity="0.65"/>
                         <Ellipse Width="790" Height="420" Canvas.Left="205" Canvas.Top="140" Stroke="#30FFFFFF" StrokeThickness="1" Opacity="0.65"/>
@@ -606,7 +607,8 @@
                                 <TextBlock Text="App · Theme · Behavior" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                    </Canvas>
+                        </Canvas>
+                    </Viewbox>
 
                     <TextBlock Text="BUILDCORE  /  MONOCHROME ORBITAL INTERFACE" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="28,0,0,18" Foreground="#55555D" FontSize="8" CharacterSpacing="100" IsHitTestVisible="False"/>
                 </Grid>
@@ -678,8 +680,7 @@
                                 CornerRadius="14"
                                 Background="#050507"
                                 BorderBrush="#1A1A20"
-                                BorderThickness="1"
-                                >
+                                BorderThickness="1">
                                 <Viewbox Stretch="Uniform" StretchDirection="Both">
                                     <Canvas Width="1080" Height="490" Background="#050507">
                                         <Ellipse
