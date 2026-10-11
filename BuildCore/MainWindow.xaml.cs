@@ -6934,13 +6934,22 @@ namespace BuildCore
             }
 
             Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
-            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
-                sphere?.Children
-                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+            if (sphere == null)
+                return;
+
+            Microsoft.UI.Xaml.Shapes.Ellipse? glow =
+                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault();
 
-            if (sphere == null || planet == null)
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
+
+            if (planet == null)
                 return;
+
+            if (glow != null)
+                glow.Opacity = 1.0;
 
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
@@ -6964,13 +6973,22 @@ namespace BuildCore
             }
 
             Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
-            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
-                sphere?.Children
-                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+            if (sphere == null)
+                return;
+
+            Microsoft.UI.Xaml.Shapes.Ellipse? glow =
+                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault();
 
-            if (sphere == null || planet == null)
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
+
+            if (planet == null)
                 return;
+
+            if (glow != null)
+                glow.Opacity = 0.0;
 
             planet.StrokeThickness = 0.7;
             sphere.RenderTransform = null;
