@@ -6871,26 +6871,25 @@ namespace BuildCore
             object sender,
             Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (sender is not Button button)
+            if (sender is not Button button ||
+                button.Content is not StackPanel panel)
+            {
                 return;
+            }
 
-            button.Opacity = 1.0;
-
-            if (button.Content is not StackPanel panel)
-                return;
-
+            Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
             Microsoft.UI.Xaml.Shapes.Ellipse? planet =
-                panel.Children
+                sphere?.Children
                     .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault();
 
-            if (planet == null)
+            if (sphere == null || planet == null)
                 return;
 
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
-            planet.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
-            planet.RenderTransform =
+            sphere.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+            sphere.RenderTransform =
                 new Microsoft.UI.Xaml.Media.ScaleTransform
                 {
                     ScaleX = 1.06,
@@ -6902,24 +6901,23 @@ namespace BuildCore
             object sender,
             Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (sender is not Button button)
+            if (sender is not Button button ||
+                button.Content is not StackPanel panel)
+            {
                 return;
+            }
 
-            button.Opacity = 1.0;
-
-            if (button.Content is not StackPanel panel)
-                return;
-
+            Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
             Microsoft.UI.Xaml.Shapes.Ellipse? planet =
-                panel.Children
+                sphere?.Children
                     .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault();
 
-            if (planet == null)
+            if (sphere == null || planet == null)
                 return;
 
             planet.StrokeThickness = 0.7;
-            planet.RenderTransform = null;
+            sphere.RenderTransform = null;
         }
 
         private void DashboardButton_Click(
