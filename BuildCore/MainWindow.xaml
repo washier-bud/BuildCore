@@ -734,6 +734,18 @@
                         </Button>
                     </Canvas>
 
+                    <!-- Subtle cinematic vignette: keeps the planets as the focal point
+                         while allowing the outer edges of the scene to fall into black. -->
+                    <Border IsHitTestVisible="False" Opacity="0.62">
+                        <Border.Background>
+                            <RadialGradientBrush Center="0.5,0.46" RadiusX="0.72" RadiusY="0.78">
+                                <GradientStop Color="#00000000" Offset="0.42"/>
+                                <GradientStop Color="#18000000" Offset="0.68"/>
+                                <GradientStop Color="#B8000000" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Border.Background>
+                    </Border>
+
                     <TextBlock Text="BUILDCORE  /  MONOCHROME ORBITAL INTERFACE" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="28,0,0,18" Foreground="#55555D" FontSize="8" CharacterSpacing="100" IsHitTestVisible="False"/>
                 </Grid>
             </Grid>
