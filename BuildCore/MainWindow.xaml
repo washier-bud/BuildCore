@@ -546,6 +546,18 @@
                         <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="108" Canvas.Top="660" Opacity="0.3"/>
                     </Canvas>
 
+                    <!-- Subtle cinematic vignette: keeps the planets as the focal point
+                         while allowing the outer edges of the scene to fall into black. -->
+                    <Border IsHitTestVisible="False" Opacity="0.62">
+                        <Border.Background>
+                            <RadialGradientBrush Center="0.5,0.46" RadiusX="0.72" RadiusY="0.78">
+                                <GradientStop Color="#00000000" Offset="0.42"/>
+                                <GradientStop Color="#18000000" Offset="0.68"/>
+                                <GradientStop Color="#B8000000" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Border.Background>
+                    </Border>
+
                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,24,0,0" IsHitTestVisible="False">
                         <TextBlock Text="SYSTEM COMMAND CENTER" Foreground="#A6A6AD" FontSize="10" FontWeight="SemiBold" CharacterSpacing="180"/>
                         <TextBlock Text="Navigate your system" Foreground="White" FontSize="25" FontWeight="SemiBold" Margin="0,7,0,0"/>
@@ -733,18 +745,6 @@
                             </StackPanel>
                         </Button>
                     </Canvas>
-
-                    <!-- Subtle cinematic vignette: keeps the planets as the focal point
-                         while allowing the outer edges of the scene to fall into black. -->
-                    <Border IsHitTestVisible="False" Opacity="0.62">
-                        <Border.Background>
-                            <RadialGradientBrush Center="0.5,0.46" RadiusX="0.72" RadiusY="0.78">
-                                <GradientStop Color="#00000000" Offset="0.42"/>
-                                <GradientStop Color="#18000000" Offset="0.68"/>
-                                <GradientStop Color="#B8000000" Offset="1"/>
-                            </RadialGradientBrush>
-                        </Border.Background>
-                    </Border>
 
                     <TextBlock Text="BUILDCORE  /  MONOCHROME ORBITAL INTERFACE" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="28,0,0,18" Foreground="#55555D" FontSize="8" CharacterSpacing="100" IsHitTestVisible="False"/>
                 </Grid>
