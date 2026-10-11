@@ -2503,6 +2503,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "History";
+            UpdateActiveNavigation("History");
 
             try
             {
@@ -6140,11 +6141,67 @@ namespace BuildCore
                 Visibility.Collapsed;
         }
 
+        private void UpdateActiveNavigation(string activePage)
+        {
+            var navigationButtons = new Dictionary<string, Button>
+            {
+                ["Dashboard"] = DashboardButton,
+                ["System"] = SystemButton,
+                ["Performance"] = PerformanceButton,
+                ["Optimize"] = OptimizeButton,
+                ["AutoTune"] = AutoTuneButton,
+                ["History"] = HistoryButton,
+                ["Settings"] = SettingsButton
+            };
+
+            foreach (KeyValuePair<string, Button> entry in navigationButtons)
+            {
+                bool isActive = string.Equals(
+                    entry.Key,
+                    activePage,
+                    StringComparison.OrdinalIgnoreCase);
+
+                entry.Value.Background =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        isActive
+                            ? Color.FromArgb(255, 23, 23, 28)
+                            : Color.FromArgb(0, 0, 0, 0));
+
+                if (entry.Value.Content is not StackPanel panel)
+                    continue;
+
+                List<TextBlock> labels =
+                    panel.Children.OfType<TextBlock>().ToList();
+
+                if (labels.Count > 0)
+                {
+                    labels[0].Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            isActive
+                                ? Color.FromArgb(255, 255, 255, 255)
+                                : Color.FromArgb(255, 170, 170, 175));
+                }
+
+                if (labels.Count > 1)
+                {
+                    labels[1].Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            isActive
+                                ? Color.FromArgb(255, 255, 255, 255)
+                                : Color.FromArgb(255, 218, 218, 223));
+                    labels[1].FontWeight = isActive
+                        ? Microsoft.UI.Text.FontWeight.SemiBold
+                        : Microsoft.UI.Text.FontWeight.Normal;
+                }
+            }
+        }
+
         private void ShowAutoTune()
         {
             HideAllPages();
             AutoTunePage.Visibility = Visibility.Visible;
             PageTitleText.Text = "AutoTune";
+            UpdateActiveNavigation("AutoTune");
         }
 
         private void ShowDashboard()
@@ -6156,6 +6213,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Dashboard";
+            UpdateActiveNavigation("Dashboard");
         }
 
         private void ShowSystem()
@@ -6167,6 +6225,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "System";
+            UpdateActiveNavigation("System");
         }
 
         private void ShowPerformance()
@@ -6178,6 +6237,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Performance";
+            UpdateActiveNavigation("Performance");
         }
 
         private void ShowOptimize()
@@ -6189,6 +6249,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Optimize";
+            UpdateActiveNavigation("Optimize");
         }
 
         private void ShowSettings()
@@ -6196,6 +6257,7 @@ namespace BuildCore
             HideAllPages();
             SettingsPage.Visibility = Visibility.Visible;
             PageTitleText.Text = "Settings";
+            UpdateActiveNavigation("Settings");
             LoadSettings();
         }
 
