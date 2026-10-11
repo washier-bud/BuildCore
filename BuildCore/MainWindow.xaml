@@ -504,6 +504,46 @@
                         <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="812" Canvas.Top="644" Opacity="0.55"/>
                         <Ellipse Width="2" Height="2" Fill="White" Canvas.Left="1034" Canvas.Top="520" Opacity="0.45"/>
                         <Ellipse Width="3" Height="3" Fill="White" Canvas.Left="1198" Canvas.Top="680" Opacity="0.5"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="72" Canvas.Top="124" Opacity="0.38"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="218" Canvas.Top="42" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="352" Canvas.Top="152" Opacity="0.35"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="476" Canvas.Top="54" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="532" Canvas.Top="210" Opacity="0.34"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="672" Canvas.Top="38" Opacity="0.4"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="816" Canvas.Top="102" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="954" Canvas.Top="142" Opacity="0.36"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1138" Canvas.Top="78" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1164" Canvas.Top="338" Opacity="0.34"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="58" Canvas.Top="318" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="206" Canvas.Top="386" Opacity="0.34"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="382" Canvas.Top="344" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="470" Canvas.Top="448" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="566" Canvas.Top="620" Opacity="0.35"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="702" Canvas.Top="498" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="774" Canvas.Top="588" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="934" Canvas.Top="382" Opacity="0.35"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1092" Canvas.Top="612" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1144" Canvas.Top="468" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="140" Canvas.Top="568" Opacity="0.34"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="260" Canvas.Top="250" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="342" Canvas.Top="540" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="488" Canvas.Top="162" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="628" Canvas.Top="126" Opacity="0.34"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="748" Canvas.Top="278" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="860" Canvas.Top="228" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1004" Canvas.Top="292" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1064" Canvas.Top="182" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="42" Canvas.Top="220" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="184" Canvas.Top="112" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="314" Canvas.Top="44" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="426" Canvas.Top="584" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="642" Canvas.Top="666" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="844" Canvas.Top="660" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="988" Canvas.Top="560" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="1172" Canvas.Top="584" Opacity="0.32"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="524" Canvas.Top="350" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="786" Canvas.Top="414" Opacity="0.3"/>
+                        <Ellipse Width="1" Height="1" Fill="#FFF" Canvas.Left="108" Canvas.Top="660" Opacity="0.3"/>
                     </Canvas>
 
                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,24,0,0" IsHitTestVisible="False">
@@ -556,6 +596,11 @@
                                 </Ellipse>
                                     <Ellipse Width="13" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,41,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="27,12,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
+                                    <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,49,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
+                                    <Ellipse Width="8" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,23,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
+                                    <Ellipse Width="62" Height="62" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="DASHBOARD" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Overview · Health · Temps" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -572,6 +617,11 @@
                                 </Ellipse>
                                     <Ellipse Width="17" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,27,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="11" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="54,52,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="9" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,13,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
+                                    <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,63,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
+                                    <Ellipse Width="11" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
+                                    <Ellipse Width="80" Height="80" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="SYSTEM" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Hardware &amp; OS" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -588,6 +638,11 @@
                                 </Ellipse>
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,19,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="7" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,37,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="6" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="31,10,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
+                                    <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,43,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
+                                    <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,31,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
+                                    <Ellipse Width="54" Height="54" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="PERFORMANCE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="FPS · Latency · Benchmarks" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -604,6 +659,11 @@
                                 </Ellipse>
                                     <Ellipse Width="29" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,47,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="18" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="92,89,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="15" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="72,20,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.5" Opacity="0.7"/>
+                                    <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,106,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.4" Opacity="0.65"/>
+                                    <Ellipse Width="18" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="116,54,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
+                                    <Ellipse Width="142" Height="142" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="OPTIMIZE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Tweaks · Settings · Recovery" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -620,6 +680,11 @@
                                 </Ellipse>
                                     <Ellipse Width="16" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="19,25,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,48,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="9" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="36,12,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
+                                    <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,59,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
+                                    <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="59,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
+                                    <Ellipse Width="74" Height="74" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="AUTOTUNE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="AI Assistant · Apply · Undo" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -636,6 +701,11 @@
                                 </Ellipse>
                                     <Ellipse Width="23" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="14" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="73,71,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,18,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.45" Opacity="0.7"/>
+                                    <Ellipse Width="9" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,88,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.4" Opacity="0.65"/>
+                                    <Ellipse Width="15" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="92,48,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
+                                    <Ellipse Width="112" Height="112" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="HISTORY" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Logs · Benchmarks · Activity" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -652,6 +722,11 @@
                                 </Ellipse>
                                     <Ellipse Width="14" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="9" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,42,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
+
+                                    <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,11,0,0" Fill="#18000000" Stroke="#30FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
+                                    <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,51,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
+                                    <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,26,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
+                                    <Ellipse Width="64" Height="64" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="SETTINGS" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="App · Theme · Behavior" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
