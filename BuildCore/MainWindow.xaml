@@ -12,7 +12,7 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid Background="Transparent">
+    <Grid Background="Transparent" RequestedTheme="Dark">
         <Grid.Resources>
             <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#D8D8DE"/>
             <SolidColorBrush x:Key="BuildCorePanelBrush" Color="#111116"/>
