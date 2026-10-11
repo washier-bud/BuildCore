@@ -2503,6 +2503,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "History";
+            UpdateActiveNavigation("History");
 
             try
             {
@@ -6140,11 +6141,67 @@ namespace BuildCore
                 Visibility.Collapsed;
         }
 
+        private void UpdateActiveNavigation(string activePage)
+        {
+            var navigationButtons = new Dictionary<string, Button>
+            {
+                ["Dashboard"] = DashboardButton,
+                ["System"] = SystemButton,
+                ["Performance"] = PerformanceButton,
+                ["Optimize"] = OptimizeButton,
+                ["AutoTune"] = AutoTuneButton,
+                ["History"] = HistoryButton,
+                ["Settings"] = SettingsButton
+            };
+
+            foreach (KeyValuePair<string, Button> entry in navigationButtons)
+            {
+                bool isActive = string.Equals(
+                    entry.Key,
+                    activePage,
+                    StringComparison.OrdinalIgnoreCase);
+
+                entry.Value.Background =
+                    new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        isActive
+                            ? Color.FromArgb(255, 23, 23, 28)
+                            : Color.FromArgb(0, 0, 0, 0));
+
+                if (entry.Value.Content is not StackPanel panel)
+                    continue;
+
+                List<TextBlock> labels =
+                    panel.Children.OfType<TextBlock>().ToList();
+
+                if (labels.Count > 0)
+                {
+                    labels[0].Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            isActive
+                                ? Color.FromArgb(255, 255, 255, 255)
+                                : Color.FromArgb(255, 170, 170, 175));
+                }
+
+                if (labels.Count > 1)
+                {
+                    labels[1].Foreground =
+                        new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                            isActive
+                                ? Color.FromArgb(255, 255, 255, 255)
+                                : Color.FromArgb(255, 218, 218, 223));
+                    labels[1].FontWeight = isActive
+                        ? Microsoft.UI.Text.FontWeights.SemiBold
+                        : Microsoft.UI.Text.FontWeights.Normal;
+                }
+            }
+        }
+
         private void ShowAutoTune()
         {
             HideAllPages();
             AutoTunePage.Visibility = Visibility.Visible;
             PageTitleText.Text = "AutoTune";
+            UpdateActiveNavigation("AutoTune");
         }
 
         private void ShowDashboard()
@@ -6156,6 +6213,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Dashboard";
+            UpdateActiveNavigation("Dashboard");
         }
 
         private void ShowSystem()
@@ -6167,6 +6225,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "System";
+            UpdateActiveNavigation("System");
         }
 
         private void ShowPerformance()
@@ -6178,6 +6237,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Performance";
+            UpdateActiveNavigation("Performance");
         }
 
         private void ShowOptimize()
@@ -6189,6 +6249,7 @@ namespace BuildCore
 
             PageTitleText.Text =
                 "Optimize";
+            UpdateActiveNavigation("Optimize");
         }
 
         private void ShowSettings()
@@ -6196,6 +6257,7 @@ namespace BuildCore
             HideAllPages();
             SettingsPage.Visibility = Visibility.Visible;
             PageTitleText.Text = "Settings";
+            UpdateActiveNavigation("Settings");
             LoadSettings();
         }
 
@@ -6317,16 +6379,13 @@ namespace BuildCore
         {
             string name =
                 GetSettingsStore().Values["AccentColor"] as string ??
-                "Lime";
+                "Silver";
 
             return name switch
             {
-                "Blue" => Color.FromArgb(255, 90, 170, 255),
-                "Purple" => Color.FromArgb(255, 180, 120, 255),
-                "Orange" => Color.FromArgb(255, 255, 165, 70),
-                "Red" => Color.FromArgb(255, 255, 105, 105),
                 "White" => Color.FromArgb(255, 245, 245, 248),
-                _ => Color.FromArgb(255, 124, 255, 138)
+                "Graphite" => Color.FromArgb(255, 145, 145, 153),
+                _ => Color.FromArgb(255, 216, 216, 222)
             };
         }
 
@@ -6334,16 +6393,13 @@ namespace BuildCore
         {
             var store = GetSettingsStore();
             string accent =
-                store.Values["AccentColor"] as string ?? "Lime";
+                store.Values["AccentColor"] as string ?? "Silver";
 
             AccentColorComboBox.SelectedIndex =
                 accent switch
                 {
-                    "Blue" => 1,
-                    "Purple" => 2,
-                    "Orange" => 3,
-                    "Red" => 4,
-                    "White" => 5,
+                    "White" => 1,
+                    "Graphite" => 2,
                     _ => 0
                 };
 
@@ -6389,7 +6445,7 @@ namespace BuildCore
             if (AccentColorComboBox.SelectedItem is not ComboBoxItem item)
                 return;
 
-            string name = item.Content?.ToString() ?? "Lime";
+            string name = item.Content?.ToString() ?? "Silver";
             GetSettingsStore().Values["AccentColor"] = name;
             ApplyAccentColor();
         }
@@ -6841,6 +6897,84 @@ namespace BuildCore
         // ============================================================
         // NAVIGATION
         // ============================================================
+
+        // ============================================================
+        // MONOCHROME PLANETARY NAVIGATION INTERACTIONS
+        // ============================================================
+
+        private void DashboardSpaceRoot_SizeChanged(
+            object sender,
+            SizeChangedEventArgs e)
+        {
+            if (PlanetaryCanvas == null)
+                return;
+
+            double availableWidth = Math.Max(320, e.NewSize.Width - 36);
+            double availableHeight = Math.Max(280, e.NewSize.Height - 72);
+            double scale = Math.Min(
+                1.0,
+                Math.Min(availableWidth / 1200.0, availableHeight / 700.0));
+
+            PlanetaryCanvas.RenderTransform =
+                new Microsoft.UI.Xaml.Media.ScaleTransform
+                {
+                    ScaleX = scale,
+                    ScaleY = scale
+                };
+        }
+
+        private void PlanetButton_PointerEntered(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Content is not StackPanel panel)
+            {
+                return;
+            }
+
+            Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                sphere?.Children
+                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault();
+
+            if (sphere == null || planet == null)
+                return;
+
+            planet.StrokeThickness = 1.6;
+            planet.Opacity = 1.0;
+            sphere.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+            sphere.RenderTransform =
+                new Microsoft.UI.Xaml.Media.ScaleTransform
+                {
+                    ScaleX = 1.06,
+                    ScaleY = 1.06
+                };
+        }
+
+        private void PlanetButton_PointerExited(
+            object sender,
+            Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is not Button button ||
+                button.Content is not StackPanel panel)
+            {
+                return;
+            }
+
+            Grid? sphere = panel.Children.OfType<Grid>().FirstOrDefault();
+            Microsoft.UI.Xaml.Shapes.Ellipse? planet =
+                sphere?.Children
+                    .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                    .FirstOrDefault();
+
+            if (sphere == null || planet == null)
+                return;
+
+            planet.StrokeThickness = 0.7;
+            sphere.RenderTransform = null;
+        }
 
         private void DashboardButton_Click(
             object sender,
