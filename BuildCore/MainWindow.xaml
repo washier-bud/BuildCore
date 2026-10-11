@@ -522,7 +522,7 @@
                                 Background="#050507"
                                 BorderBrush="#1A1A20"
                                 BorderThickness="1"
-                                Clip="True">
+                                >
                                 <Viewbox Stretch="Uniform" StretchDirection="Both">
                                     <Canvas Width="1080" Height="490" Background="#050507">
                                         <Ellipse
