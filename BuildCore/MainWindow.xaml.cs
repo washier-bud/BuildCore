@@ -7105,11 +7105,16 @@ namespace BuildCore
                 1.0,
                 Math.Min(availableWidth / 1200.0, availableHeight / 700.0));
 
+            // Keep the solar-system composition centered as the window
+            // changes size. Scaling from (0,0) makes the orbit layout drift
+            // away from the visual center on narrow or short windows.
             PlanetaryCanvas.RenderTransform =
                 new Microsoft.UI.Xaml.Media.ScaleTransform
                 {
                     ScaleX = scale,
-                    ScaleY = scale
+                    ScaleY = scale,
+                    CenterX = 600,
+                    CenterY = 350
                 };
         }
 
@@ -7139,7 +7144,16 @@ namespace BuildCore
                 return;
 
             if (glow != null)
-                glow.Opacity = 1.0;
+            {
+                Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
+                haloVisual.StopAnimation("Opacity");
+                ScalarKeyFrameAnimation haloIn =
+                    haloVisual.Compositor.CreateScalarKeyFrameAnimation();
+                haloIn.Duration = TimeSpan.FromMilliseconds(180);
+                haloIn.InsertKeyFrame(0.0f, (float)glow.Opacity);
+                haloIn.InsertKeyFrame(1.0f, 1.0f);
+                haloVisual.StartAnimation("Opacity", haloIn);
+            }
 
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
@@ -7188,7 +7202,16 @@ namespace BuildCore
                 return;
 
             if (glow != null)
-                glow.Opacity = 0.0;
+            {
+                Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
+                haloVisual.StopAnimation("Opacity");
+                ScalarKeyFrameAnimation haloOut =
+                    haloVisual.Compositor.CreateScalarKeyFrameAnimation();
+                haloOut.Duration = TimeSpan.FromMilliseconds(210);
+                haloOut.InsertKeyFrame(0.0f, (float)glow.Opacity);
+                haloOut.InsertKeyFrame(1.0f, 0.0f);
+                haloVisual.StartAnimation("Opacity", haloOut);
+            }
 
             planet.StrokeThickness = 0.7;
 
