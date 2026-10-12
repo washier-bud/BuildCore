@@ -7144,10 +7144,20 @@ namespace BuildCore
                     sphereSize,
                     selectedSunImage ?? new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
                         new Uri(GetPlanetImageSource(planetButton))));
-                Canvas.SetLeft(heroPlanet, sourceCenter.X - sphereSize / 2.0);
-                Canvas.SetTop(heroPlanet, sourceCenter.Y - sphereSize / 2.0);
                 heroCanvas.Children.Add(heroPlanet);
                 rootGrid.Children.Add(transitionLayer);
+
+                // Position the transition sphere using coordinates measured
+                // directly in the overlay canvas. Mixing root-grid coordinates
+                // with Canvas coordinates can shift the zoom target sideways.
+                rootGrid.UpdateLayout();
+                heroCanvas.UpdateLayout();
+                Point sunCenterInHeroCanvas = sourceElement.TransformToVisual(heroCanvas).TransformPoint(
+                    new Point(sourceElement.ActualWidth / 2.0, sourceElement.ActualHeight / 2.0));
+
+                Canvas.SetLeft(heroPlanet, sunCenterInHeroCanvas.X - sphereSize / 2.0);
+                Canvas.SetTop(heroPlanet, sunCenterInHeroCanvas.Y - sphereSize / 2.0);
+                heroCanvas.UpdateLayout();
 
                 Visual heroVisual = ElementCompositionPreview.GetElementVisual(heroPlanet);
                 Compositor compositor = heroVisual.Compositor;
@@ -7171,12 +7181,19 @@ namespace BuildCore
                 // coordinates after layout. Using the source sun's center
                 // here can leave the zoom target slightly off-center when
                 // the Canvas or root grid has its own layout offset.
-                Point heroCenter = heroPlanet.TransformToVisual(rootGrid).TransformPoint(
+                Point heroCenter = heroPlanet.TransformToVisual(heroCanvas).TransformPoint(
                     new Point(heroPlanet.ActualWidth / 2.0, heroPlanet.ActualHeight / 2.0));
 
+                double targetCenterX = heroCanvas.ActualWidth > 0
+                    ? heroCanvas.ActualWidth / 2.0
+                    : rootWidth / 2.0;
+                double targetCenterY = heroCanvas.ActualHeight > 0
+                    ? heroCanvas.ActualHeight / 2.0
+                    : rootHeight / 2.0;
+
                 Vector3 travelOffset = new Vector3(
-                    (float)(rootWidth / 2.0 - heroCenter.X),
-                    (float)(rootHeight / 2.0 - heroCenter.Y),
+                    (float)(targetCenterX - heroCenter.X),
+                    (float)(targetCenterY - heroCenter.Y),
                     0.0f);
 
                 Vector3KeyFrameAnimation heroScale =
