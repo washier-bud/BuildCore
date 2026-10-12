@@ -53,6 +53,7 @@ namespace BuildCore
         private readonly (Button Button, double RadiusX, double RadiusY, double Phase, double Speed)[] _orbitBodies;
 
         private double _orbitElapsedSeconds;
+        private bool _hardwareUpdateInProgress;
 
         private DateTime _benchmarkStartedAt;
 
@@ -4975,12 +4976,14 @@ namespace BuildCore
         // PERFORMANCE
         // ============================================================
 
-        private void UpdatePerformance(
+        private async void UpdatePerformance(
             DispatcherQueueTimer sender,
             object args)
         {
             try
             {
+                // Keep the quick Windows counters on the UI timer, but never
+                // allow slow hardware sensor polling to block this thread.
                 PerformanceData data =
                     _performanceService.GetPerformance();
 
@@ -5008,10 +5011,10 @@ namespace BuildCore
                     data.DiskUsage);
 
                 UpdatePerformanceStatus(data);
-
                 UpdatePerformancePageValues();
 
-                UpdateHardwareMonitoring();
+                if (!_hardwareUpdateInProgress)
+                    await UpdateHardwareMonitoringAsync();
             }
             catch (Exception ex)
             {
@@ -5049,26 +5052,34 @@ namespace BuildCore
         // HARDWARE MONITORING
         // ============================================================
 
-        private void UpdateHardwareMonitoring()
+        private async Task UpdateHardwareMonitoringAsync()
         {
+            if (_hardwareUpdateInProgress)
+                return;
+
+            _hardwareUpdateInProgress = true;
+
             try
             {
+                // LibreHardwareMonitor and WMI can take noticeable time.
+                // Run sensor polling away from the WinUI dispatcher so the
+                // one-second refresh cannot freeze animations or input.
                 HardwareMonitorData hardwareData =
-                    _hardwareMonitorService
-                        .GetHardwareData();
+                    await Task.Run(
+                        () => _hardwareMonitorService.GetHardwareData());
 
-                UpdateCpuTelemetry(
-                    hardwareData);
-
-                UpdateGpuTelemetry(
-                    hardwareData);
-
+                UpdateCpuTelemetry(hardwareData);
+                UpdateGpuTelemetry(hardwareData);
                 UpdatePerformancePageValues();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(
                     $"Hardware monitoring error: {ex}");
+            }
+            finally
+            {
+                _hardwareUpdateInProgress = false;
             }
         }
 
