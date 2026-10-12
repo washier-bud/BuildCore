@@ -769,7 +769,7 @@
                                 <Grid Width="72" Height="72">
 <Ellipse Width="88" Height="88" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FF9D9D9D" Offset="0.25"/><GradientStop Color="#FF3A3A3A" Offset="0.63"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_moon.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="14" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="9" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,42,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
