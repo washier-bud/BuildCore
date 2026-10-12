@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.Foundation;
 
 namespace BuildCore
 {
@@ -7167,12 +7168,12 @@ namespace BuildCore
                     {
                         new Microsoft.UI.Xaml.Media.GradientStop
                         {
-                            Color = Microsoft.UI.ColorHelper.FromArgb(90, 235, 235, 242),
+                            Color = ColorHelper.FromArgb(90, 235, 235, 242),
                             Offset = 0.68
                         },
                         new Microsoft.UI.Xaml.Media.GradientStop
                         {
-                            Color = Microsoft.UI.ColorHelper.FromArgb(0, 235, 235, 242),
+                            Color = ColorHelper.FromArgb(0, 235, 235, 242),
                             Offset = 1.0
                         }
                     }
@@ -7189,14 +7190,14 @@ namespace BuildCore
                 GradientStops =
                 {
                     new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.White, Offset = 0.0 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 180, 180, 188), Offset = 0.22 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 82, 82, 91), Offset = 0.55 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 18, 18, 23), Offset = 0.82 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 180, 180, 188), Offset = 0.22 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 82, 82, 91), Offset = 0.55 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 18, 18, 23), Offset = 0.82 },
                     new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.Black, Offset = 1.0 }
                 }
             };
             sphere.Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                Microsoft.UI.ColorHelper.FromArgb(210, 225, 225, 232));
+                ColorHelper.FromArgb(210, 225, 225, 232));
             sphere.StrokeThickness = 1.2;
             hero.Children.Add(sphere);
 
@@ -7219,9 +7220,9 @@ namespace BuildCore
                 Width = diameter,
                 Height = diameter,
                 Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    Microsoft.UI.ColorHelper.FromArgb(48, 0, 0, 0)),
+                    ColorHelper.FromArgb(48, 0, 0, 0)),
                 Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    Microsoft.UI.ColorHelper.FromArgb(54, 255, 255, 255)),
+                    ColorHelper.FromArgb(54, 255, 255, 255)),
                 StrokeThickness = Math.Max(0.5, size * 0.006)
             };
             Canvas craterCanvas;
