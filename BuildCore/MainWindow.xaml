@@ -3334,5 +3334,31 @@
 
     </Grid>
 
+
+        <!-- Exact supplied artwork with transparent interaction zones. -->
+        <Grid x:Name="ReferenceDesignPage" Visibility="Collapsed" Panel.ZIndex="100">
+            <Viewbox Stretch="Fill" StretchDirection="Both">
+                <Grid Width="1536" Height="1024">
+                    <Image Source="ms-appx:///Assets/solar-system-ui.png" Width="1536" Height="1024" Stretch="Fill" IsHitTestVisible="False"/>
+                    <Button Width="230" Height="48" Margin="0,103,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="DashboardButton_Click" AutomationProperties.Name="Dashboard"/>
+                    <Button Width="230" Height="52" Margin="0,154,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="SystemButton_Click" AutomationProperties.Name="System"/>
+                    <Button Width="230" Height="52" Margin="0,206,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="PerformanceButton_Click" AutomationProperties.Name="Performance"/>
+                    <Button Width="230" Height="52" Margin="0,258,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="OptimizeButton_Click" AutomationProperties.Name="Optimize"/>
+                    <Button Width="230" Height="52" Margin="0,310,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="AutoTuneButton_Click" AutomationProperties.Name="AutoTune"/>
+                    <Button Width="230" Height="52" Margin="0,362,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="HistoryButton_Click" AutomationProperties.Name="History"/>
+                    <Button Width="230" Height="52" Margin="0,414,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="SettingsButton_Click" AutomationProperties.Name="Settings"/>
+                    <Button Width="116" Height="116" Margin="426,401,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="DashboardButton_Click" AutomationProperties.Name="Open Dashboard planet"/>
+                    <Button Width="146" Height="146" Margin="565,216,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="SystemButton_Click" AutomationProperties.Name="Open System planet"/>
+                    <Button Width="90" Height="90" Margin="898,225,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="PerformanceButton_Click" AutomationProperties.Name="Open Performance planet"/>
+                    <Button Width="240" Height="240" Margin="1126,270,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="OptimizeButton_Click" AutomationProperties.Name="Open Optimize planet"/>
+                    <Button Width="128" Height="128" Margin="1147,580,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="AutoTuneButton_Click" AutomationProperties.Name="Open AutoTune planet"/>
+                    <Button Width="190" Height="190" Margin="424,599,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="HistoryButton_Click" AutomationProperties.Name="Open History planet"/>
+                    <Button Width="120" Height="120" Margin="851,735,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="SettingsButton_Click" AutomationProperties.Name="Open Settings planet"/>
+                    <Button Width="44" Height="40" Margin="1412,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="ReferenceMinimizeButton_Click" AutomationProperties.Name="Minimize window"/>
+                    <Button Width="38" Height="40" Margin="1450,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="ReferenceMaximizeButton_Click" AutomationProperties.Name="Maximize window"/>
+                    <Button Width="38" Height="40" Margin="1488,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Opacity="0" IsTabStop="False" Click="ReferenceCloseButton_Click" AutomationProperties.Name="Close window"/>
+                </Grid>
+            </Viewbox>
+        </Grid>
         </Grid>
     </Window>
