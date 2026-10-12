@@ -14,7 +14,7 @@
 
     <Grid Background="Transparent">
         <Grid.Resources>
-            <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#7CFF8A"/>
+            <SolidColorBrush x:Key="BuildCoreAccentBrush" Color="#DADAE0"/>
         </Grid.Resources>
         <!-- Subtle cinematic space layer. Kept behind all interactive UI. -->
         <Canvas
@@ -378,7 +378,7 @@
                             <Ellipse
                                 Width="7"
                                 Height="7"
-                                Fill="#7CFF8A"
+                                Fill="#DADAE0"
                                 VerticalAlignment="Center"/>
 
                             <TextBlock
@@ -444,7 +444,7 @@
                         <Ellipse
                             Width="7"
                             Height="7"
-                            Fill="#7CFF8A"/>
+                            Fill="#DADAE0"/>
 
                         <TextBlock
                             Text=" SYSTEM ONLINE"
@@ -1221,7 +1221,7 @@
                                 <TextBlock
                                     x:Name="CpuUsageText"
                                     Text="0%"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="24"
                                     FontWeight="SemiBold"
                                     Margin="0,14,0,0"/>
@@ -1262,7 +1262,7 @@
                                 <TextBlock
                                     x:Name="GpuUsageText"
                                     Text="0%"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="24"
                                     FontWeight="SemiBold"
                                     Margin="0,14,0,0"/>
@@ -1303,7 +1303,7 @@
                                 <TextBlock
                                     x:Name="RamUsageText"
                                     Text="0%"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="24"
                                     FontWeight="SemiBold"
                                     Margin="0,14,0,0"/>
@@ -1344,7 +1344,7 @@
                                 <TextBlock
                                     x:Name="DiskUsageText"
                                     Text="0%"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="24"
                                     FontWeight="SemiBold"
                                     Margin="0,14,0,0"/>
@@ -1402,7 +1402,7 @@
                                 <TextBlock
                                     x:Name="CpuTemperatureLarge"
                                     Text="N/A"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="11"
                                     Margin="0,5,0,0"/>
 
@@ -1465,7 +1465,7 @@
                                 <TextBlock
                                     x:Name="GpuClockLarge"
                                     Text="-- MHz"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="11"
                                     Margin="0,5,0,0"/>
 
@@ -1511,7 +1511,7 @@
                                 <TextBlock
                                     x:Name="DiskPerformanceLarge"
                                     Text="0%"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="22"
                                     FontWeight="SemiBold"
                                     Margin="0,14,0,0"/>
@@ -2022,7 +2022,7 @@
                             <StackPanel>
                                 <TextBlock Text="CPU" Foreground="#66666D" FontSize="9"/>
                                 <TextBlock x:Name="PerformanceCpuText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
-                                <TextBlock x:Name="PerformanceCpuTempText" Text="N/A" Foreground="#7CFF8A" FontSize="11" Margin="0,6,0,0"/>
+                                <TextBlock x:Name="PerformanceCpuTempText" Text="N/A" Foreground="#DADAE0" FontSize="11" Margin="0,6,0,0"/>
                                 <TextBlock x:Name="PerformanceCpuClockText" Text="-- GHz" Foreground="#A0A0A7" FontSize="11" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
@@ -2031,7 +2031,7 @@
                             <StackPanel>
                                 <TextBlock Text="GPU" Foreground="#66666D" FontSize="9"/>
                                 <TextBlock x:Name="PerformanceGpuText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
-                                <TextBlock x:Name="PerformanceGpuTempText" Text="N/A" Foreground="#7CFF8A" FontSize="11" Margin="0,6,0,0"/>
+                                <TextBlock x:Name="PerformanceGpuTempText" Text="N/A" Foreground="#DADAE0" FontSize="11" Margin="0,6,0,0"/>
                                 <TextBlock x:Name="PerformanceGpuClockText" Text="-- MHz" Foreground="#A0A0A7" FontSize="11" Margin="0,4,0,0"/>
                                 <TextBlock x:Name="PerformanceGpuVramText" Text="-- GB" Foreground="#66666D" FontSize="10" Margin="0,4,0,0"/>
                             </StackPanel>
@@ -2041,7 +2041,7 @@
                             <StackPanel>
                                 <TextBlock Text="MEMORY / STORAGE" Foreground="#66666D" FontSize="9"/>
                                 <TextBlock x:Name="PerformanceRamText" Text="0%" Foreground="White" FontSize="32" FontWeight="SemiBold" Margin="0,8,0,0"/>
-                                <TextBlock x:Name="PerformanceDiskText" Text="0%" Foreground="#7CFF8A" FontSize="22" FontWeight="SemiBold" Margin="0,14,0,0"/>
+                                <TextBlock x:Name="PerformanceDiskText" Text="0%" Foreground="#DADAE0" FontSize="22" FontWeight="SemiBold" Margin="0,14,0,0"/>
                                 <TextBlock Text="Disk activity" Foreground="#66666D" FontSize="9" Margin="0,3,0,0"/>
                             </StackPanel>
                         </Border>
@@ -2102,7 +2102,7 @@
 
                             <TextBlock
                                 Text="ACTIVITY HISTORY"
-                                Foreground="#7CFF8A"
+                                Foreground="#DADAE0"
                                 FontSize="10"
                                 FontWeight="SemiBold"/>
 
@@ -2136,7 +2136,7 @@
 
                     <Border Margin="0,24,0,0" Padding="22" CornerRadius="14" Background="#101014" BorderBrush="#25252B" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="AUTOTUNE" Foreground="#7CFF8A" FontSize="9" FontWeight="SemiBold"/>
+                            <TextBlock Text="AUTOTUNE" Foreground="#DADAE0" FontSize="9" FontWeight="SemiBold"/>
                             <TextBlock x:Name="AutoTuneStatusText" Text="Ready to analyze your system." Foreground="White" FontSize="18" FontWeight="SemiBold" Margin="0,8,0,0"/>
                             <TextBlock x:Name="AutoTuneSummaryText" Text="BuildCore will inspect your hardware and available verified optimization metadata. Nothing changes during analysis." Foreground="#77777E" FontSize="10" TextWrapping="Wrap" Margin="0,5,0,16"/>
                             <StackPanel Orientation="Horizontal">
@@ -2151,7 +2151,7 @@
 
                     <Border Margin="0,14,0,0" Padding="20" CornerRadius="14" Background="#101014" BorderBrush="#25252B" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="BUILDCORE ASSISTANT" Foreground="#7CFF8A" FontSize="9" FontWeight="SemiBold"/>
+                            <TextBlock Text="BUILDCORE ASSISTANT" Foreground="#DADAE0" FontSize="9" FontWeight="SemiBold"/>
                             <TextBlock x:Name="AutoTuneAssistantText" Text="Run an analysis to get hardware-aware recommendations." Foreground="#D8D8DD" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"/>
                             <StackPanel x:Name="AutoTuneRecommendationsPanel" Margin="0,18,0,0"/>
                         </StackPanel>
@@ -2159,7 +2159,7 @@
 
                     <Border Margin="0,14,0,0" Padding="18" CornerRadius="12" Background="#0D0D11" BorderBrush="#25252B" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="SAFETY" Foreground="#7CFF8A" FontSize="9" FontWeight="SemiBold"/>
+                            <TextBlock Text="SAFETY" Foreground="#DADAE0" FontSize="9" FontWeight="SemiBold"/>
                             <TextBlock Text="AutoTune does not execute arbitrary commands. Any future automatic apply action must use BuildCore's verified handlers, snapshots, verification, and rollback." Foreground="#77777E" FontSize="10" Margin="0,7,0,0" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
@@ -2220,7 +2220,7 @@
                                 <Ellipse
                                     Width="7"
                                     Height="7"
-                                    Fill="#7CFF8A"
+                                    Fill="#DADAE0"
                                     VerticalAlignment="Center"/>
 
                                 <TextBlock
@@ -2282,7 +2282,7 @@
                                            FontSize="8"
                                            FontWeight="SemiBold"/>
                                 <TextBlock Text="SNAPSHOTS"
-                                           Foreground="#7CFF8A"
+                                           Foreground="#DADAE0"
                                            FontSize="16"
                                            FontWeight="SemiBold"
                                            Margin="0,7,0,0"/>
@@ -2310,7 +2310,7 @@
                                            FontWeight="SemiBold"/>
                                 <TextBlock x:Name="OptimizationStatusText"
                                            Text="READY"
-                                           Foreground="#7CFF8A"
+                                           Foreground="#DADAE0"
                                            FontSize="16"
                                            FontWeight="SemiBold"
                                            Margin="0,7,0,0"/>
@@ -2342,7 +2342,7 @@
                             <StackPanel>
                                 <TextBlock
                                     Text="SYSTEM ANALYSIS"
-                                    Foreground="#7CFF8A"
+                                    Foreground="#DADAE0"
                                     FontSize="9"
                                     FontWeight="SemiBold"/>
 
@@ -2399,7 +2399,7 @@
 
                             <StackPanel>
                                 <TextBlock Text="01  WINDOWS"
-                                           Foreground="#7CFF8A"
+                                           Foreground="#DADAE0"
                                            FontSize="9"
                                            FontWeight="SemiBold"/>
 
@@ -2470,7 +2470,7 @@
 
                             <StackPanel>
                                 <TextBlock Text="02  PERFORMANCE"
-                                           Foreground="#7CFF8A"
+                                           Foreground="#DADAE0"
                                            FontSize="9"
                                            FontWeight="SemiBold"/>
 
@@ -2549,7 +2549,7 @@
                                 <StackPanel>
                                     <TextBlock
                                         Text="OPTIMIZATION LIBRARY"
-                                        Foreground="#7CFF8A"
+                                        Foreground="#DADAE0"
                                         FontSize="9"
                                         FontWeight="SemiBold"/>
 
@@ -2830,7 +2830,7 @@
 
                                 <StackPanel>
                                     <TextBlock Text="SAFETY SYSTEM"
-                                               Foreground="#7CFF8A"
+                                               Foreground="#DADAE0"
                                                FontSize="9"
                                                FontWeight="SemiBold"/>
                                     <TextBlock Text="System Snapshot"
@@ -2874,7 +2874,7 @@
 
                             <StackPanel>
                                 <TextBlock Text="CONTROLLED TESTING"
-                                           Foreground="#7CFF8A"
+                                           Foreground="#DADAE0"
                                            FontSize="9"
                                            FontWeight="SemiBold"/>
 
@@ -2913,7 +2913,7 @@
 
                         <StackPanel>
                             <TextBlock Text="WORKLOAD LAB"
-                                       Foreground="#7CFF8A"
+                                       Foreground="#DADAE0"
                                        FontSize="9"
                                        FontWeight="SemiBold"/>
 
@@ -3013,7 +3013,7 @@
                             <Grid>
                                 <StackPanel>
                                     <TextBlock Text="PERFORMANCE BENCHMARK"
-                                               Foreground="#7CFF8A"
+                                               Foreground="#DADAE0"
                                                FontSize="9"
                                                FontWeight="SemiBold"/>
                                     <TextBlock Text="Measure your current system state"
@@ -3065,7 +3065,7 @@
 
                                 <StackPanel Grid.Column="3">
                                     <TextBlock Text="SCORE" Foreground="#66666D" FontSize="8"/>
-                                    <TextBlock x:Name="BenchmarkScoreText" Text="--" Foreground="#7CFF8A" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
+                                    <TextBlock x:Name="BenchmarkScoreText" Text="--" Foreground="#DADAE0" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
                                 </StackPanel>
                             </Grid>
 
@@ -3121,7 +3121,7 @@
 
                         <StackPanel>
                             <TextBlock Text="OPTIMIZATION TEST RESULTS"
-                                       Foreground="#7CFF8A"
+                                       Foreground="#DADAE0"
                                        FontSize="9"
                                        FontWeight="SemiBold"/>
 
