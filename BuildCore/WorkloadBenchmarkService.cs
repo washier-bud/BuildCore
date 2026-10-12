@@ -159,7 +159,13 @@ namespace BuildCore
             }
         }
 
-        private bool IsConfigurationLocked(BenchmarkWorkload definition)\n        {\n            return string.Equals(\n                WorkloadFingerprintService.Calculate(definition),\n                _lockedFingerprint,\n                StringComparison.Ordinal);\n        }\n\n        private bool ValidateRun(WorkloadRunResult runResult)
+        private bool IsConfigurationLocked(BenchmarkWorkload definition)
+        {
+            return string.Equals(
+                WorkloadFingerprintService.Calculate(definition),
+                _lockedFingerprint,
+                StringComparison.Ordinal);
+        }
         {
             BenchmarkRun? run = runResult.BenchmarkRun;
 
