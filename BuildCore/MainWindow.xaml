@@ -724,7 +724,7 @@
                                 <Grid Width="82" Height="82">
 <Ellipse Width="98" Height="98" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBDBDBD" Offset="0.24"/><GradientStop Color="#FF454545" Offset="0.6"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="16" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="19,25,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,48,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
