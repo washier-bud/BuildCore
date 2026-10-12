@@ -48,6 +48,12 @@ namespace BuildCore
         private readonly DispatcherQueueTimer
             _benchmarkUiTimer;
 
+        private readonly DispatcherQueueTimer _orbitTimer;
+
+        private readonly (Button Button, double RadiusX, double RadiusY, double Phase, double Speed)[] _orbitBodies;
+
+        private double _orbitElapsedSeconds;
+
         private DateTime _benchmarkStartedAt;
 
         private bool _benchmarkRunning;
@@ -84,6 +90,22 @@ namespace BuildCore
         public MainWindow()
         {
             this.InitializeComponent();
+
+            _orbitBodies = new[]
+            {
+                CreateOrbitBody(OrbitDashboard, 0.060),
+                CreateOrbitBody(OrbitSystem, -0.047),
+                CreateOrbitBody(OrbitPerformance, 0.082),
+                CreateOrbitBody(OrbitOptimize, -0.039),
+                CreateOrbitBody(OrbitAutoTune, 0.070),
+                CreateOrbitBody(OrbitHistory, -0.052),
+                CreateOrbitBody(OrbitSettings, 0.093)
+            };
+
+            _orbitTimer = DispatcherQueue.CreateTimer();
+            _orbitTimer.Interval = TimeSpan.FromMilliseconds(33);
+            _orbitTimer.Tick += AnimateOrbitalBodies;
+            _orbitTimer.Start();
 
             WindowStateService.Restore(this);
             this.Closed += MainWindow_Closed;
@@ -6223,6 +6245,45 @@ namespace BuildCore
             ResetSolarSystemView();
 
             PageTitleText.Text = "Dashboard";
+        }
+
+        private static (Button Button, double RadiusX, double RadiusY, double Phase, double Speed) CreateOrbitBody(
+            Button button,
+            double speed)
+        {
+            const double centerX = 600.0;
+            const double centerY = 350.0;
+
+            double bodyCenterX = Canvas.GetLeft(button) + button.Width / 2.0;
+            double bodyCenterY = Canvas.GetTop(button) + button.Height / 2.0;
+            double dx = bodyCenterX - centerX;
+            double dy = bodyCenterY - centerY;
+
+            // Keep each sun on an elliptical orbit while preserving its starting position.
+            double radiusX = Math.Sqrt((dx * dx) + (4.0 * dy * dy));
+            double radiusY = radiusX * 0.5;
+            double phase = Math.Atan2(dy / radiusY, dx / radiusX);
+
+            return (button, radiusX, radiusY, phase, speed);
+        }
+
+        private void AnimateOrbitalBodies(DispatcherQueueTimer sender, object args)
+        {
+            // The black hole remains fixed. Only the seven clickable sun bodies move.
+            _orbitElapsedSeconds += 0.033;
+
+            const double centerX = 600.0;
+            const double centerY = 350.0;
+
+            foreach (var body in _orbitBodies)
+            {
+                double angle = body.Phase + (_orbitElapsedSeconds * body.Speed);
+                double centerXAtAngle = centerX + (body.RadiusX * Math.Cos(angle));
+                double centerYAtAngle = centerY + (body.RadiusY * Math.Sin(angle));
+
+                Canvas.SetLeft(body.Button, centerXAtAngle - (body.Button.Width / 2.0));
+                Canvas.SetTop(body.Button, centerYAtAngle - (body.Button.Height / 2.0));
+            }
         }
 
         private void ResetSolarSystemView()
