@@ -66,7 +66,9 @@ namespace BuildCore
 
             ReadCpuClock(data);
             ReadCpuTemperature(data);
-            data.CpuSensorDiagnostics = BuildCpuSensorDiagnostics();
+            // Full sensor enumeration is intentionally reserved for the manual diagnostic button.
+            // Doing it during every live refresh repeatedly updates every sensor and can cause stutter.
+            data.CpuSensorDiagnostics = "Open CPU SENSOR DIAGNOSTIC to scan all exposed sensors.";
             ReadGpuSensors(data);
 
             return data;
