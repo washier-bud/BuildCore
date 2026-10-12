@@ -6213,8 +6213,8 @@ namespace BuildCore
         {
             HideAllPages();
 
-            DashboardPage.Visibility = Visibility.Collapsed;
-            ReferenceDesignPage.Visibility = Visibility.Visible;
+            DashboardPage.Visibility = Visibility.Visible;
+            ReferenceDesignPage.Visibility = Visibility.Collapsed;
 
             PageTitleText.Text = "Dashboard";
         }
@@ -6378,7 +6378,7 @@ namespace BuildCore
         {
             string name =
                 GetSettingsStore().Values["AccentColor"] as string ??
-                "Lime";
+                "White";
 
             return name switch
             {
@@ -6387,7 +6387,7 @@ namespace BuildCore
                 "Orange" => Color.FromArgb(255, 255, 165, 70),
                 "Red" => Color.FromArgb(255, 255, 105, 105),
                 "White" => Color.FromArgb(255, 245, 245, 248),
-                _ => Color.FromArgb(255, 124, 255, 138)
+                _ => Color.FromArgb(255, 218, 218, 224)
             };
         }
 
@@ -6395,7 +6395,7 @@ namespace BuildCore
         {
             var store = GetSettingsStore();
             string accent =
-                store.Values["AccentColor"] as string ?? "Lime";
+                store.Values["AccentColor"] as string ?? "White";
 
             AccentColorComboBox.SelectedIndex =
                 accent switch
@@ -6450,7 +6450,7 @@ namespace BuildCore
             if (AccentColorComboBox.SelectedItem is not ComboBoxItem item)
                 return;
 
-            string name = item.Content?.ToString() ?? "Lime";
+            string name = item.Content?.ToString() ?? "White";
             GetSettingsStore().Values["AccentColor"] = name;
             ApplyAccentColor();
         }
@@ -6467,7 +6467,7 @@ namespace BuildCore
             AnimationsToggle.IsOn = true;
             RememberPageToggle.IsOn = false;
             MinimizeToTrayToggle.IsOn = false;
-            AccentColorComboBox.SelectedIndex = 0;
+            AccentColorComboBox.SelectedIndex = 5;
 
             ApplyAccentColor();
         }
