@@ -700,7 +700,7 @@
                                 <Grid Width="150" Height="150">
 <Ellipse Width="166" Height="166" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="150" Height="150" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.22" RadiusX="0.82" RadiusY="0.82"><GradientStop Color="#FFFDFDFD" Offset="0"/><GradientStop Color="#FFB8B8B8" Offset="0.15"/><GradientStop Color="#FF5C5C5C" Offset="0.35"/><GradientStop Color="#FF171717" Offset="0.7"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="126" Height="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,43,0,0" Fill="#1CFFFFFF" Stroke="#28FFFFFF" StrokeThickness="0.5" Opacity="0.8"/>
                                     <Ellipse Width="132" Height="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,65,0,0" Fill="#28000000" Stroke="#35FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
