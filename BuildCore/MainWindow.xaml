@@ -639,6 +639,14 @@
                                     <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,49,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
                                     <Ellipse Width="8" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,23,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     <Ellipse Width="62" Height="62" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- Dashboard planet enhanced texture -->
+
+                                    <!-- High-contrast fractured basalt surface -->
+                                    <Ellipse Width="27" Height="11" Margin="8,17,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#7007070A" Stroke="#C8F2F2F5" StrokeThickness="0.9" Opacity="0.95" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-31"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="14" Height="10" Margin="39,39,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#B0000000" Stroke="#B5DADAE0" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                    <Ellipse Width="7" Height="6" Margin="17,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#AA050508" Stroke="#D8FFFFFF" StrokeThickness="0.7" IsHitTestVisible="False"/>
+                                    <Ellipse Width="22" Height="5" Margin="23,53,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#50FFFFFF" Opacity="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-18"/></Ellipse.RenderTransform></Ellipse>
                                 </Grid>
                                 <TextBlock Text="DASHBOARD" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Overview · Health · Temps" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -662,6 +670,14 @@
                                     <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,63,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
                                     <Ellipse Width="11" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     <Ellipse Width="80" Height="80" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- System planet enhanced texture -->
+
+                                    <!-- Bright ice fissures and frozen ridges -->
+                                    <Ellipse Width="48" Height="7" Margin="15,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#D8FFFFFF" Opacity="0.72" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-37"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="34" Height="5" Margin="38,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#A0FFFFFF" Opacity="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="24"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="23" Height="8" Margin="17,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#850A0A0D" Stroke="#BFFFFFFF" StrokeThickness="0.7" IsHitTestVisible="False"/>
+                                    <Ellipse Width="16" Height="4" Margin="55,14,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#AFFFFFFF" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="42"/></Ellipse.RenderTransform></Ellipse>
                                 </Grid>
                                 <TextBlock Text="SYSTEM" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Hardware &amp; OS" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -684,6 +700,14 @@
                                     <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,43,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
                                     <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,31,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     <Ellipse Width="54" Height="54" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- Performance planet enhanced texture -->
+
+                                    <!-- Dense impact craters with bright raised rims -->
+                                    <Ellipse Width="18" Height="13" Margin="8,13,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#B0000000" Stroke="#E6FFFFFF" StrokeThickness="1.1" IsHitTestVisible="False"/>
+                                    <Ellipse Width="11" Height="8" Margin="35,18,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#B0000000" Stroke="#C8FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                    <Ellipse Width="16" Height="11" Margin="27,39,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#D0000000" Stroke="#F0FFFFFF" StrokeThickness="1.0" IsHitTestVisible="False"/>
+                                    <Ellipse Width="7" Height="6" Margin="11,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#B0000000" Stroke="#BFFFFFFF" StrokeThickness="0.65" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="PERFORMANCE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="FPS · Latency · Benchmarks" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -709,6 +733,15 @@
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,106,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.4" Opacity="0.65"/>
                                     <Ellipse Width="18" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="116,54,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
                                     <Ellipse Width="142" Height="142" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- Optimize planet enhanced texture -->
+
+                                    <!-- Bold storm belts and a deep atmospheric vortex -->
+                                    <Ellipse Width="124" Height="17" Margin="13,37,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#7EFFFFFF" Opacity="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-13"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="133" Height="13" Margin="9,62,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#A6000000" Stroke="#7FFFFFFF" StrokeThickness="0.7" Opacity="0.95" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-13"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="113" Height="11" Margin="19,91,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#6AFFFFFF" Opacity="0.85" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-13"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="37" Height="28" Margin="84,73,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#D0000000" Stroke="#D8FFFFFF" StrokeThickness="1.2" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-20"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="19" Height="12" Margin="93,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#DFFFFFFF" Opacity="0.45" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="OPTIMIZE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Tweaks · Settings · Recovery" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -731,6 +764,13 @@
                                     <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,59,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
                                     <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="59,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     <Ellipse Width="74" Height="74" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- AutoTune planet enhanced texture -->
+
+                                    <!-- Long volcanic scars and luminous mineral seams -->
+                                    <Ellipse Width="14" Height="49" Margin="17,16,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#C0000000" Stroke="#CFFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="25"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="9" Height="37" Margin="48,28,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#DFFFFFFF" Opacity="0.68" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="34"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="19" Height="7" Margin="25,56,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#C8000000" Stroke="#BFFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-21"/></Ellipse.RenderTransform></Ellipse>
                                 </Grid>
                                 <TextBlock Text="AUTOTUNE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="AI Assistant · Apply · Undo" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -756,6 +796,14 @@
                                     <Ellipse Width="9" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,88,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.4" Opacity="0.65"/>
                                     <Ellipse Width="15" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="92,48,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
                                     <Ellipse Width="112" Height="112" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- History planet enhanced texture -->
+
+                                    <!-- Layered monochrome gas bands and a clear storm eye -->
+                                    <Ellipse Width="104" Height="14" Margin="8,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#8EFFFFFF" Opacity="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="11"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="108" Height="10" Margin="6,51,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#B8000000" Stroke="#80FFFFFF" StrokeThickness="0.7" Opacity="0.95" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="11"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="91" Height="12" Margin="14,75,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#9CFFFFFF" Opacity="0.8" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="11"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="29" Height="21" Margin="63,58,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#D0000000" Stroke="#DFFFFFFF" StrokeThickness="1.0" IsHitTestVisible="False"/>
                                 </Grid>
                                 <TextBlock Text="HISTORY" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Logs · Benchmarks · Activity" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -778,6 +826,13 @@
                                     <Ellipse Width="5" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,51,0,0" Fill="#20000000" Stroke="#28FFFFFF" StrokeThickness="0.35" Opacity="0.65"/>
                                     <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,26,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     <Ellipse Width="64" Height="64" Margin="4" Stroke="#20FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                
+                                    <!-- Settings planet enhanced texture -->
+
+                                    <!-- Rugged highland plates and a deep crater -->
+                                    <Ellipse Width="27" Height="17" Margin="10,13,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#A5000000" Stroke="#D8FFFFFF" StrokeThickness="0.9" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="-25"/></Ellipse.RenderTransform></Ellipse>
+                                    <Ellipse Width="18" Height="13" Margin="40,35,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#D0000000" Stroke="#CFFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/>
+                                    <Ellipse Width="24" Height="7" Margin="15,53,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#AFFFFFFF" Opacity="0.7" IsHitTestVisible="False"><Ellipse.RenderTransform><RotateTransform Angle="28"/></Ellipse.RenderTransform></Ellipse>
                                 </Grid>
                                 <TextBlock Text="SETTINGS" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="App · Theme · Behavior" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
