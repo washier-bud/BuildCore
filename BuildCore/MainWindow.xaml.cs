@@ -6149,8 +6149,32 @@ namespace BuildCore
             };
         }
 
+        private void ReferenceMinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetAppWindow().Presenter is OverlappedPresenter presenter)
+                presenter.Minimize();
+        }
+
+        private void ReferenceMaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetAppWindow().Presenter is OverlappedPresenter presenter)
+            {
+                if (presenter.State == OverlappedPresenterState.Maximized)
+                    presenter.Restore();
+                else
+                    presenter.Maximize();
+            }
+        }
+
+        private void ReferenceCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _allowWindowClose = true;
+            Close();
+        }
+
         private void HideAllPages()
         {
+            ReferenceDesignPage.Visibility = Visibility.Collapsed;
             AutoTunePage.Visibility =
                 Visibility.Collapsed;
 
@@ -6184,11 +6208,10 @@ namespace BuildCore
         {
             HideAllPages();
 
-            DashboardPage.Visibility =
-                Visibility.Visible;
+            DashboardPage.Visibility = Visibility.Collapsed;
+            ReferenceDesignPage.Visibility = Visibility.Visible;
 
-            PageTitleText.Text =
-                "Dashboard";
+            PageTitleText.Text = "Dashboard";
         }
 
         private void ShowSystem()
