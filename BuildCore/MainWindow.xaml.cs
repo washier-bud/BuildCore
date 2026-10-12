@@ -7224,7 +7224,11 @@ namespace BuildCore
                 if (transitionLayer != null && rootGrid != null)
                     rootGrid.Children.Remove(transitionLayer);
 
-                _planetNavigationInProgres        private Grid CreatePlanetHeroVisual(double size, string imageSource)
+                _planetNavigationInProgress = false;
+            }
+        }
+
+        private Grid CreatePlanetHeroVisual(double size, string imageSource)
         {
             Grid hero = new Grid
             {
@@ -7233,8 +7237,7 @@ namespace BuildCore
                 IsHitTestVisible = false
             };
 
-            // Keep the selected sun's actual NASA texture during the zoom
-            // transition so the sphere does not morph into a generic planet.
+            // Preserve the selected solar image during the cinematic zoom.
             Microsoft.UI.Xaml.Shapes.Ellipse atmosphere =
                 new Microsoft.UI.Xaml.Shapes.Ellipse
                 {
@@ -7276,8 +7279,6 @@ namespace BuildCore
                 };
             hero.Children.Add(sphere);
 
-            // A single soft edge-darkening layer gives the image depth without
-            // drawing extra crater rings or a second visible sphere outline.
             Microsoft.UI.Xaml.Shapes.Ellipse edgeShade =
                 new Microsoft.UI.Xaml.Shapes.Ellipse
                 {
@@ -7325,9 +7326,6 @@ namespace BuildCore
                 "OrbitSettings" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0094.jpg",
                 _ => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg"
             };
-        }
-
-as.Children.Add(crater);
         }
 
         private void DashboardSpaceRoot_SizeChanged(
