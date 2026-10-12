@@ -166,6 +166,8 @@ namespace BuildCore
                 _lockedFingerprint,
                 StringComparison.Ordinal);
         }
+
+        private bool ValidateRun(WorkloadRunResult runResult)
         {
             BenchmarkRun? run = runResult.BenchmarkRun;
 
