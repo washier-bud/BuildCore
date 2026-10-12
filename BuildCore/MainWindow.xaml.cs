@@ -7122,7 +7122,7 @@ namespace BuildCore
                 };
                 transitionLayer.Children.Add(heroCanvas);
 
-                Grid heroPlanet = CreatePlanetHeroVisual(sphereSize);
+                Grid heroPlanet = CreatePlanetHeroVisual(sphereSize, GetPlanetImageSource(planetButton));
                 Canvas.SetLeft(heroPlanet, sourceCenter.X - sphereSize / 2.0);
                 Canvas.SetTop(heroPlanet, sourceCenter.Y - sphereSize / 2.0);
                 heroCanvas.Children.Add(heroPlanet);
@@ -7224,11 +7224,7 @@ namespace BuildCore
                 if (transitionLayer != null && rootGrid != null)
                     rootGrid.Children.Remove(transitionLayer);
 
-                _planetNavigationInProgress = false;
-            }
-        }
-
-        private Grid CreatePlanetHeroVisual(double size)
+                _planetNavigationInProgres        private Grid CreatePlanetHeroVisual(double size, string imageSource)
         {
             Grid hero = new Grid
             {
@@ -7237,89 +7233,101 @@ namespace BuildCore
                 IsHitTestVisible = false
             };
 
-            Microsoft.UI.Xaml.Shapes.Ellipse atmosphere = new Microsoft.UI.Xaml.Shapes.Ellipse
-            {
-                Margin = new Thickness(-size * 0.16),
-                Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+            // Keep the selected sun's actual NASA texture during the zoom
+            // transition so the sphere does not morph into a generic planet.
+            Microsoft.UI.Xaml.Shapes.Ellipse atmosphere =
+                new Microsoft.UI.Xaml.Shapes.Ellipse
                 {
-                    Center = new Point(0.5, 0.5),
-                    RadiusX = 0.5,
-                    RadiusY = 0.5,
-                    GradientStops =
+                    Margin = new Thickness(-size * 0.14),
+                    Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
                     {
-                        new Microsoft.UI.Xaml.Media.GradientStop
+                        Center = new Point(0.5, 0.5),
+                        RadiusX = 0.5,
+                        RadiusY = 0.5,
+                        GradientStops =
                         {
-                            Color = Color.FromArgb(90, 235, 235, 242),
-                            Offset = 0.68
-                        },
-                        new Microsoft.UI.Xaml.Media.GradientStop
-                        {
-                            Color = Color.FromArgb(0, 235, 235, 242),
-                            Offset = 1.0
+                            new Microsoft.UI.Xaml.Media.GradientStop
+                            {
+                                Color = Color.FromArgb(76, 235, 235, 242),
+                                Offset = 0.66
+                            },
+                            new Microsoft.UI.Xaml.Media.GradientStop
+                            {
+                                Color = Color.FromArgb(0, 235, 235, 242),
+                                Offset = 1.0
+                            }
                         }
                     }
-                }
-            };
+                };
             hero.Children.Add(atmosphere);
 
-            Microsoft.UI.Xaml.Shapes.Ellipse sphere = new Microsoft.UI.Xaml.Shapes.Ellipse();
-            sphere.Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
-            {
-                Center = new Point(0.32, 0.28),
-                RadiusX = 0.82,
-                RadiusY = 0.82,
-                GradientStops =
+            Microsoft.UI.Xaml.Shapes.Ellipse sphere =
+                new Microsoft.UI.Xaml.Shapes.Ellipse
                 {
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.White, Offset = 0.0 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 180, 180, 188), Offset = 0.22 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 82, 82, 91), Offset = 0.55 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 18, 18, 23), Offset = 0.82 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.Black, Offset = 1.0 }
-                }
-            };
-            sphere.Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                Color.FromArgb(210, 225, 225, 232));
-            sphere.StrokeThickness = 1.2;
+                    Fill = new Microsoft.UI.Xaml.Media.ImageBrush
+                    {
+                        ImageSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
+                            new Uri(imageSource)),
+                        Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill
+                    },
+                    Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Color.FromArgb(190, 225, 225, 232)),
+                    StrokeThickness = 1.0
+                };
             hero.Children.Add(sphere);
 
-            // Small, low-contrast craters give the enlarged hero element
-            // surface detail while keeping the app's grayscale visual style.
-            AddHeroCrater(hero, size, 0.28, 0.35, 0.15);
-            AddHeroCrater(hero, size, 0.62, 0.27, 0.10);
-            AddHeroCrater(hero, size, 0.68, 0.59, 0.18);
-            AddHeroCrater(hero, size, 0.39, 0.70, 0.12);
-            AddHeroCrater(hero, size, 0.22, 0.56, 0.07);
+            // A single soft edge-darkening layer gives the image depth without
+            // drawing extra crater rings or a second visible sphere outline.
+            Microsoft.UI.Xaml.Shapes.Ellipse edgeShade =
+                new Microsoft.UI.Xaml.Shapes.Ellipse
+                {
+                    IsHitTestVisible = false,
+                    Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+                    {
+                        Center = new Point(0.32, 0.28),
+                        RadiusX = 0.86,
+                        RadiusY = 0.86,
+                        GradientStops =
+                        {
+                            new Microsoft.UI.Xaml.Media.GradientStop
+                            {
+                                Color = Color.FromArgb(0, 0, 0, 0),
+                                Offset = 0.36
+                            },
+                            new Microsoft.UI.Xaml.Media.GradientStop
+                            {
+                                Color = Color.FromArgb(20, 0, 0, 0),
+                                Offset = 0.60
+                            },
+                            new Microsoft.UI.Xaml.Media.GradientStop
+                            {
+                                Color = Color.FromArgb(150, 0, 0, 0),
+                                Offset = 1.0
+                            }
+                        }
+                    }
+                };
+            hero.Children.Add(edgeShade);
 
             return hero;
         }
 
-        private static void AddHeroCrater(Grid hero, double size, double x, double y, double diameterRatio)
+        private static string GetPlanetImageSource(Button planetButton)
         {
-            double diameter = size * diameterRatio;
-            Microsoft.UI.Xaml.Shapes.Ellipse crater = new Microsoft.UI.Xaml.Shapes.Ellipse
+            return planetButton.Name switch
             {
-                Width = diameter,
-                Height = diameter,
-                Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    Color.FromArgb(48, 0, 0, 0)),
-                Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    Color.FromArgb(54, 255, 255, 255)),
-                StrokeThickness = Math.Max(0.5, size * 0.006)
+                "OrbitDashboard" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg",
+                "OrbitSystem" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0193.jpg",
+                "OrbitPerformance" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0211.jpg",
+                "OrbitOptimize" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0304.jpg",
+                "OrbitAutoTune" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0131.jpg",
+                "OrbitHistory" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0335.jpg",
+                "OrbitSettings" => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0094.jpg",
+                _ => "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg"
             };
-            Canvas craterCanvas;
-            if (hero.Children.OfType<Canvas>().FirstOrDefault() is Canvas existingCanvas)
-            {
-                craterCanvas = existingCanvas;
-            }
-            else
-            {
-                craterCanvas = new Canvas { IsHitTestVisible = false };
-                hero.Children.Add(craterCanvas);
-            }
+        }
 
-            Canvas.SetLeft(crater, size * x - diameter / 2.0);
-            Canvas.SetTop(crater, size * y - diameter / 2.0);
-            craterCanvas.Children.Add(crater);
+as.Children.Add(crater);
         }
 
         private void DashboardSpaceRoot_SizeChanged(
