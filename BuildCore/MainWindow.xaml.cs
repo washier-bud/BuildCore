@@ -6216,7 +6216,60 @@ namespace BuildCore
             DashboardPage.Visibility = Visibility.Visible;
             ReferenceDesignPage.Visibility = Visibility.Collapsed;
 
+            // Always restore the solar-system camera when returning home.
+            // This also covers the top-bar return button, which does not use
+            // the animated planet-navigation path.
+            ResetSolarSystemView();
+
             PageTitleText.Text = "Dashboard";
+        }
+
+        private void ResetSolarSystemView()
+        {
+            if (PlanetaryCanvas == null)
+                return;
+
+            Visual solarVisual =
+                ElementCompositionPreview.GetElementVisual(PlanetaryCanvas);
+
+            solarVisual.StopAnimation("Scale");
+            solarVisual.StopAnimation("Offset");
+            solarVisual.Scale = Vector3.One;
+            solarVisual.Offset = Vector3.Zero;
+            solarVisual.CenterPoint = new Vector3(
+                (float)Math.Max(0.0, PlanetaryCanvas.ActualWidth / 2.0),
+                (float)Math.Max(0.0, PlanetaryCanvas.ActualHeight / 2.0),
+                0.0f);
+
+            // Reapply the responsive layout scale with its pivot at the
+            // center of the 1200x700 design canvas, not the top-left corner.
+            PlanetaryCanvas.RenderTransform =
+                new Microsoft.UI.Xaml.Media.ScaleTransform
+                {
+                    ScaleX = 1.0,
+                    ScaleY = 1.0,
+                    CenterX = 600.0,
+                    CenterY = 350.0
+                };
+
+            if (DashboardSpaceRoot != null && DashboardSpaceRoot.ActualWidth > 0 &&
+                DashboardSpaceRoot.ActualHeight > 0)
+            {
+                double availableWidth = Math.Max(320, DashboardSpaceRoot.ActualWidth - 36);
+                double availableHeight = Math.Max(280, DashboardSpaceRoot.ActualHeight - 72);
+                double scale = Math.Min(
+                    1.0,
+                    Math.Min(availableWidth / 1200.0, availableHeight / 700.0));
+
+                PlanetaryCanvas.RenderTransform =
+                    new Microsoft.UI.Xaml.Media.ScaleTransform
+                    {
+                        ScaleX = scale,
+                        ScaleY = scale,
+                        CenterX = 600.0,
+                        CenterY = 350.0
+                    };
+            }
         }
 
         private void ShowSystem()
