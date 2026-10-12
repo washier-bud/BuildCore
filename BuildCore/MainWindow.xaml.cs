@@ -7012,7 +7012,7 @@ namespace BuildCore
                 double rootWidth = Math.Max(1.0, rootGrid.ActualWidth);
                 double rootHeight = Math.Max(1.0, rootGrid.ActualHeight);
                 double sphereSize = Math.Clamp(
-                    sourceSphere?.ActualWidth > 0 ? sourceSphere.ActualWidth : 94.0,
+                    sourceSphere != null && sourceSphere.ActualWidth > 0 ? sourceSphere.ActualWidth : 94.0,
                     56.0,
                     180.0);
 
@@ -7157,7 +7157,7 @@ namespace BuildCore
 
             Ellipse atmosphere = new Ellipse
             {
-                Margin = -size * 0.16,
+                Margin = new Thickness(-size * 0.16),
                 Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
                 {
                     Center = new Point(0.5, 0.5),
