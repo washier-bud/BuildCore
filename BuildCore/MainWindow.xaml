@@ -748,7 +748,7 @@
                                     </Ellipse>
 <Ellipse Width="136" Height="136" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.2" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBDBDBD" Offset="0.2"/><GradientStop Color="#FF454545" Offset="0.48"/><GradientStop Color="#FF121212" Offset="0.82"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_saturn.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="23" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="14" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="73,71,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
