@@ -6626,7 +6626,7 @@ namespace BuildCore
                 VerticalAlignment = VerticalAlignment.Top
             });
 
-            Grid.SetColumn(header.Children[^1], 1);
+            Grid.SetColumn((FrameworkElement)header.Children[^1], 1);
             panel.Children.Add(header);
 
             foreach (OptimizationTweakDefinition tweak in group.Tweaks)
