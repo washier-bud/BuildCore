@@ -3336,7 +3336,7 @@
 
 
         <!-- Exact supplied artwork with transparent interaction zones. -->
-        <Grid x:Name="ReferenceDesignPage" Visibility="Collapsed" Panel.ZIndex="100">
+        <Grid x:Name="ReferenceDesignPage" Visibility="Collapsed">
             <Viewbox Stretch="Fill" StretchDirection="Both">
                 <Grid Width="1536" Height="1024">
                     <Image Source="ms-appx:///Assets/solar-system-ui.png" Width="1536" Height="1024" Stretch="Fill" IsHitTestVisible="False"/>
