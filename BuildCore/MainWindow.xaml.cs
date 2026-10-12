@@ -7166,9 +7166,17 @@ namespace BuildCore
                     sphereSize * 1.35);
 
                 Vector3 heroBaseOffset = heroVisual.Offset;
+
+                // Measure the hero's actual rendered center in root-grid
+                // coordinates after layout. Using the source sun's center
+                // here can leave the zoom target slightly off-center when
+                // the Canvas or root grid has its own layout offset.
+                Point heroCenter = heroPlanet.TransformToVisual(rootGrid).TransformPoint(
+                    new Point(heroPlanet.ActualWidth / 2.0, heroPlanet.ActualHeight / 2.0));
+
                 Vector3 travelOffset = new Vector3(
-                    (float)(rootWidth / 2.0 - sourceCenter.X),
-                    (float)(rootHeight / 2.0 - sourceCenter.Y),
+                    (float)(rootWidth / 2.0 - heroCenter.X),
+                    (float)(rootHeight / 2.0 - heroCenter.Y),
                     0.0f);
 
                 Vector3KeyFrameAnimation heroScale =
