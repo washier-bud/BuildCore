@@ -111,8 +111,7 @@ namespace BuildCore
                 {
                     result.TestState = ControlledWorkloadTestState.Inconclusive;
                     result.Status =
-                        $"Workload baseline incomplete: "
-                        $"{baseline.CompletedRuns}/{baseline.RequestedRuns} runs.";
+                        $"Workload baseline incomplete: {baseline.CompletedRuns}/{baseline.RequestedRuns} runs.";
                     return CompleteAndSave(result);
                 }
 
@@ -234,8 +233,7 @@ namespace BuildCore
                 {
                     result.TestState = ControlledWorkloadTestState.Inconclusive;
                     result.Status =
-                        $"Workload after benchmark incomplete: "
-                        $"{after.CompletedRuns}/{after.RequestedRuns} runs.";
+                        $"Workload after benchmark incomplete: {after.CompletedRuns}/{after.RequestedRuns} runs.";
                     return CompleteAndSave(result);
                 }
 
