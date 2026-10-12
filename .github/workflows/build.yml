@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    name: Build BuildCore (\${{ matrix.configuration }})
+    name: Build BuildCore (${{ matrix.configuration }})
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -30,24 +30,24 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore BuildCore.sln
+        run: dotnet restore BuildCore.slnx
 
       - name: Build
-        run: dotnet build BuildCore.sln --configuration \${{ matrix.configuration }} --platform x64 --no-restore
+        run: dotnet build BuildCore.slnx --configuration ${{ matrix.configuration }} --platform x64 --no-restore
 
       - name: Verify build output
         shell: pwsh
         run: |
-          \$output = Get-ChildItem -Path . -Recurse -Filter BuildCore.exe -ErrorAction SilentlyContinue |
-            Where-Object { \$_.FullName -match '\\bin\\x64\\' } |
+          $output = Get-ChildItem -Path . -Recurse -Filter BuildCore.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\bin\\x64\\' } |
             Select-Object -First 1
 
-          if (\$null -eq \$output) {
+          if ($null -eq $output) {
             Write-Error "BuildCore.exe was not produced by the x64 build."
             exit 1
           }
 
-          Write-Host "Build output: \$($output.FullName)"
+          Write-Host "Build output: $($output.FullName)"
