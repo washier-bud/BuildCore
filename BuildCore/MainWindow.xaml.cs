@@ -92,15 +92,18 @@ namespace BuildCore
         {
             this.InitializeComponent();
 
+            // Give every sun its own clearly separated orbital lane. The
+            // staggered radii prevent the bodies from repeatedly converging
+            // on nearly identical paths while keeping the full scene in frame.
             _orbitBodies = new[]
             {
-                CreateOrbitBody(OrbitDashboard, 0.060),
-                CreateOrbitBody(OrbitSystem, -0.047),
-                CreateOrbitBody(OrbitPerformance, 0.082),
-                CreateOrbitBody(OrbitOptimize, -0.039),
-                CreateOrbitBody(OrbitAutoTune, 0.070),
-                CreateOrbitBody(OrbitHistory, -0.052),
-                CreateOrbitBody(OrbitSettings, 0.093)
+                CreateOrbitBody(OrbitDashboard, 270.0, 0.060),
+                CreateOrbitBody(OrbitSystem, 320.0, -0.047),
+                CreateOrbitBody(OrbitPerformance, 220.0, 0.082),
+                CreateOrbitBody(OrbitOptimize, 470.0, -0.039),
+                CreateOrbitBody(OrbitAutoTune, 420.0, 0.070),
+                CreateOrbitBody(OrbitHistory, 370.0, -0.052),
+                CreateOrbitBody(OrbitSettings, 515.0, 0.093)
             };
 
             _orbitTimer = DispatcherQueue.CreateTimer();
@@ -6269,19 +6272,19 @@ namespace BuildCore
 
         private static (Button Button, double RadiusX, double RadiusY, double Phase, double Speed) CreateOrbitBody(
             Button button,
+            double radiusX,
             double speed)
         {
             const double centerX = 600.0;
             const double centerY = 350.0;
 
+            // Keep the elliptical orbit wide while leaving enough vertical
+            // clearance for the largest sun and its hover glow.
+            double radiusY = radiusX * 0.5;
             double bodyCenterX = Canvas.GetLeft(button) + button.Width / 2.0;
             double bodyCenterY = Canvas.GetTop(button) + button.Height / 2.0;
             double dx = bodyCenterX - centerX;
             double dy = bodyCenterY - centerY;
-
-            // Keep each sun on an elliptical orbit while preserving its starting position.
-            double radiusX = Math.Sqrt((dx * dx) + (4.0 * dy * dy));
-            double radiusY = radiusX * 0.5;
             double phase = Math.Atan2(dy / radiusY, dx / radiusX);
 
             return (button, radiusX, radiusY, phase, speed);
