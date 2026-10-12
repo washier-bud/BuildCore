@@ -484,7 +484,7 @@
                          real star field atmospheric while preserving readable navigation labels.
                          The procedural stars and gradients below remain as a fallback layer. -->
                     <Image
-                        Source="https://svs.gsfc.nasa.gov/vis/a010000/a014800/a014866/TESS_Southern_Sky_Sector_12_desktop.jpg"
+                        Source="https://svs.gsfc.nasa.gov/vis/a000000/a004800/a004851/milkyway_2020_4k_print.jpg"
                         Stretch="UniformToFill"
                         Opacity="0.26"
                         IsHitTestVisible="False"/>
