@@ -679,7 +679,7 @@
                                 <Grid Width="62" Height="62">
 <Ellipse Width="78" Height="78" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.25,0.22" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FF999999" Offset="0.25"/><GradientStop Color="#FF3C3C3C" Offset="0.65"/><GradientStop Color="#FF020202" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mercury.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,19,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="7" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,37,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
