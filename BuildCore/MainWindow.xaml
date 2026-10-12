@@ -657,7 +657,7 @@
                                 <Grid Width="88" Height="88">
 <Ellipse Width="104" Height="104" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.22" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFFFFFFF" Offset="0"/><GradientStop Color="#FFBEBEBE" Offset="0.2"/><GradientStop Color="#FF565656" Offset="0.48"/><GradientStop Color="#FF151515" Offset="0.8"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="80" Height="80" Margin="4" Stroke="#50E5E5E5" StrokeThickness="1.3" IsHitTestVisible="False"/>
                                     <Ellipse Width="17" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,27,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
