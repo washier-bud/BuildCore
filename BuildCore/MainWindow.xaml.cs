@@ -6304,8 +6304,16 @@ namespace BuildCore
                 double centerXAtAngle = centerX + (body.RadiusX * Math.Cos(angle));
                 double centerYAtAngle = centerY + (body.RadiusY * Math.Sin(angle));
 
+                // Add a restrained independent float on top of the orbit.
+                // The small phase-offset drift gives each sun a little life
+                // without changing its orbit lane or the overall scene scale.
+                double floatOffsetY =
+                    Math.Sin((_orbitElapsedSeconds * 1.15) + body.Phase * 1.7) * 3.5;
+
                 Canvas.SetLeft(body.Button, centerXAtAngle - (body.Button.Width / 2.0));
-                Canvas.SetTop(body.Button, centerYAtAngle - (body.Button.Height / 2.0));
+                Canvas.SetTop(
+                    body.Button,
+                    centerYAtAngle + floatOffsetY - (body.Button.Height / 2.0));
             }
         }
 
@@ -7200,6 +7208,12 @@ namespace BuildCore
                     compositor.CreateVector3KeyFrameAnimation();
                 heroScale.Duration = TimeSpan.FromMilliseconds(420);
                 heroScale.InsertKeyFrame(0.0f, Vector3.One);
+                // A tiny eased settle near the end makes the zoom feel more
+                // like a camera push than a linear image enlargement.
+                heroScale.InsertKeyFrame(
+                    0.82f,
+                    new Vector3(targetScale * 0.94f, targetScale * 0.94f, 1.0f),
+                    ease);
                 heroScale.InsertKeyFrame(
                     1.0f,
                     new Vector3(targetScale, targetScale, 1.0f),
