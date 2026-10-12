@@ -576,60 +576,70 @@
                         <Ellipse Width="970" Height="520" Canvas.Left="115" Canvas.Top="90" Stroke="#28FFFFFF" StrokeThickness="1" Opacity="0.7"/>
                         <Ellipse Width="1130" Height="610" Canvas.Left="35" Canvas.Top="45" Stroke="#20FFFFFF" StrokeThickness="1" Opacity="0.8"/>
 
-                        <!-- Central Sun: enlarged layered corona and bright photosphere -->
-                        <Grid Canvas.Left="460" Canvas.Top="216" Width="280" Height="280" IsHitTestVisible="False">
-                            <Ellipse Width="280" Height="280">
+                        <!-- Fixed central black hole with a layered monochrome accretion disk. -->
+                        <Grid x:Name="CentralBlackHole" Canvas.Left="460" Canvas.Top="216" Width="280" Height="280" IsHitTestVisible="False">
+                            <!-- Diffuse gravitational glow -->
+                            <Ellipse Width="280" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.72">
                                 <Ellipse.Fill>
                                     <RadialGradientBrush>
-                                        <GradientStop Color="#00FFFFFF" Offset="0.40"/>
-                                        <GradientStop Color="#12E8E8E8" Offset="0.58"/>
-                                        <GradientStop Color="#28DADADA" Offset="0.72"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#44FFFFFF" Offset="0.38"/>
+                                        <GradientStop Color="#AAE4E4E8" Offset="0.58"/>
                                         <GradientStop Color="#00FFFFFF" Offset="1"/>
                                     </RadialGradientBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <Ellipse Width="230" Height="230" Margin="25">
-                                <Ellipse.Fill>
-                                    <RadialGradientBrush>
-                                        <GradientStop Color="#35FFFFFF" Offset="0.50"/>
-                                        <GradientStop Color="#4FFFFFFF" Offset="0.72"/>
-                                        <GradientStop Color="#00FFFFFF" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                            <Ellipse Width="192" Height="192" Margin="44" Fill="#30FFFFFF"/>
-                            <Ellipse Width="164" Height="164" Margin="58">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/>
-                                </Ellipse.Fill>
+                            <!-- Accretion disk: silver-white light around the event horizon -->
+                            <Ellipse Width="258" Height="88" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" StrokeThickness="13">
+                                <Ellipse.RenderTransform><RotateTransform Angle="-18"/></Ellipse.RenderTransform>
                                 <Ellipse.Stroke>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#FFFFFFFF" Offset="0"/>
-                                        <GradientStop Color="#FF777777" Offset="1"/>
+                                        <GradientStop Color="#FF08080A" Offset="0"/>
+                                        <GradientStop Color="#FFF4F4F7" Offset="0.22"/>
+                                        <GradientStop Color="#FF77777F" Offset="0.40"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.58"/>
+                                        <GradientStop Color="#FF29292F" Offset="0.78"/>
+                                        <GradientStop Color="#FFDADAE0" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Ellipse.Stroke>
-                                <Ellipse.StrokeThickness>1.2</Ellipse.StrokeThickness>
                             </Ellipse>
-                            <Ellipse Width="50" Height="15" Margin="66,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform><RotateTransform Angle="-24"/></Ellipse.RenderTransform>
+                            <Ellipse Width="226" Height="70" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" StrokeThickness="5" Opacity="0.95">
+                                <Ellipse.RenderTransform><RotateTransform Angle="-18"/></Ellipse.RenderTransform>
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#FF303036" Offset="0"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.28"/>
+                                        <GradientStop Color="#FF8D8D95" Offset="0.52"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.76"/>
+                                        <GradientStop Color="#FF202026" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
                             </Ellipse>
-                            <Ellipse Width="36" Height="10" Margin="119,113,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#22FFFFFF" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform><RotateTransform Angle="31"/></Ellipse.RenderTransform>
+                            <!-- Event horizon -->
+                            <Ellipse Width="132" Height="132" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#FF000000" Stroke="#FFE8E8EC" StrokeThickness="1.6">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="22" ShadowDepth="0" Color="#FFFFFFFF" Opacity="0.72"/>
+                                </Ellipse.Effect>
                             </Ellipse>
-                            <Ellipse Width="28" Height="9" Margin="89,144,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform><RotateTransform Angle="-12"/></Ellipse.RenderTransform>
+                            <Ellipse Width="116" Height="116" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#FF000000" Stroke="#FF17171C" StrokeThickness="1"/>
+                            <Ellipse Width="94" Height="94" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#FF000000"/>
+                            <!-- Foreground shadow cuts across the disk to create depth -->
+                            <Ellipse Width="170" Height="42" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#FF000000" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform><RotateTransform Angle="-18"/></Ellipse.RenderTransform>
                             </Ellipse>
+                            <Ellipse Width="136" Height="136" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="#65FFFFFF" StrokeThickness="0.8"/>
                         </Grid>
                         <TextBlock Text="BUILDCORE" Canvas.Left="555" Canvas.Top="440" Foreground="White" FontSize="16" FontWeight="Bold" CharacterSpacing="70"/>
-                        <TextBlock Text="SYSTEM OPTIMIZER" Canvas.Left="559" Canvas.Top="463" Foreground="#85858B" FontSize="8" CharacterSpacing="170"/>
+                        <TextBlock Text="EVENT HORIZON" Canvas.Left="551" Canvas.Top="463" Foreground="#85858B" FontSize="8" CharacterSpacing="170"/>
 
                         <!-- Dashboard -->
-                        <Button Canvas.Left="135" Canvas.Top="292" Width="118" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetDashboard_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Dashboard — overview, health and temperatures">
+                        <Button Canvas.Left="135" Canvas.Top="292" Width="118" Height="145" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitDashboard" Click="PlanetDashboard_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Dashboard — overview, health and temperatures">
                             <StackPanel HorizontalAlignment="Center" Spacing="9">
                                 <Grid Width="70" Height="70">
 <Ellipse Width="86" Height="86" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mars.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="70" Height="70" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="70" Height="70" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="70" Height="70" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="67" Height="67" Margin="1.5" Stroke="#4AFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="22" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,31,0,0" Fill="#1CFFFFFF" Opacity="0.55" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="-32"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="15" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,17,0,0" Fill="#30000000" Stroke="#40FFFFFF" StrokeThickness="0.45" Opacity="0.7"><Ellipse.RenderTransform><RotateTransform Angle="24"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="13" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -647,12 +657,13 @@
                         </Button>
 
                         <!-- System -->
-                        <Button Canvas.Left="280" Canvas.Top="92" Width="132" Height="145" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetSystem_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="System — hardware and Windows details">
+                        <Button Canvas.Left="280" Canvas.Top="92" Width="132" Height="145" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitSystem" Click="PlanetSystem_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="System — hardware and Windows details">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="88" Height="88">
 <Ellipse Width="104" Height="104" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="88" Height="88" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="88" Height="88" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="88" Height="88" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="85" Height="85" Margin="1.5" Stroke="#66FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="37" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,38,0,0" Fill="#12FFFFFF" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.55"><Ellipse.RenderTransform><RotateTransform Angle="-38"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="24" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,21,0,0" Fill="#22000000" Stroke="#50FFFFFF" StrokeThickness="0.45" Opacity="0.75"><Ellipse.RenderTransform><RotateTransform Angle="42"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="80" Height="80" Margin="4" Stroke="#50E5E5E5" StrokeThickness="1.3" IsHitTestVisible="False"/>
@@ -671,12 +682,13 @@
                         </Button>
 
                         <!-- Performance -->
-                        <Button Canvas.Left="570" Canvas.Top="72" Width="116" Height="126" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetPerformance_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Performance — FPS, latency and benchmarks">
+                        <Button Canvas.Left="570" Canvas.Top="72" Width="116" Height="126" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitPerformance" Click="PlanetPerformance_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Performance — FPS, latency and benchmarks">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="62" Height="62">
 <Ellipse Width="78" Height="78" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mercury.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="62" Height="62" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="62" Height="62" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="62" Height="62" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="59" Height="59" Margin="1.5" Stroke="#55FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="17" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,26,0,0" Fill="#24000000" Stroke="#75FFFFFF" StrokeThickness="0.65" Opacity="0.8"/><Ellipse Width="9" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,14,0,0" Fill="#18000000" Stroke="#65FFFFFF" StrokeThickness="0.45" Opacity="0.8"/><Ellipse Width="6" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,39,0,0" Fill="#22000000" Stroke="#50FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,19,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -694,12 +706,13 @@
                         </Button>
 
                         <!-- Optimize -->
-                        <Button Canvas.Left="890" Canvas.Top="145" Width="170" Height="190" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetOptimize_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Optimize — tweaks, settings and recovery">
+                        <Button Canvas.Left="890" Canvas.Top="145" Width="170" Height="190" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitOptimize" Click="PlanetOptimize_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Optimize — tweaks, settings and recovery">
                             <StackPanel HorizontalAlignment="Center" Spacing="9">
                                 <Grid Width="150" Height="150">
 <Ellipse Width="166" Height="166" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="150" Height="150" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="150" Height="150" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="150" Height="150" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="150" Height="150" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="150" Height="150" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="147" Height="147" Margin="1.5" Stroke="#45FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="126" Height="11" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,56,0,0" Fill="#10FFFFFF" Opacity="0.75"/><Ellipse Width="118" Height="8" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,91,0,0" Fill="#1C000000" Opacity="0.65"/><Ellipse Width="37" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,60,0,0" Fill="#1A000000" Stroke="#45FFFFFF" StrokeThickness="0.65" Opacity="0.8"/>
                                     <Ellipse Width="126" Height="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,43,0,0" Fill="#1CFFFFFF" Stroke="#28FFFFFF" StrokeThickness="0.5" Opacity="0.8"/>
@@ -720,12 +733,13 @@
                         </Button>
 
                         <!-- AutoTune -->
-                        <Button Canvas.Left="905" Canvas.Top="425" Width="142" Height="148" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetAutoTune_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="AutoTune — guided optimization and undo">
+                        <Button Canvas.Left="905" Canvas.Top="425" Width="142" Height="148" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitAutoTune" Click="PlanetAutoTune_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="AutoTune — guided optimization and undo">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="82" Height="82">
 <Ellipse Width="98" Height="98" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="82" Height="82" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="82" Height="82" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="82" Height="82" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="79" Height="79" Margin="1.5" Stroke="#4AFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="31" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,31,0,0" Fill="#66FFFFFF" Opacity="0.32" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="-42"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="23" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,48,0,0" Fill="#55000000" Opacity="0.8" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="28"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="14" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,49,0,0" Fill="#55FFFFFF" Opacity="0.4" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="20"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="16" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="19,25,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -743,15 +757,16 @@
                         </Button>
 
                         <!-- History -->
-                        <Button Canvas.Left="215" Canvas.Top="475" Width="180" Height="170" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetHistory_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="History — logs, benchmarks and activity">
+                        <Button Canvas.Left="215" Canvas.Top="475" Width="180" Height="170" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitHistory" Click="PlanetHistory_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="History — logs, benchmarks and activity">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="120" Height="120">
                                     <Ellipse Width="146" Height="34" Stroke="#A8A8A8" StrokeThickness="2.2" Opacity="0.62" RenderTransformOrigin="0.5,0.5">
                                         <Ellipse.RenderTransform><RotateTransform Angle="-18"/></Ellipse.RenderTransform>
                                     </Ellipse>
 <Ellipse Width="136" Height="136" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_saturn.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="120" Height="120" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="120" Height="120" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="120" Height="120" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="117" Height="117" Margin="1.5" Stroke="#55FFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="94" Height="8" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,45,0,0" Fill="#12FFFFFF" Opacity="0.75"/><Ellipse Width="83" Height="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,69,0,0" Fill="#22000000" Opacity="0.65"/><Ellipse Width="58" Height="5" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,85,0,0" Fill="#16FFFFFF" Opacity="0.75"/>
                                     <Ellipse Width="23" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -769,12 +784,13 @@
                         </Button>
 
                         <!-- Settings -->
-                        <Button Canvas.Left="600" Canvas.Top="540" Width="125" Height="132" Background="Transparent" BorderThickness="0" Padding="0" Click="PlanetSettings_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Settings — appearance and app behavior">
+                        <Button Canvas.Left="600" Canvas.Top="540" Width="125" Height="132" Background="Transparent" BorderThickness="0" Padding="0" x:Name="OrbitSettings" Click="PlanetSettings_Click" PointerEntered="PlanetButton_PointerEntered" PointerExited="PlanetButton_PointerExited" ToolTipService.ToolTip="Settings — appearance and app behavior">
                             <StackPanel HorizontalAlignment="Center" Spacing="8">
                                 <Grid Width="72" Height="72">
 <Ellipse Width="88" Height="88" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
-                                                                        <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_moon.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                                                        <Ellipse Width="72" Height="72" Fill="#287C7C82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="72" Height="72" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="72" Height="72" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="69" Height="69" Margin="1.5" Stroke="#4AFFFFFF" StrokeThickness="0.8" IsHitTestVisible="False"/><Ellipse Width="25" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,29,0,0" Fill="#18000000" Stroke="#65FFFFFF" StrokeThickness="0.55" Opacity="0.75"><Ellipse.RenderTransform><RotateTransform Angle="-35"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="17" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,17,0,0" Fill="#20FFFFFF" Stroke="#40FFFFFF" StrokeThickness="0.4" Opacity="0.7"><Ellipse.RenderTransform><RotateTransform Angle="25"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="14" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
