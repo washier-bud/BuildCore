@@ -1,0 +1,14 @@
+BuildCore planetary visual asset attribution
+
+Planet surface maps used by the solar-system navigation UI:
+- Source: Solar System Scope (https://www.solarsystemscope.com/textures/)
+- Download base: https://www.solarsystemscope.com/textures/download/
+- Files referenced by the UI: 2k_mars.jpg, 2k_earth_daymap.jpg, 2k_mercury.jpg, 2k_jupiter.jpg, 2k_venus_surface.jpg, 2k_saturn.jpg, 2k_moon.jpg, 2k_sun.jpg
+- License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- License URL: https://creativecommons.org/licenses/by/4.0/
+- Description: Planetary maps are based on NASA elevation and imagery data and are provided by Solar System Scope. The maps are used here as illustrative visual textures and are not intended for scientific analysis.
+
+Deep-space background:
+- Source: NASA Goddard Space Flight Center Scientific Visualization Studio (https://svs.gsfc.nasa.gov/)
+- Referenced image: Milky Way star map (TESS_Southern_Sky / Milky Way visual collection)
+- NASA media are generally available for educational and informational use; check the individual media page for any third-party credits or restrictions before redistribution.
