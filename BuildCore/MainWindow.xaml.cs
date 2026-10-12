@@ -7125,7 +7125,25 @@ namespace BuildCore
                 };
                 transitionLayer.Children.Add(heroCanvas);
 
-                Grid heroPlanet = CreatePlanetHeroVisual(sphereSize, GetPlanetImageSource(planetButton));
+                // Reuse the exact ImageSource from the clicked sun's visible
+                // sphere. This avoids falling back to a generic gray hero or
+                // accidentally choosing a different texture for the transition.
+                Microsoft.UI.Xaml.Media.ImageSource? selectedSunImage = null;
+                if (sourceSphere != null)
+                {
+                    Microsoft.UI.Xaml.Shapes.Ellipse? texturedSphere =
+                        sourceSphere.Children
+                            .OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
+                            .FirstOrDefault(ellipse => ellipse.Fill is Microsoft.UI.Xaml.Media.ImageBrush);
+
+                    if (texturedSphere?.Fill is Microsoft.UI.Xaml.Media.ImageBrush imageBrush)
+                        selectedSunImage = imageBrush.ImageSource;
+                }
+
+                Grid heroPlanet = CreatePlanetHeroVisual(
+                    sphereSize,
+                    selectedSunImage ?? new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
+                        new Uri(GetPlanetImageSource(planetButton))));
                 Canvas.SetLeft(heroPlanet, sourceCenter.X - sphereSize / 2.0);
                 Canvas.SetTop(heroPlanet, sourceCenter.Y - sphereSize / 2.0);
                 heroCanvas.Children.Add(heroPlanet);
@@ -7231,7 +7249,9 @@ namespace BuildCore
             }
         }
 
-        private Grid CreatePlanetHeroVisual(double size, string imageSource)
+        private Grid CreatePlanetHeroVisual(
+            double size,
+            Microsoft.UI.Xaml.Media.ImageSource imageSource)
         {
             Grid hero = new Grid
             {
@@ -7272,8 +7292,7 @@ namespace BuildCore
                 {
                     Fill = new Microsoft.UI.Xaml.Media.ImageBrush
                     {
-                        ImageSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
-                            new Uri(imageSource)),
+                        ImageSource = imageSource,
                         Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill
                     },
                     Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
