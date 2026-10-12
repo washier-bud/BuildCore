@@ -5137,7 +5137,16 @@ namespace BuildCore
             try
             {
                 HardwareMonitorData data =
-                    _hardwareMonitorService.GetHardwareData();
+                    await Task.Run(() =>
+                    {
+                        HardwareMonitorData result =
+                            _hardwareMonitorService.GetHardwareData();
+
+                        result.CpuSensorDiagnostics =
+                            _hardwareMonitorService.GetCpuSensorDiagnostics();
+
+                        return result;
+                    });
 
                 var content = new StackPanel
                 {
