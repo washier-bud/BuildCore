@@ -7055,7 +7055,7 @@ namespace BuildCore
                 await Task.Delay(320);
                 targetPage.Opacity = 1.0;
                 pageVisual.StopAnimation("Opacity");
-                pageVisual.Opacity = 1.0;
+                pageVisual.Opacity = 1.0f;
             }
             catch (Exception ex)
             {
