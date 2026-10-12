@@ -6235,11 +6235,11 @@ namespace BuildCore
             solarVisual.StopAnimation("Scale");
             solarVisual.StopAnimation("Offset");
             solarVisual.Scale = Vector3.One;
-            solarVisual.Offset = Vector3.Zero;
-            solarVisual.CenterPoint = new Vector3(
-                (float)Math.Max(0.0, PlanetaryCanvas.ActualWidth / 2.0),
-                (float)Math.Max(0.0, PlanetaryCanvas.ActualHeight / 2.0),
-                0.0f);
+
+            // Offset is maintained by WinUI layout for this centered Canvas.
+            // Do not force it to zero: that moves the Canvas away from its
+            // layout position and is why the scene can return off-center.
+            solarVisual.CenterPoint = Vector3.Zero;
 
             // Reapply the responsive layout scale with its pivot at the
             // center of the 1200x700 design canvas, not the top-left corner.
