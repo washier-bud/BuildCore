@@ -576,9 +576,9 @@
                         <Ellipse Width="970" Height="520" Canvas.Left="115" Canvas.Top="90" Stroke="#28FFFFFF" StrokeThickness="1" Opacity="0.7"/>
                         <Ellipse Width="1130" Height="610" Canvas.Left="35" Canvas.Top="45" Stroke="#20FFFFFF" StrokeThickness="1" Opacity="0.8"/>
 
-                        <!-- Central Sun: layered corona, bright photosphere and subtle surface granulation -->
-                        <Grid Canvas.Left="492" Canvas.Top="248" Width="216" Height="216" IsHitTestVisible="False">
-                            <Ellipse Width="216" Height="216">
+                        <!-- Central Sun: enlarged layered corona and bright photosphere -->
+                        <Grid Canvas.Left="460" Canvas.Top="216" Width="280" Height="280" IsHitTestVisible="False">
+                            <Ellipse Width="280" Height="280">
                                 <Ellipse.Fill>
                                     <RadialGradientBrush>
                                         <GradientStop Color="#00FFFFFF" Offset="0.40"/>
@@ -588,7 +588,7 @@
                                     </RadialGradientBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <Ellipse Width="178" Height="178" Margin="19">
+                            <Ellipse Width="230" Height="230" Margin="25">
                                 <Ellipse.Fill>
                                     <RadialGradientBrush>
                                         <GradientStop Color="#35FFFFFF" Offset="0.50"/>
@@ -597,8 +597,8 @@
                                     </RadialGradientBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <Ellipse Width="148" Height="148" Margin="34" Fill="#30FFFFFF"/>
-                            <Ellipse Width="126" Height="126" Margin="45">
+                            <Ellipse Width="192" Height="192" Margin="44" Fill="#30FFFFFF"/>
+                            <Ellipse Width="164" Height="164" Margin="58">
                                 <Ellipse.Fill>
                                     <ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_sun.jpg" Stretch="UniformToFill"/>
                                 </Ellipse.Fill>
@@ -610,13 +610,13 @@
                                 </Ellipse.Stroke>
                                 <Ellipse.StrokeThickness>1.2</Ellipse.StrokeThickness>
                             </Ellipse>
-                            <Ellipse Width="39" Height="12" Margin="51,56,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse Width="50" Height="15" Margin="66,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
                                 <Ellipse.RenderTransform><RotateTransform Angle="-24"/></Ellipse.RenderTransform>
                             </Ellipse>
-                            <Ellipse Width="28" Height="8" Margin="92,87,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#22FFFFFF" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse Width="36" Height="10" Margin="119,113,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#22FFFFFF" RenderTransformOrigin="0.5,0.5">
                                 <Ellipse.RenderTransform><RotateTransform Angle="31"/></Ellipse.RenderTransform>
                             </Ellipse>
-                            <Ellipse Width="22" Height="7" Margin="69,111,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse Width="28" Height="9" Margin="89,144,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#18FFFFFF" RenderTransformOrigin="0.5,0.5">
                                 <Ellipse.RenderTransform><RotateTransform Angle="-12"/></Ellipse.RenderTransform>
                             </Ellipse>
                         </Grid>
@@ -629,7 +629,7 @@
                                 <Grid Width="70" Height="70">
 <Ellipse Width="86" Height="86" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mars.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFE1E1E5" Offset="0"/><GradientStop Color="#FF777780" Offset="0.48"/><GradientStop Color="#FF25252B" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="70" Height="70" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="13" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -651,7 +651,7 @@
                                 <Grid Width="88" Height="88">
 <Ellipse Width="104" Height="104" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFD8D8DE" Offset="0"/><GradientStop Color="#FF65656E" Offset="0.48"/><GradientStop Color="#FF1C1C22" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="88" Height="88" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="80" Height="80" Margin="4" Stroke="#50E5E5E5" StrokeThickness="1.3" IsHitTestVisible="False"/>
@@ -674,7 +674,7 @@
                                 <Grid Width="62" Height="62">
 <Ellipse Width="78" Height="78" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mercury.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFF0F0F3" Offset="0"/><GradientStop Color="#FF9B9BA4" Offset="0.48"/><GradientStop Color="#FF34343B" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="62" Height="62" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,19,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -696,7 +696,7 @@
                                 <Grid Width="150" Height="150">
 <Ellipse Width="166" Height="166" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="150" Height="150" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFE8E8EC" Offset="0"/><GradientStop Color="#FF8A8A94" Offset="0.48"/><GradientStop Color="#FF292930" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="150" Height="150" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="126" Height="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,43,0,0" Fill="#1CFFFFFF" Stroke="#28FFFFFF" StrokeThickness="0.5" Opacity="0.8"/>
@@ -721,7 +721,7 @@
                                 <Grid Width="82" Height="82">
 <Ellipse Width="98" Height="98" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFCFCFD5" Offset="0"/><GradientStop Color="#FF777780" Offset="0.48"/><GradientStop Color="#FF202026" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="82" Height="82" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="16" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="19,25,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -746,7 +746,7 @@
                                     </Ellipse>
 <Ellipse Width="136" Height="136" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_saturn.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFE7E7EB" Offset="0"/><GradientStop Color="#FF9D9DA5" Offset="0.48"/><GradientStop Color="#FF36363D" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="120" Height="120" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="23" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -768,7 +768,7 @@
                                 <Grid Width="72" Height="72">
 <Ellipse Width="88" Height="88" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_moon.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.24" RadiusX="0.88" RadiusY="0.88"><GradientStop Color="#FFD1D1D7" Offset="0"/><GradientStop Color="#FF85858E" Offset="0.48"/><GradientStop Color="#FF24242B" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="72" Height="72" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
                                     <Ellipse Width="14" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
