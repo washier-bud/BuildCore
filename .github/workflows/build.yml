@@ -36,7 +36,7 @@ jobs:
         run: dotnet restore BuildCore.slnx
 
       - name: Build
-        run: dotnet build BuildCore.slnx --configuration ${{ matrix.configuration }} --platform x64 --no-restore
+        run: dotnet build BuildCore.slnx --configuration ${{ matrix.configuration }} -p:Platform=x64 --no-restore
 
       - name: Verify build output
         shell: pwsh
