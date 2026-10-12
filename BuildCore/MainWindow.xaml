@@ -636,7 +636,7 @@
                                 <Grid Width="70" Height="70">
 <Ellipse Width="86" Height="86" Fill="#18FFFFFF" Opacity="0" IsHitTestVisible="False"/>
                                                                         <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
-                                    <Ellipse.Fill><RadialGradientBrush Center="0.28,0.25" RadiusX="0.8" RadiusY="0.8"><GradientStop Color="#FFF7F7F7" Offset="0"/><GradientStop Color="#FF858585" Offset="0.25"/><GradientStop Color="#FF292929" Offset="0.62"/><GradientStop Color="#FF030303" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+                                    <Ellipse.Fill><ImageBrush ImageSource="https://www.solarsystemscope.com/textures/download/2k_mars.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
                                     <Ellipse Width="13" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,41,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
