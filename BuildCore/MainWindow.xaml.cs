@@ -7006,7 +7006,7 @@ namespace BuildCore
                 if (planetButton.Content is StackPanel planetPanel)
                     sourceSphere = planetPanel.Children.OfType<Grid>().FirstOrDefault();
 
-                UIElement sourceElement = sourceSphere ?? planetButton;
+                FrameworkElement sourceElement = sourceSphere is not null ? sourceSphere : planetButton;
                 Point sourceCenter = sourceElement.TransformToVisual(rootGrid).TransformPoint(
                     new Point(sourceElement.ActualWidth / 2.0, sourceElement.ActualHeight / 2.0));
 
@@ -7156,7 +7156,7 @@ namespace BuildCore
                 IsHitTestVisible = false
             };
 
-            Ellipse atmosphere = new Ellipse
+            Microsoft.UI.Xaml.Shapes.Ellipse atmosphere = new Microsoft.UI.Xaml.Shapes.Ellipse
             {
                 Margin = new Thickness(-size * 0.16),
                 Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
@@ -7168,12 +7168,12 @@ namespace BuildCore
                     {
                         new Microsoft.UI.Xaml.Media.GradientStop
                         {
-                            Color = ColorHelper.FromArgb(90, 235, 235, 242),
+                            Color = Color.FromArgb(90, 235, 235, 242),
                             Offset = 0.68
                         },
                         new Microsoft.UI.Xaml.Media.GradientStop
                         {
-                            Color = ColorHelper.FromArgb(0, 235, 235, 242),
+                            Color = Color.FromArgb(0, 235, 235, 242),
                             Offset = 1.0
                         }
                     }
@@ -7181,7 +7181,7 @@ namespace BuildCore
             };
             hero.Children.Add(atmosphere);
 
-            Ellipse sphere = new Ellipse();
+            Microsoft.UI.Xaml.Shapes.Ellipse sphere = new Microsoft.UI.Xaml.Shapes.Ellipse();
             sphere.Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
             {
                 Center = new Point(0.32, 0.28),
@@ -7190,14 +7190,14 @@ namespace BuildCore
                 GradientStops =
                 {
                     new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.White, Offset = 0.0 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 180, 180, 188), Offset = 0.22 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 82, 82, 91), Offset = 0.55 },
-                    new Microsoft.UI.Xaml.Media.GradientStop { Color = ColorHelper.FromArgb(255, 18, 18, 23), Offset = 0.82 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 180, 180, 188), Offset = 0.22 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 82, 82, 91), Offset = 0.55 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Color.FromArgb(255, 18, 18, 23), Offset = 0.82 },
                     new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.Black, Offset = 1.0 }
                 }
             };
             sphere.Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                ColorHelper.FromArgb(210, 225, 225, 232));
+                Color.FromArgb(210, 225, 225, 232));
             sphere.StrokeThickness = 1.2;
             hero.Children.Add(sphere);
 
@@ -7215,14 +7215,14 @@ namespace BuildCore
         private static void AddHeroCrater(Grid hero, double size, double x, double y, double diameterRatio)
         {
             double diameter = size * diameterRatio;
-            Ellipse crater = new Ellipse
+            Microsoft.UI.Xaml.Shapes.Ellipse crater = new Microsoft.UI.Xaml.Shapes.Ellipse
             {
                 Width = diameter,
                 Height = diameter,
                 Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    ColorHelper.FromArgb(48, 0, 0, 0)),
+                    Color.FromArgb(48, 0, 0, 0)),
                 Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
-                    ColorHelper.FromArgb(54, 255, 255, 255)),
+                    Color.FromArgb(54, 255, 255, 255)),
                 StrokeThickness = Math.Max(0.5, size * 0.006)
             };
             Canvas craterCanvas;
