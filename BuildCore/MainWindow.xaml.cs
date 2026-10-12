@@ -7181,7 +7181,7 @@ namespace BuildCore
 
                 Vector3KeyFrameAnimation heroScale =
                     compositor.CreateVector3KeyFrameAnimation();
-                heroScale.Duration = TimeSpan.FromMilliseconds(720);
+                heroScale.Duration = TimeSpan.FromMilliseconds(420);
                 heroScale.InsertKeyFrame(0.0f, Vector3.One);
                 heroScale.InsertKeyFrame(
                     1.0f,
@@ -7190,13 +7190,13 @@ namespace BuildCore
 
                 Vector3KeyFrameAnimation heroTravel =
                     compositor.CreateVector3KeyFrameAnimation();
-                heroTravel.Duration = TimeSpan.FromMilliseconds(720);
+                heroTravel.Duration = TimeSpan.FromMilliseconds(420);
                 heroTravel.InsertKeyFrame(0.0f, heroBaseOffset);
                 heroTravel.InsertKeyFrame(1.0f, heroBaseOffset + travelOffset, ease);
 
                 ScalarKeyFrameAnimation darken =
                     compositor.CreateScalarKeyFrameAnimation();
-                darken.Duration = TimeSpan.FromMilliseconds(620);
+                darken.Duration = TimeSpan.FromMilliseconds(380);
                 darken.InsertKeyFrame(0.0f, 0.0f);
                 darken.InsertKeyFrame(0.68f, 0.18f, ease);
                 darken.InsertKeyFrame(1.0f, 0.94f, ease);
@@ -7209,32 +7209,32 @@ namespace BuildCore
                 // Let the selected sphere travel forward before switching
                 // pages. The overlay remains visible even when DashboardPage
                 // is collapsed by the normal navigation methods.
-                await Task.Delay(470);
+                await Task.Delay(280);
                 targetPage.Opacity = 0.0;
                 navigate();
                 navigationApplied = true;
 
                 // Hold the near-black hero frame briefly, then dissolve it
                 // while the destination page fades in underneath.
-                await Task.Delay(250);
+                await Task.Delay(140);
 
                 Visual pageVisual = ElementCompositionPreview.GetElementVisual(targetPage);
                 ScalarKeyFrameAnimation pageFade =
                     compositor.CreateScalarKeyFrameAnimation();
-                pageFade.Duration = TimeSpan.FromMilliseconds(360);
+                pageFade.Duration = TimeSpan.FromMilliseconds(260);
                 pageFade.InsertKeyFrame(0.0f, 0.0f);
                 pageFade.InsertKeyFrame(1.0f, 1.0f, ease);
                 pageVisual.StartAnimation("Opacity", pageFade);
 
                 ScalarKeyFrameAnimation overlayFade =
                     compositor.CreateScalarKeyFrameAnimation();
-                overlayFade.Duration = TimeSpan.FromMilliseconds(360);
+                overlayFade.Duration = TimeSpan.FromMilliseconds(260);
                 overlayFade.InsertKeyFrame(0.0f, 1.0f);
                 overlayFade.InsertKeyFrame(1.0f, 0.0f, ease);
                 ElementCompositionPreview.GetElementVisual(transitionLayer)
                     .StartAnimation("Opacity", overlayFade);
 
-                await Task.Delay(380);
+                await Task.Delay(280);
                 targetPage.Opacity = 1.0;
                 pageVisual.StopAnimation("Opacity");
                 pageVisual.Opacity = 1.0f;
