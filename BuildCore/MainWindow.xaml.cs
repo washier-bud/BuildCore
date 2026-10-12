@@ -6382,12 +6382,9 @@ namespace BuildCore
 
             return name switch
             {
-                "Blue" => Color.FromArgb(255, 90, 170, 255),
-                "Purple" => Color.FromArgb(255, 180, 120, 255),
-                "Orange" => Color.FromArgb(255, 255, 165, 70),
-                "Red" => Color.FromArgb(255, 255, 105, 105),
-                "White" => Color.FromArgb(255, 245, 245, 248),
-                _ => Color.FromArgb(255, 218, 218, 224)
+                "Silver" => Color.FromArgb(255, 190, 190, 198),
+                "Graphite" => Color.FromArgb(255, 112, 112, 122),
+                _ => Color.FromArgb(255, 245, 245, 248)
             };
         }
 
@@ -6400,12 +6397,10 @@ namespace BuildCore
             AccentColorComboBox.SelectedIndex =
                 accent switch
                 {
-                    "Blue" => 1,
-                    "Purple" => 2,
-                    "Orange" => 3,
-                    "Red" => 4,
-                    "White" => 5,
-                    _ => 0
+                    "Silver" => 0,
+                    "White" => 1,
+                    "Graphite" => 2,
+                    _ => 1
                 };
 
             ConfirmOptimizationToggle.IsOn =
@@ -6467,7 +6462,7 @@ namespace BuildCore
             AnimationsToggle.IsOn = true;
             RememberPageToggle.IsOn = false;
             MinimizeToTrayToggle.IsOn = false;
-            AccentColorComboBox.SelectedIndex = 5;
+            AccentColorComboBox.SelectedIndex = 1;
 
             ApplyAccentColor();
         }
