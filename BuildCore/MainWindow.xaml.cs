@@ -6986,150 +6986,258 @@ namespace BuildCore
 
             _planetNavigationInProgress = true;
             bool navigationApplied = false;
+            Grid? transitionLayer = null;
+            Grid? rootGrid = Content as Grid;
 
             try
             {
-                // The Composition visual scales around the center of the solar
-                // system, then translates so the selected planet fills the view.
-                Visual solarVisual =
-                    ElementCompositionPreview.GetElementVisual(PlanetaryCanvas);
+                if (rootGrid == null)
+                {
+                    navigate();
+                    return;
+                }
 
-                float canvasWidth = (float)Math.Max(
-                    1.0,
-                    PlanetaryCanvas.ActualWidth);
+                // Capture the selected sphere's on-screen position before the
+                // dashboard is hidden. A foreground hero sphere then carries
+                // that visual through the page change, rather than merely
+                // zooming the entire solar-system canvas.
+                Grid? sourceSphere = null;
+                if (planetButton.Content is StackPanel planetPanel)
+                    sourceSphere = planetPanel.Children.OfType<Grid>().FirstOrDefault();
 
-                float canvasHeight = (float)Math.Max(
-                    1.0,
-                    PlanetaryCanvas.ActualHeight);
+                UIElement sourceElement = sourceSphere ?? planetButton;
+                Point sourceCenter = sourceElement.TransformToVisual(rootGrid).TransformPoint(
+                    new Point(sourceElement.ActualWidth / 2.0, sourceElement.ActualHeight / 2.0));
 
-                float planetCenterX = (float)Canvas.GetLeft(planetButton) +
-                    (float)(planetButton.ActualWidth / 2.0);
-                float planetCenterY = (float)Canvas.GetTop(planetButton) +
-                    (float)(planetButton.ActualHeight / 2.0);
+                double rootWidth = Math.Max(1.0, rootGrid.ActualWidth);
+                double rootHeight = Math.Max(1.0, rootGrid.ActualHeight);
+                double sphereSize = Math.Clamp(
+                    sourceSphere?.ActualWidth > 0 ? sourceSphere.ActualWidth : 94.0,
+                    56.0,
+                    180.0);
 
-                // Canvas.Left/Top are authored in the 1200x700 design space.
-                // If layout scales the canvas, convert the click target into
-                // the canvas's current local coordinate space.
-                float layoutScaleX = canvasWidth / 1200.0f;
-                float layoutScaleY = canvasHeight / 700.0f;
-                planetCenterX *= layoutScaleX;
-                planetCenterY *= layoutScaleY;
+                // This overlay is placed last in the root Grid, so it stays
+                // above both the dashboard and the destination page.
+                transitionLayer = new Grid
+                {
+                    IsHitTestVisible = false,
+                    Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Transparent)
+                };
 
-                float centerX = canvasWidth / 2.0f;
-                float centerY = canvasHeight / 2.0f;
-                const float zoomScale = 3.45f;
+                Border spaceFade = new Border
+                {
+                    Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                        Microsoft.UI.Colors.Black),
+                    Opacity = 0.0,
+                    IsHitTestVisible = false
+                };
+                transitionLayer.Children.Add(spaceFade);
 
-                solarVisual.StopAnimation("Scale");
-                solarVisual.StopAnimation("Offset");
-                Vector3 baseOffset = solarVisual.Offset;
-                Vector3 baseCenterPoint = solarVisual.CenterPoint;
-                solarVisual.CenterPoint = new Vector3(centerX, centerY, 0.0f);
-                solarVisual.Scale = Vector3.One;
-                solarVisual.Offset = baseOffset;
+                Canvas heroCanvas = new Canvas
+                {
+                    IsHitTestVisible = false
+                };
+                transitionLayer.Children.Add(heroCanvas);
 
-                Vector3 finalOffset = baseOffset + new Vector3(
-                    -(planetCenterX - centerX) * zoomScale,
-                    -(planetCenterY - centerY) * zoomScale,
-                    0.0f);
+                Grid heroPlanet = CreatePlanetHeroVisual(sphereSize);
+                Canvas.SetLeft(heroPlanet, sourceCenter.X - sphereSize / 2.0);
+                Canvas.SetTop(heroPlanet, sourceCenter.Y - sphereSize / 2.0);
+                heroCanvas.Children.Add(heroPlanet);
+                rootGrid.Children.Add(transitionLayer);
 
-                Compositor compositor = solarVisual.Compositor;
+                Visual heroVisual = ElementCompositionPreview.GetElementVisual(heroPlanet);
+                Compositor compositor = heroVisual.Compositor;
                 CompositionEasingFunction ease =
                     compositor.CreateCubicBezierEasingFunction(
                         new Vector2(0.18f, 0.72f),
                         new Vector2(0.22f, 1.0f));
 
-                Vector3KeyFrameAnimation zoom =
+                heroVisual.CenterPoint = new Vector3(
+                    (float)(sphereSize / 2.0),
+                    (float)(sphereSize / 2.0),
+                    0.0f);
+
+                float targetScale = (float)(
+                    Math.Sqrt(rootWidth * rootWidth + rootHeight * rootHeight) /
+                    sphereSize * 1.35);
+
+                Vector3 heroBaseOffset = heroVisual.Offset;
+                Vector3 travelOffset = new Vector3(
+                    (float)(rootWidth / 2.0 - sourceCenter.X),
+                    (float)(rootHeight / 2.0 - sourceCenter.Y),
+                    0.0f);
+
+                Vector3KeyFrameAnimation heroScale =
                     compositor.CreateVector3KeyFrameAnimation();
-                zoom.Duration = TimeSpan.FromMilliseconds(520);
-                zoom.InsertKeyFrame(0.0f, Vector3.One);
-                zoom.InsertKeyFrame(
+                heroScale.Duration = TimeSpan.FromMilliseconds(720);
+                heroScale.InsertKeyFrame(0.0f, Vector3.One);
+                heroScale.InsertKeyFrame(
                     1.0f,
-                    new Vector3(zoomScale, zoomScale, 1.0f),
+                    new Vector3(targetScale, targetScale, 1.0f),
                     ease);
 
-                Vector3KeyFrameAnimation travel =
+                Vector3KeyFrameAnimation heroTravel =
                     compositor.CreateVector3KeyFrameAnimation();
-                travel.Duration = TimeSpan.FromMilliseconds(520);
-                travel.InsertKeyFrame(0.0f, Vector3.Zero);
-                travel.InsertKeyFrame(1.0f, finalOffset, ease);
+                heroTravel.Duration = TimeSpan.FromMilliseconds(720);
+                heroTravel.InsertKeyFrame(0.0f, heroBaseOffset);
+                heroTravel.InsertKeyFrame(1.0f, heroBaseOffset + travelOffset, ease);
 
-                // Illuminate only the selected planet's halo during the
-                // camera move. Keep the surface shading and crater contrast intact.
-                if (planetButton.Content is StackPanel planetPanel &&
-                    planetPanel.Children.OfType<Grid>().FirstOrDefault() is Grid sphere)
-                {
-                    Microsoft.UI.Xaml.Shapes.Ellipse? halo =
-                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
-                            .FirstOrDefault();
+                ScalarKeyFrameAnimation darken =
+                    compositor.CreateScalarKeyFrameAnimation();
+                darken.Duration = TimeSpan.FromMilliseconds(620);
+                darken.InsertKeyFrame(0.0f, 0.0f);
+                darken.InsertKeyFrame(0.68f, 0.18f, ease);
+                darken.InsertKeyFrame(1.0f, 0.94f, ease);
 
-                    if (halo != null)
-                        halo.Opacity = 1.0;
+                heroVisual.StartAnimation("Scale", heroScale);
+                heroVisual.StartAnimation("Offset", heroTravel);
+                ElementCompositionPreview.GetElementVisual(spaceFade)
+                    .StartAnimation("Opacity", darken);
 
-                    Microsoft.UI.Xaml.Shapes.Ellipse? planet =
-                        sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
-                            .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
-
-                    if (planet != null)
-                        planet.StrokeThickness = 1.6;
-                }
-
-                solarVisual.StartAnimation("Scale", zoom);
-                solarVisual.StartAnimation("Offset", travel);
-
-                await Task.Delay(545);
-
-                // Change the page after the zoom reaches its destination, then
-                // restore the scene so the next visit starts from a clean view.
+                // Let the selected sphere travel forward before switching
+                // pages. The overlay remains visible even when DashboardPage
+                // is collapsed by the normal navigation methods.
+                await Task.Delay(470);
+                targetPage.Opacity = 0.0;
                 navigate();
                 navigationApplied = true;
 
-                solarVisual.StopAnimation("Scale");
-                solarVisual.StopAnimation("Offset");
-                solarVisual.Scale = Vector3.One;
-                solarVisual.Offset = baseOffset;
-                solarVisual.CenterPoint = baseCenterPoint;
+                // Hold the near-black hero frame briefly, then dissolve it
+                // while the destination page fades in underneath.
+                await Task.Delay(250);
 
-                targetPage.Opacity = 0.0;
-                Visual pageVisual =
-                    ElementCompositionPreview.GetElementVisual(targetPage);
-
-                ScalarKeyFrameAnimation fadeIn =
+                Visual pageVisual = ElementCompositionPreview.GetElementVisual(targetPage);
+                ScalarKeyFrameAnimation pageFade =
                     compositor.CreateScalarKeyFrameAnimation();
-                fadeIn.Duration = TimeSpan.FromMilliseconds(300);
-                fadeIn.InsertKeyFrame(0.0f, 0.0f);
-                fadeIn.InsertKeyFrame(1.0f, 1.0f, ease);
-                pageVisual.StartAnimation("Opacity", fadeIn);
+                pageFade.Duration = TimeSpan.FromMilliseconds(360);
+                pageFade.InsertKeyFrame(0.0f, 0.0f);
+                pageFade.InsertKeyFrame(1.0f, 1.0f, ease);
+                pageVisual.StartAnimation("Opacity", pageFade);
 
-                await Task.Delay(320);
+                ScalarKeyFrameAnimation overlayFade =
+                    compositor.CreateScalarKeyFrameAnimation();
+                overlayFade.Duration = TimeSpan.FromMilliseconds(360);
+                overlayFade.InsertKeyFrame(0.0f, 1.0f);
+                overlayFade.InsertKeyFrame(1.0f, 0.0f, ease);
+                ElementCompositionPreview.GetElementVisual(transitionLayer)
+                    .StartAnimation("Opacity", overlayFade);
+
+                await Task.Delay(380);
                 targetPage.Opacity = 1.0;
                 pageVisual.StopAnimation("Opacity");
                 pageVisual.Opacity = 1.0f;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"BUILDCORE PLANET TRANSITION ERROR: {ex}");
-                // A visual transition must never prevent normal navigation.
+                Debug.WriteLine($"BUILDCORE PLANET HERO TRANSITION ERROR: {ex}");
                 if (!navigationApplied)
                     navigate();
 
                 if (targetPage != null)
                     targetPage.Opacity = 1.0;
-
-                if (PlanetaryCanvas != null)
-                {
-                    Visual solarVisual =
-                        ElementCompositionPreview.GetElementVisual(PlanetaryCanvas);
-                    solarVisual.StopAnimation("Scale");
-                    solarVisual.StopAnimation("Offset");
-                    solarVisual.Scale = Vector3.One;
-                    // Preserve the layout-managed position of the canvas.
-                    solarVisual.CenterPoint = Vector3.Zero;
-                }
             }
             finally
             {
+                if (transitionLayer != null && rootGrid != null)
+                    rootGrid.Children.Remove(transitionLayer);
+
                 _planetNavigationInProgress = false;
             }
+        }
+
+        private Grid CreatePlanetHeroVisual(double size)
+        {
+            Grid hero = new Grid
+            {
+                Width = size,
+                Height = size,
+                IsHitTestVisible = false
+            };
+
+            Ellipse atmosphere = new Ellipse
+            {
+                Margin = -size * 0.16,
+                Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+                {
+                    Center = new Point(0.5, 0.5),
+                    RadiusX = 0.5,
+                    RadiusY = 0.5,
+                    GradientStops =
+                    {
+                        new Microsoft.UI.Xaml.Media.GradientStop
+                        {
+                            Color = Microsoft.UI.ColorHelper.FromArgb(90, 235, 235, 242),
+                            Offset = 0.68
+                        },
+                        new Microsoft.UI.Xaml.Media.GradientStop
+                        {
+                            Color = Microsoft.UI.ColorHelper.FromArgb(0, 235, 235, 242),
+                            Offset = 1.0
+                        }
+                    }
+                }
+            };
+            hero.Children.Add(atmosphere);
+
+            Ellipse sphere = new Ellipse();
+            sphere.Fill = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+            {
+                Center = new Point(0.32, 0.28),
+                RadiusX = 0.82,
+                RadiusY = 0.82,
+                GradientStops =
+                {
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.White, Offset = 0.0 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 180, 180, 188), Offset = 0.22 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 82, 82, 91), Offset = 0.55 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.ColorHelper.FromArgb(255, 18, 18, 23), Offset = 0.82 },
+                    new Microsoft.UI.Xaml.Media.GradientStop { Color = Microsoft.UI.Colors.Black, Offset = 1.0 }
+                }
+            };
+            sphere.Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                Microsoft.UI.ColorHelper.FromArgb(210, 225, 225, 232));
+            sphere.StrokeThickness = 1.2;
+            hero.Children.Add(sphere);
+
+            // Small, low-contrast craters give the enlarged hero element
+            // surface detail while keeping the app's grayscale visual style.
+            AddHeroCrater(hero, size, 0.28, 0.35, 0.15);
+            AddHeroCrater(hero, size, 0.62, 0.27, 0.10);
+            AddHeroCrater(hero, size, 0.68, 0.59, 0.18);
+            AddHeroCrater(hero, size, 0.39, 0.70, 0.12);
+            AddHeroCrater(hero, size, 0.22, 0.56, 0.07);
+
+            return hero;
+        }
+
+        private static void AddHeroCrater(Grid hero, double size, double x, double y, double diameterRatio)
+        {
+            double diameter = size * diameterRatio;
+            Ellipse crater = new Ellipse
+            {
+                Width = diameter,
+                Height = diameter,
+                Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.ColorHelper.FromArgb(48, 0, 0, 0)),
+                Stroke = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+                    Microsoft.UI.ColorHelper.FromArgb(54, 255, 255, 255)),
+                StrokeThickness = Math.Max(0.5, size * 0.006)
+            };
+            Canvas craterCanvas;
+            if (hero.Children.OfType<Canvas>().FirstOrDefault() is Canvas existingCanvas)
+            {
+                craterCanvas = existingCanvas;
+            }
+            else
+            {
+                craterCanvas = new Canvas { IsHitTestVisible = false };
+                hero.Children.Add(craterCanvas);
+            }
+
+            Canvas.SetLeft(crater, size * x - diameter / 2.0);
+            Canvas.SetTop(crater, size * y - diameter / 2.0);
+            craterCanvas.Children.Add(crater);
         }
 
         private void DashboardSpaceRoot_SizeChanged(
