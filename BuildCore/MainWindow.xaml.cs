@@ -7442,19 +7442,19 @@ namespace BuildCore
 
             if (glow != null)
             {
+                // Keep the halo on its own centered circular visual. The
+                // XAML uses a feathered radial gradient so it cannot create
+                // a hard-edged square or a solid bright disk.
                 Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
                 haloVisual.StopAnimation("Opacity");
 
-                // A slow, repeating halo pulse gives the hovered sun a soft
-                // cinematic light bloom without flashing or changing its texture.
                 ScalarKeyFrameAnimation haloPulse =
                     haloVisual.Compositor.CreateScalarKeyFrameAnimation();
-                haloPulse.Duration = TimeSpan.FromMilliseconds(1250);
+                haloPulse.Duration = TimeSpan.FromMilliseconds(1500);
                 haloPulse.IterationBehavior = AnimationIterationBehavior.Forever;
-                haloPulse.InsertKeyFrame(0.0f, 0.28f);
-                haloPulse.InsertKeyFrame(0.38f, 0.92f);
-                haloPulse.InsertKeyFrame(0.78f, 0.58f);
-                haloPulse.InsertKeyFrame(1.0f, 0.28f);
+                haloPulse.InsertKeyFrame(0.0f, 0.18f);
+                haloPulse.InsertKeyFrame(0.45f, 0.52f);
+                haloPulse.InsertKeyFrame(1.0f, 0.18f);
                 haloVisual.StartAnimation("Opacity", haloPulse);
             }
 
