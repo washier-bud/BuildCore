@@ -40,7 +40,7 @@
         <Canvas
             Grid.ColumnSpan="2"
             IsHitTestVisible="False"
-            Opacity="0.72" StrokeThickness="0.45">
+            Opacity="0.72">
 
             <Ellipse
                 x:Name="ParallaxGlowOne"
