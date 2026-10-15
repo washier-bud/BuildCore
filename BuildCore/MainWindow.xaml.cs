@@ -7450,12 +7450,26 @@ namespace BuildCore
                 (float)(sphere.ActualHeight / 2.0),
                 0.0f);
 
+            Compositor compositor = sphereVisual.Compositor;
             Vector3KeyFrameAnimation hoverScale =
-                sphereVisual.Compositor.CreateVector3KeyFrameAnimation();
-            hoverScale.Duration = TimeSpan.FromMilliseconds(240);
+                compositor.CreateVector3KeyFrameAnimation();
+            hoverScale.Duration = TimeSpan.FromMilliseconds(260);
             hoverScale.InsertKeyFrame(0.0f, sphereVisual.Scale);
-            hoverScale.InsertKeyFrame(0.72f, new Vector3(1.075f, 1.075f, 1.0f));
-            hoverScale.InsertKeyFrame(1.0f, new Vector3(1.06f, 1.06f, 1.0f));
+
+            // A small overshoot gives the planet a gentle, physical lift
+            // instead of a linear jump. Keep the final scale restrained.
+            CompositionEasingFunction hoverEase =
+                compositor.CreateCubicBezierEasingFunction(
+                    new Vector2(0.16f, 0.72f),
+                    new Vector2(0.22f, 1.0f));
+            hoverScale.InsertKeyFrame(
+                0.72f,
+                new Vector3(1.065f, 1.065f, 1.0f),
+                hoverEase);
+            hoverScale.InsertKeyFrame(
+                1.0f,
+                new Vector3(1.055f, 1.055f, 1.0f),
+                hoverEase);
             sphereVisual.StartAnimation("Scale", hoverScale);
         }
 
@@ -7486,11 +7500,17 @@ namespace BuildCore
                 ElementCompositionPreview.GetElementVisual(sphere);
             sphereVisual.StopAnimation("Scale");
 
+            Compositor compositor = sphereVisual.Compositor;
             Vector3KeyFrameAnimation returnScale =
-                sphereVisual.Compositor.CreateVector3KeyFrameAnimation();
-            returnScale.Duration = TimeSpan.FromMilliseconds(190);
+                compositor.CreateVector3KeyFrameAnimation();
+            returnScale.Duration = TimeSpan.FromMilliseconds(220);
             returnScale.InsertKeyFrame(0.0f, sphereVisual.Scale);
-            returnScale.InsertKeyFrame(1.0f, Vector3.One);
+
+            CompositionEasingFunction returnEase =
+                compositor.CreateCubicBezierEasingFunction(
+                    new Vector2(0.32f, 0.0f),
+                    new Vector2(0.18f, 1.0f));
+            returnScale.InsertKeyFrame(1.0f, Vector3.One, returnEase);
             sphereVisual.StartAnimation("Scale", returnScale);
         }
 
