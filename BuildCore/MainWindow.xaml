@@ -590,11 +590,14 @@
 
                     <!-- Orbital tracks and monochrome planetary navigation -->
                     <Canvas x:Name="PlanetaryCanvas" Width="1200" Height="700" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                        <Ellipse Width="450" Height="230" Canvas.Left="375" Canvas.Top="235" Stroke="#4CFFFFFF" StrokeThickness="1" Opacity="0.55"/>
-                        <Ellipse Width="650" Height="340" Canvas.Left="275" Canvas.Top="180" Stroke="#38FFFFFF" StrokeThickness="1" Opacity="0.65"/>
-                        <Ellipse Width="840" Height="450" Canvas.Left="180" Canvas.Top="125" Stroke="#30FFFFFF" StrokeThickness="1" Opacity="0.65"/>
-                        <Ellipse Width="1020" Height="550" Canvas.Left="90" Canvas.Top="75" Stroke="#28FFFFFF" StrokeThickness="1" Opacity="0.7"/>
-                        <Ellipse Width="1190" Height="640" Canvas.Left="5" Canvas.Top="30" Stroke="#20FFFFFF" StrokeThickness="1" Opacity="0.8"/>
+                        <!-- Seven gently elliptical orbital lanes, scaled to fit the scene. -->
+                        <Ellipse Width="470" Height="272" Canvas.Left="365" Canvas.Top="214" Stroke="#50FFFFFF" StrokeThickness="1" Opacity="0.62"/>
+                        <Ellipse Width="570" Height="330" Canvas.Left="315" Canvas.Top="185" Stroke="#42FFFFFF" StrokeThickness="1" Opacity="0.60"/>
+                        <Ellipse Width="680" Height="394" Canvas.Left="260" Canvas.Top="153" Stroke="#38FFFFFF" StrokeThickness="1" Opacity="0.58"/>
+                        <Ellipse Width="770" Height="446" Canvas.Left="215" Canvas.Top="127" Stroke="#32FFFFFF" StrokeThickness="1" Opacity="0.56"/>
+                        <Ellipse Width="870" Height="504" Canvas.Left="165" Canvas.Top="98" Stroke="#2CFFFFFF" StrokeThickness="1" Opacity="0.54"/>
+                        <Ellipse Width="970" Height="562" Canvas.Left="115" Canvas.Top="69" Stroke="#26FFFFFF" StrokeThickness="1" Opacity="0.52"/>
+                        <Ellipse Width="1050" Height="609" Canvas.Left="75" Canvas.Top="45" Stroke="#20FFFFFF" StrokeThickness="1" Opacity="0.50"/>
 
                         <!-- Fixed central black hole with a layered monochrome accretion disk. -->
                         <Grid x:Name="CentralBlackHole" Canvas.Left="430" Canvas.Top="180" Width="340" Height="340" IsHitTestVisible="False">
