@@ -6294,29 +6294,101 @@ namespace BuildCore
 
         private void AnimateOrbitalBodies(DispatcherQueueTimer sender, object args)
         {
-            // The black hole remains fixed. Only the seven clickable sun bodies move.
+            // The central object remains fixed. Planet positions are adjusted
+            // slightly when necessary so their visible spheres do not collide.
             _orbitElapsedSeconds += 0.033;
 
             const double centerX = 600.0;
             const double centerY = 350.0;
+            int count = _orbitBodies.Length;
+            var angles = new double[count];
+            var naturalAngles = new double[count];
+            var floatOffsets = new double[count];
 
-            foreach (var body in _orbitBodies)
+            for (int i = 0; i < count; i++)
             {
-                double angle = body.Phase + (_orbitElapsedSeconds * body.Speed);
-                double centerXAtAngle = centerX + (body.RadiusX * Math.Cos(angle));
-                double centerYAtAngle = centerY + (body.RadiusY * Math.Sin(angle));
-
-                // Add a restrained independent float on top of the orbit.
-                // The small phase-offset drift gives each sun a little life
-                // without changing its orbit lane or the overall scene scale.
-                double floatOffsetY =
-                    Math.Sin((_orbitElapsedSeconds * 1.15) + body.Phase * 1.7) * 3.5;
-
-                Canvas.SetLeft(body.Button, centerXAtAngle - (body.Button.Width / 2.0));
-                Canvas.SetTop(
-                    body.Button,
-                    centerYAtAngle + floatOffsetY - (body.Button.Height / 2.0));
+                var body = _orbitBodies[i];
+                naturalAngles[i] = body.Phase + (_orbitElapsedSeconds * body.Speed);
+                angles[i] = naturalAngles[i];
+                floatOffsets[i] =
+                    Math.Sin((_orbitElapsedSeconds * 1.15) + body.Phase * 1.7) * 1.0;
             }
+
+            // Relax any close approaches over several passes. The orbit radius
+            // stays fixed; only the body's position along its own orbit changes.
+            for (int pass = 0; pass < 5; pass++)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var body = _orbitBodies[i];
+                    double bestAngle = angles[i];
+                    double bestCost = double.MaxValue;
+
+                    for (double offset = -Math.PI; offset <= Math.PI; offset += 0.07)
+                    {
+                        double candidateAngle = naturalAngles[i] + offset;
+                        double candidateX = centerX + body.RadiusX * Math.Cos(candidateAngle);
+                        double candidateY = centerY + body.RadiusY * Math.Sin(candidateAngle) + floatOffsets[i];
+                        double cost = offset * offset * 3.0;
+
+                        for (int j = 0; j < count; j++)
+                        {
+                            if (i == j)
+                                continue;
+
+                            var other = _orbitBodies[j];
+                            double otherX = centerX + other.RadiusX * Math.Cos(angles[j]);
+                            double otherY = centerY + other.RadiusY * Math.Sin(angles[j]) + floatOffsets[j];
+                            double dx = candidateX - otherX;
+                            double dy = candidateY - otherY;
+                            double distance = Math.Sqrt((dx * dx) + (dy * dy));
+                            double requiredDistance =
+                                (GetOrbitSphereDiameter(body.Button) + GetOrbitSphereDiameter(other.Button)) / 2.0 + 12.0;
+
+                            if (distance < requiredDistance)
+                            {
+                                double overlap = requiredDistance - distance;
+                                cost += overlap * overlap * 10000.0;
+                            }
+                        }
+
+                        if (cost < bestCost)
+                        {
+                            bestCost = cost;
+                            bestAngle = candidateAngle;
+                        }
+                    }
+
+                    angles[i] = bestAngle;
+                }
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var body = _orbitBodies[i];
+                double x = centerX + body.RadiusX * Math.Cos(angles[i]);
+                double y = centerY + body.RadiusY * Math.Sin(angles[i]) + floatOffsets[i];
+
+                Canvas.SetLeft(body.Button, x - (body.Button.Width / 2.0));
+                Canvas.SetTop(body.Button, y - (body.Button.Height / 2.0));
+            }
+        }
+
+        private static double GetOrbitSphereDiameter(Button button)
+        {
+            // These are the visible sphere sizes, not the larger transparent
+            // button hit targets, so spacing follows the artwork users see.
+            return button.Name switch
+            {
+                "OrbitDashboard" => 70.0,
+                "OrbitSystem" => 88.0,
+                "OrbitPerformance" => 62.0,
+                "OrbitOptimize" => 126.0,
+                "OrbitAutoTune" => 82.0,
+                "OrbitHistory" => 120.0,
+                "OrbitSettings" => 120.0,
+                _ => 80.0
+            };
         }
 
         private void ResetSolarSystemView()
