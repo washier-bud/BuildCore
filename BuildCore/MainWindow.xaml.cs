@@ -95,15 +95,17 @@ namespace BuildCore
             // Give every sun its own clearly separated orbital lane. The
             // staggered radii prevent the bodies from repeatedly converging
             // on nearly identical paths while keeping the full scene in frame.
+            // Inner planets travel faster; outer planets move more slowly,
+            // echoing the orbital pattern of the real solar system.
             _orbitBodies = new[]
             {
-                CreateOrbitBody(OrbitDashboard, 285.0, 0.060),
-                CreateOrbitBody(OrbitSystem, 340.0, -0.047),
-                CreateOrbitBody(OrbitPerformance, 235.0, 0.082),
-                CreateOrbitBody(OrbitOptimize, 485.0, -0.039),
-                CreateOrbitBody(OrbitAutoTune, 435.0, 0.070),
-                CreateOrbitBody(OrbitHistory, 385.0, -0.052),
-                CreateOrbitBody(OrbitSettings, 525.0, 0.093)
+                CreateOrbitBody(OrbitDashboard, 285.0, 0.082),
+                CreateOrbitBody(OrbitSystem, 340.0, -0.064),
+                CreateOrbitBody(OrbitPerformance, 235.0, 0.112),
+                CreateOrbitBody(OrbitOptimize, 485.0, -0.041),
+                CreateOrbitBody(OrbitAutoTune, 435.0, 0.047),
+                CreateOrbitBody(OrbitHistory, 385.0, -0.055),
+                CreateOrbitBody(OrbitSettings, 525.0, 0.035)
             };
 
             _orbitTimer = DispatcherQueue.CreateTimer();
@@ -6280,7 +6282,7 @@ namespace BuildCore
 
             // Keep the elliptical orbit wide while leaving enough vertical
             // clearance for the largest sun and its hover glow.
-            double radiusY = radiusX * 0.5;
+            double radiusY = radiusX * 0.58;
             double bodyCenterX = Canvas.GetLeft(button) + button.Width / 2.0;
             double bodyCenterY = Canvas.GetTop(button) + button.Height / 2.0;
             double dx = bodyCenterX - centerX;
