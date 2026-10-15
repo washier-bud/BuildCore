@@ -7429,10 +7429,8 @@ namespace BuildCore
             if (sphere == null)
                 return;
 
-            Microsoft.UI.Xaml.Shapes.Ellipse? glow =
-                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
-                    .FirstOrDefault();
-
+            // Find the actual planet outline. Hover intentionally has no halo,
+            // glow, shadow panel, or rectangular lighting layer.
             Microsoft.UI.Xaml.Shapes.Ellipse? planet =
                 sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
@@ -7440,29 +7438,10 @@ namespace BuildCore
             if (planet == null)
                 return;
 
-            if (glow != null)
-            {
-                // Keep the halo on its own centered circular visual. The
-                // XAML uses a feathered radial gradient so it cannot create
-                // a hard-edged square or a solid bright disk.
-                Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
-                haloVisual.StopAnimation("Opacity");
-
-                ScalarKeyFrameAnimation haloPulse =
-                    haloVisual.Compositor.CreateScalarKeyFrameAnimation();
-                haloPulse.Duration = TimeSpan.FromMilliseconds(1500);
-                haloPulse.IterationBehavior = AnimationIterationBehavior.Forever;
-                haloPulse.InsertKeyFrame(0.0f, 0.18f);
-                haloPulse.InsertKeyFrame(0.45f, 0.52f);
-                haloPulse.InsertKeyFrame(1.0f, 0.18f);
-                haloVisual.StartAnimation("Opacity", haloPulse);
-            }
-
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
 
-            // Use a gentle overshoot before settling at the hover size so the
-            // sun feels like it moves toward the viewer rather than popping.
+            // Scale the sphere itself for a clean, glow-free hover response.
             Visual sphereVisual =
                 ElementCompositionPreview.GetElementVisual(sphere);
             sphereVisual.StopAnimation("Scale");
@@ -7494,28 +7473,12 @@ namespace BuildCore
             if (sphere == null)
                 return;
 
-            Microsoft.UI.Xaml.Shapes.Ellipse? glow =
-                sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
-                    .FirstOrDefault();
-
             Microsoft.UI.Xaml.Shapes.Ellipse? planet =
                 sphere.Children.OfType<Microsoft.UI.Xaml.Shapes.Ellipse>()
                     .FirstOrDefault(ellipse => ellipse.StrokeThickness > 0);
 
             if (planet == null)
                 return;
-
-            if (glow != null)
-            {
-                Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
-                haloVisual.StopAnimation("Opacity");
-                ScalarKeyFrameAnimation haloOut =
-                    haloVisual.Compositor.CreateScalarKeyFrameAnimation();
-                haloOut.Duration = TimeSpan.FromMilliseconds(210);
-                haloOut.InsertKeyFrame(0.0f, (float)glow.Opacity);
-                haloOut.InsertKeyFrame(1.0f, 0.0f);
-                haloVisual.StartAnimation("Opacity", haloOut);
-            }
 
             planet.StrokeThickness = 0.7;
 
