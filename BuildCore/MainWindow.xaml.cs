@@ -7444,19 +7444,25 @@ namespace BuildCore
             {
                 Visual haloVisual = ElementCompositionPreview.GetElementVisual(glow);
                 haloVisual.StopAnimation("Opacity");
-                ScalarKeyFrameAnimation haloIn =
+
+                // A slow, repeating halo pulse gives the hovered sun a soft
+                // cinematic light bloom without flashing or changing its texture.
+                ScalarKeyFrameAnimation haloPulse =
                     haloVisual.Compositor.CreateScalarKeyFrameAnimation();
-                haloIn.Duration = TimeSpan.FromMilliseconds(180);
-                haloIn.InsertKeyFrame(0.0f, (float)glow.Opacity);
-                haloIn.InsertKeyFrame(1.0f, 1.0f);
-                haloVisual.StartAnimation("Opacity", haloIn);
+                haloPulse.Duration = TimeSpan.FromMilliseconds(1250);
+                haloPulse.IterationBehavior = AnimationIterationBehavior.Forever;
+                haloPulse.InsertKeyFrame(0.0f, 0.28f);
+                haloPulse.InsertKeyFrame(0.38f, 0.92f);
+                haloPulse.InsertKeyFrame(0.78f, 0.58f);
+                haloPulse.InsertKeyFrame(1.0f, 0.28f);
+                haloVisual.StartAnimation("Opacity", haloPulse);
             }
 
             planet.StrokeThickness = 1.6;
             planet.Opacity = 1.0;
 
-            // Animate the sphere through Composition so the hover feels smooth
-            // rather than snapping to its enlarged size.
+            // Use a gentle overshoot before settling at the hover size so the
+            // sun feels like it moves toward the viewer rather than popping.
             Visual sphereVisual =
                 ElementCompositionPreview.GetElementVisual(sphere);
             sphereVisual.StopAnimation("Scale");
@@ -7467,8 +7473,9 @@ namespace BuildCore
 
             Vector3KeyFrameAnimation hoverScale =
                 sphereVisual.Compositor.CreateVector3KeyFrameAnimation();
-            hoverScale.Duration = TimeSpan.FromMilliseconds(170);
+            hoverScale.Duration = TimeSpan.FromMilliseconds(240);
             hoverScale.InsertKeyFrame(0.0f, sphereVisual.Scale);
+            hoverScale.InsertKeyFrame(0.72f, new Vector3(1.075f, 1.075f, 1.0f));
             hoverScale.InsertKeyFrame(1.0f, new Vector3(1.06f, 1.06f, 1.0f));
             sphereVisual.StartAnimation("Scale", hoverScale);
         }
