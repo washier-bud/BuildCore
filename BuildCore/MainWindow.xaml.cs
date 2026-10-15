@@ -97,13 +97,13 @@ namespace BuildCore
             // on nearly identical paths while keeping the full scene in frame.
             _orbitBodies = new[]
             {
-                CreateOrbitBody(OrbitDashboard, 270.0, 0.060),
-                CreateOrbitBody(OrbitSystem, 320.0, -0.047),
-                CreateOrbitBody(OrbitPerformance, 220.0, 0.082),
-                CreateOrbitBody(OrbitOptimize, 470.0, -0.039),
-                CreateOrbitBody(OrbitAutoTune, 420.0, 0.070),
-                CreateOrbitBody(OrbitHistory, 370.0, -0.052),
-                CreateOrbitBody(OrbitSettings, 515.0, 0.093)
+                CreateOrbitBody(OrbitDashboard, 285.0, 0.060),
+                CreateOrbitBody(OrbitSystem, 340.0, -0.047),
+                CreateOrbitBody(OrbitPerformance, 235.0, 0.082),
+                CreateOrbitBody(OrbitOptimize, 485.0, -0.039),
+                CreateOrbitBody(OrbitAutoTune, 435.0, 0.070),
+                CreateOrbitBody(OrbitHistory, 385.0, -0.052),
+                CreateOrbitBody(OrbitSettings, 525.0, 0.093)
             };
 
             _orbitTimer = DispatcherQueue.CreateTimer();
