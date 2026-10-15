@@ -656,7 +656,7 @@
                                                                         <Ellipse Width="70" Height="70" Stroke="#AFAFAF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="70" Height="70" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="70" Height="70" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="70" Height="70" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="70" Height="70" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="22" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,31,0,0" Fill="#1CFFFFFF" Opacity="0.55" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="-32"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="15" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,17,0,0" Fill="#30000000" Stroke="#40FFFFFF" StrokeThickness="0.45" Opacity="0.7"><Ellipse.RenderTransform><RotateTransform Angle="24"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="13" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,41,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -666,6 +666,83 @@
                                     <Ellipse Width="8" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,23,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="12" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,18,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,17,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="11" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,43,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,49,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="DASHBOARD" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Overview · Health · Temps" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -680,7 +757,7 @@
                                                                         <Ellipse Width="88" Height="88" Stroke="#AFAFAF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0193.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="88" Height="88" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="88" Height="88" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="88" Height="88" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="88" Height="88" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="37" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,38,0,0" Fill="#12FFFFFF" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.55"><Ellipse.RenderTransform><RotateTransform Angle="-38"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="24" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,21,0,0" Fill="#22000000" Stroke="#50FFFFFF" StrokeThickness="0.45" Opacity="0.75"><Ellipse.RenderTransform><RotateTransform Angle="42"/></Ellipse.RenderTransform></Ellipse>
                                     
                                     <Ellipse Width="17" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,27,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
@@ -691,6 +768,102 @@
                                     <Ellipse Width="11" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="16" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="18,23,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="10" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,20,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="14" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,54,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="7" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,64,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 5 -->
+                                    <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,42,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="SYSTEM" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Hardware &amp; OS" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -705,7 +878,7 @@
                                                                         <Ellipse Width="62" Height="62" Stroke="#BFBFBF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0211.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="62" Height="62" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="62" Height="62" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="62" Height="62" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="62" Height="62" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="17" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,26,0,0" Fill="#24000000" Stroke="#75FFFFFF" StrokeThickness="0.65" Opacity="0.8"/><Ellipse Width="9" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,14,0,0" Fill="#18000000" Stroke="#65FFFFFF" StrokeThickness="0.45" Opacity="0.8"/><Ellipse Width="6" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,39,0,0" Fill="#22000000" Stroke="#50FFFFFF" StrokeThickness="0.4" Opacity="0.7"/>
                                     <Ellipse Width="12" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,19,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="7" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="38,37,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -715,6 +888,83 @@
                                     <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,31,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,16,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="7" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,18,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="12" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,39,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,42,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="PERFORMANCE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="FPS · Latency · Benchmarks" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -729,7 +979,7 @@
                                                                         <Ellipse Width="126" Height="126" Stroke="#BFBFBF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0304.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="126" Height="126" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="126" Height="126" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="126" Height="126" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="126" Height="126" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="106" Height="9" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,56,0,0" Fill="#10FFFFFF" Opacity="0.75"/><Ellipse Width="99" Height="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,91,0,0" Fill="#1C000000" Opacity="0.65"/><Ellipse Width="31" Height="21" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,60,0,0" Fill="#1A000000" Stroke="#45FFFFFF" StrokeThickness="0.65" Opacity="0.8"/>
                                     <Ellipse Width="106" Height="13" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,43,0,0" Fill="#1CFFFFFF" Stroke="#28FFFFFF" StrokeThickness="0.5" Opacity="0.8"/>
                                     <Ellipse Width="111" Height="8" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,65,0,0" Fill="#28000000" Stroke="#35FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -742,6 +992,121 @@
                                     <Ellipse Width="15" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="116,54,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="23" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="18,27,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="15" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="79,22,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="26" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="69,73,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="12" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,88,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 5 -->
+                                    <Ellipse Width="11" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,49,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 6 -->
+                                    <Ellipse Width="10" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="97,48,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="OPTIMIZE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Tweaks · Settings · Recovery" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -756,7 +1121,7 @@
                                                                         <Ellipse Width="82" Height="82" Stroke="#BFBFBF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0131.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="82" Height="82" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="82" Height="82" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="82" Height="82" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="82" Height="82" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="31" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,31,0,0" Fill="#66FFFFFF" Opacity="0.32" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="-42"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="23" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,48,0,0" Fill="#55000000" Opacity="0.8" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="28"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="14" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,49,0,0" Fill="#55FFFFFF" Opacity="0.4" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><RotateTransform Angle="20"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="16" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="19,25,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,48,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -766,6 +1131,83 @@
                                     <Ellipse Width="10" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="59,28,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="14" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,20,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="9" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,18,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="16" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="47,50,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,56,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="AUTOTUNE" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="AI Assistant · Apply · Undo" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -783,7 +1225,7 @@
                                                                         <Ellipse Width="120" Height="120" Stroke="#BFBFBF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0335.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="120" Height="120" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="120" Height="120" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="120" Height="120" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="120" Height="120" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="94" Height="8" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,45,0,0" Fill="#12FFFFFF" Opacity="0.75"/><Ellipse Width="83" Height="7" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,69,0,0" Fill="#22000000" Opacity="0.65"/><Ellipse Width="58" Height="5" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,85,0,0" Fill="#16FFFFFF" Opacity="0.75"/>
                                     <Ellipse Width="23" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="14" Height="11" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="73,71,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -793,6 +1235,102 @@
                                     <Ellipse Width="15" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="92,48,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.4" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="22" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,27,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="13" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="78,28,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="22" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="71,76,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="12" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,83,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 5 -->
+                                    <Ellipse Width="14" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="49,51,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="HISTORY" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Logs · Benchmarks · Activity" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
@@ -807,7 +1345,7 @@
                                                                         <Ellipse Width="72" Height="72" Stroke="#BFBFBF" StrokeThickness="0.7">
                                     <Ellipse.Fill><ImageBrush ImageSource="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0094.jpg" Stretch="UniformToFill"/></Ellipse.Fill>
                                 </Ellipse>
-                                    <Ellipse Width="72" Height="72" Fill="#007B7B82" IsHitTestVisible="False"/>
+                                    <Ellipse Width="72" Height="72" Fill="#267B7B82" IsHitTestVisible="False"/>
                                     <Ellipse Width="72" Height="72" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.30,0.27" RadiusX="0.86" RadiusY="0.86"><GradientStop Color="#00FFFFFF" Offset="0"/><GradientStop Color="#08000000" Offset="0.42"/><GradientStop Color="#55000000" Offset="0.72"/><GradientStop Color="#B8000000" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="72" Height="72" IsHitTestVisible="False"><Ellipse.Fill><RadialGradientBrush Center="0.22,0.18" RadiusX="0.9" RadiusY="0.9"><GradientStop Color="#30FFFFFF" Offset="0"/><GradientStop Color="#12FFFFFF" Offset="0.38"/><GradientStop Color="#00FFFFFF" Offset="0.78"/></RadialGradientBrush></Ellipse.Fill></Ellipse><Ellipse Width="25" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,29,0,0" Fill="#18000000" Stroke="#65FFFFFF" StrokeThickness="0.55" Opacity="0.75"><Ellipse.RenderTransform><RotateTransform Angle="-35"/></Ellipse.RenderTransform></Ellipse><Ellipse Width="17" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="37,17,0,0" Fill="#20FFFFFF" Stroke="#40FFFFFF" StrokeThickness="0.4" Opacity="0.7"><Ellipse.RenderTransform><RotateTransform Angle="25"/></Ellipse.RenderTransform></Ellipse>
                                     <Ellipse Width="14" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="17,22,0,0" Fill="#26000000" Stroke="#55FFFFFF" StrokeThickness="0.55" Opacity="0.8"/>
                                     <Ellipse Width="9" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,42,0,0" Fill="#24000000" Stroke="#42FFFFFF" StrokeThickness="0.45" Opacity="0.75"/>
@@ -817,6 +1355,83 @@
                                     <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="51,26,0,0" Fill="#18000000" Stroke="#25FFFFFF" StrokeThickness="0.35" Opacity="0.6"/>
                                     
                                 
+                                    
+                                    <!-- Subtle monochrome impact basin 1 -->
+                                    <Ellipse Width="13" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,18,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 2 -->
+                                    <Ellipse Width="8" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="43,16,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 3 -->
+                                    <Ellipse Width="12" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="36,44,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
+                                    <!-- Subtle monochrome impact basin 4 -->
+                                    <Ellipse Width="6" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,49,0,0" Opacity="0.72">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush Center="0.34,0.30" RadiusX="0.82" RadiusY="0.82">
+                                                <GradientStop Color="#1CFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#10000000" Offset="0.42"/>
+                                                <GradientStop Color="#5E000000" Offset="0.76"/>
+                                                <GradientStop Color="#8CFFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                        <Ellipse.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#65FFFFFF" Offset="0"/>
+                                                <GradientStop Color="#20000000" Offset="0.55"/>
+                                                <GradientStop Color="#55FFFFFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.StrokeThickness>0.45</Ellipse.StrokeThickness>
+                                    </Ellipse>
                                     </Grid>
                                 <TextBlock Text="SETTINGS" Foreground="White" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="App · Theme · Behavior" Foreground="#A3A3AA" FontSize="8" HorizontalAlignment="Center"/>
